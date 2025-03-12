@@ -11,6 +11,101 @@ import { LogIn, UserPlus, ArrowLeft, MessageCircle, Loader2, Mail, Lock, Sparkle
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 
+const FloatingStars = ({ count = 200 }) => (
+  <div className="fixed inset-0 pointer-events-none overflow-hidden">
+    {Array.from({ length: count }).map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute rounded-full bg-white"
+        style={{
+          width: `${Math.random() * 3 + 1}px`,
+          height: `${Math.random() * 3 + 1}px`,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          opacity: Math.random() * 0.5 + 0.2,
+        }}
+        animate={{
+          y: [0, -Math.random() * 150 - 50],
+          x: [0, (Math.random() - 0.5) * 40],
+          opacity: [0.3, 0.8, 0.3],
+          scale: [0, 1, 0.5],
+        }}
+        transition={{
+          duration: Math.random() * 20 + 10,
+          repeat: Infinity,
+          ease: "linear",
+          delay: Math.random() * 5,
+        }}
+      />
+    ))}
+  </div>
+);
+
+const OrbitalCircle = ({ size = 300, duration = 30, clockwise = true }) => (
+  <motion.div
+    className="absolute rounded-full border border-purple-500/10"
+    style={{
+      width: size,
+      height: size,
+      top: '50%',
+      left: '50%',
+      marginLeft: -size / 2,
+      marginTop: -size / 2,
+    }}
+    animate={{
+      rotate: clockwise ? 360 : -360,
+    }}
+    transition={{
+      duration,
+      repeat: Infinity,
+      ease: "linear",
+    }}
+  >
+    <motion.div
+      className="absolute w-4 h-4 rounded-full bg-purple-400/50 shadow-glow top-0 left-1/2 -ml-2 -mt-2"
+      animate={{
+        scale: [1, 1.3, 1],
+        opacity: [0.5, 0.8, 0.5],
+      }}
+      transition={{
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    />
+  </motion.div>
+);
+
+const GlowingOrb = ({ size = 50, color = "purple", delay = 0, x = 0, y = 0 }) => {
+  const colors = {
+    purple: "bg-purple-500/20 shadow-glow-purple",
+    blue: "bg-blue-500/20 shadow-glow-blue",
+    amber: "bg-amber-500/20 shadow-glow",
+  };
+  
+  return (
+    <motion.div
+      className={`absolute rounded-full ${colors[color]} backdrop-blur-sm`}
+      style={{
+        width: size,
+        height: size,
+        x,
+        y,
+      }}
+      animate={{
+        scale: [1, 1.2, 1],
+        opacity: [0.6, 0.8, 0.6],
+      }}
+      transition={{
+        duration: 4,
+        delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+      }}
+    />
+  );
+};
+
 const Auth = () => {
   const navigate = useNavigate();
   const { signIn, signUp, loading, user } = useAuth();
@@ -83,107 +178,109 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#33366d]/90 via-[#4447ad]/90 to-[#3a3c8d]/90 animate-gradient-shift bg-[length:200%_200%]">
-      {/* Beautiful Animated Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Animated Stars/Particles */}
-        {[...Array(150)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: `${Math.random() * 3 + 1}px`,
-              height: `${Math.random() * 3 + 1}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              background: `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.2})`,
-            }}
-            animate={{
-              y: [0, -Math.random() * 100 - 50],
-              x: [0, (Math.random() - 0.5) * 40],
-              opacity: [0.5, 0.8, 0],
-              scale: [0, 1, 0.5],
-            }}
-            transition={{
-              duration: Math.random() * 15 + 10,
-              repeat: Infinity,
-              ease: "linear",
-              delay: Math.random() * 5,
-            }}
-          />
-        ))}
+    <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-purple-900 to-slate-900 animate-gradient-shift bg-[length:200%_200%] overflow-hidden">
+      {/* Animated Background Elements */}
+      <FloatingStars count={200} />
+      
+      <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
+        <OrbitalCircle size={400} duration={40} />
+        <OrbitalCircle size={600} duration={60} clockwise={false} />
+        <OrbitalCircle size={800} duration={80} />
         
-        {/* Glowing Orbs */}
-        {[...Array(10)].map((_, i) => (
-          <motion.div
-            key={`orb-${i}`}
-            className="absolute rounded-full blur-xl"
-            style={{
-              width: `${Math.random() * 300 + 150}px`,
-              height: `${Math.random() * 300 + 150}px`,
-              background: `radial-gradient(circle, rgba(139, 92, 246, 0.2) 0%, rgba(104, 71, 192, 0.08) 70%, transparent 100%)`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              opacity: [0.4, 0.7, 0.4],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
+        <GlowingOrb size={80} color="purple" x={-200} y={-150} />
+        <GlowingOrb size={60} color="blue" x={250} y={200} delay={1} />
+        <GlowingOrb size={100} color="amber" x={300} y={-250} delay={2} />
+        <GlowingOrb size={40} color="purple" x={-300} y={250} delay={1.5} />
         
-        {/* Glowing Lines */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-0 w-full h-full">
-            {[...Array(6)].map((_, i) => (
-              <div 
-                key={`line-${i}`}
-                className="absolute top-1/2 left-1/2 w-full h-0.5 bg-gradient-to-r from-transparent via-purple-400/30 to-transparent"
-                style={{ 
-                  transform: `translate(-50%, -50%) rotate(${i * 30}deg)`,
-                }}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Animated Nebula */}
+        <motion.div
+          className="absolute opacity-30 rounded-full w-[800px] h-[800px] bg-gradient-to-br from-purple-800/40 via-indigo-700/20 to-blue-800/30 blur-3xl"
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 10, 0],
+          }}
+          transition={{
+            duration: 15,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
       </div>
       
       <div className="relative container mx-auto px-4 py-8 z-10">
         <div className="flex justify-between items-center mb-8 max-w-md mx-auto">
           <Link to="/" className="flex items-center gap-2 text-white/80 hover:text-white transition-all duration-300 group">
-            <div className="rounded-full p-1.5 bg-white/10 group-hover:bg-white/20 transition-all duration-300">
+            <motion.div 
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              className="rounded-full p-1.5 bg-white/10 group-hover:bg-white/20 transition-all duration-300"
+            >
               <ArrowLeft className="h-4 w-4" />
-            </div>
+            </motion.div>
             <span className="text-sm font-medium">Torna alla home</span>
           </Link>
-          <div className="flex items-center gap-2">
+          <motion.div 
+            className="flex items-center gap-2"
+            animate={{ y: [0, -5, 0], rotate: [0, 2, 0, -2, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+          >
             <motion.div
-              initial={{ rotate: -10 }}
-              animate={{ rotate: 10 }}
+              animate={{ rotate: [-10, 10] }}
               transition={{ duration: 2, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
             >
               <MessageCircle className="h-7 w-7 text-purple-300" />
             </motion.div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">Limbus</h1>
-          </div>
+            <motion.h1 
+              className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent"
+              animate={{ 
+                backgroundPosition: ['0% center', '100% center', '0% center'], 
+                textShadow: ['0 0 5px rgba(139, 92, 246, 0.3)', '0 0 10px rgba(139, 92, 246, 0.5)', '0 0 5px rgba(139, 92, 246, 0.3)'] 
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            >
+              Limbus
+            </motion.h1>
+          </motion.div>
         </div>
 
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
+          transition={{ duration: 0.8 }}
           className="max-w-md mx-auto"
         >
           <div className="text-center mb-10">
-            <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent animate-text-gradient-shift">
-              <span className="block">Benvenuto nel</span>
-              <span className="block">Limbus</span>
-            </h2>
+            <motion.h2 
+              className="text-5xl font-bold mb-4 bg-gradient-to-r from-white via-purple-200 to-blue-200 bg-clip-text text-transparent"
+              animate={{ 
+                backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
+                textShadow: ['0 0 20px rgba(139, 92, 246, 0.5)', '0 0 40px rgba(139, 92, 246, 0.8)', '0 0 20px rgba(139, 92, 246, 0.5)']
+              }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            >
+              <motion.span 
+                className="block"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+              >
+                Benvenuto nel
+              </motion.span>
+              <motion.span 
+                className="block"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+              >
+                Limbus
+              </motion.span>
+            </motion.h2>
+            
+            <motion.div 
+              className="w-32 h-1 mx-auto bg-gradient-to-r from-purple-500 to-blue-500 rounded-full mb-5"
+              animate={{ width: ['8rem', '10rem', '8rem'] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
+            
             <motion.p 
               className="text-indigo-200/90 max-w-xs mx-auto"
               initial={{ opacity: 0 }}
@@ -198,8 +295,21 @@ const Auth = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
-            className="backdrop-blur-md bg-white/10 rounded-2xl p-2 border border-white/20 shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-purple-800/20"
+            className="backdrop-blur-xl bg-white/10 rounded-2xl p-2 border border-purple-500/30 shadow-[0_8px_30px_rgb(0,0,0,0.12)] shadow-purple-800/20 relative overflow-hidden"
           >
+            {/* Card Background Animation */}
+            <motion.div 
+              className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-blue-900/5 to-purple-900/10 pointer-events-none"
+              animate={{ 
+                backgroundPosition: ['0% 0%', '100% 100%'], 
+                scale: [1, 1.05, 1],
+              }}
+              transition={{ 
+                backgroundPosition: { duration: 10, repeat: Infinity, ease: "linear" },
+                scale: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+              }}
+            />
+            
             <Tabs 
               defaultValue="login" 
               value={activeTab}
@@ -211,13 +321,23 @@ const Auth = () => {
                   value="login" 
                   className="text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4447ad] data-[state=active]:to-[#9b87f5] data-[state=active]:text-white rounded-lg py-2.5 transition-all duration-300"
                 >
-                  Accedi
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Accedi
+                  </motion.span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="register" 
                   className="text-base data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4447ad] data-[state=active]:to-[#9b87f5] data-[state=active]:text-white rounded-lg py-2.5 transition-all duration-300"
                 >
-                  Registrati
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    Registrati
+                  </motion.span>
                 </TabsTrigger>
               </TabsList>
               
@@ -230,22 +350,46 @@ const Auth = () => {
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.5, duration: 0.5 }}
                     >
-                      <div className="p-3.5 rounded-full bg-gradient-to-br from-[#4447ad]/30 to-[#9b87f5]/30 border border-[#9b87f5]/40 shadow-glow">
+                      <motion.div 
+                        className="p-3.5 rounded-full bg-gradient-to-br from-[#4447ad]/30 to-[#9b87f5]/30 border border-[#9b87f5]/40 shadow-glow"
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        animate={{ 
+                          boxShadow: ['0 0 15px rgba(139, 92, 246, 0.3)', '0 0 25px rgba(139, 92, 246, 0.5)', '0 0 15px rgba(139, 92, 246, 0.3)'] 
+                        }}
+                        transition={{ boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" } }}
+                      >
                         <LogIn className="h-7 w-7 text-purple-200" />
-                      </div>
+                      </motion.div>
                     </motion.div>
                     <div className="space-y-1.5 text-center">
-                      <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                        Accedi a Limbus
-                      </CardTitle>
-                      <CardDescription className="text-center text-purple-200/70">
-                        Entra nel tuo spazio onirico personale
-                      </CardDescription>
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.3 }}
+                      >
+                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                          Accedi a Limbus
+                        </CardTitle>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7, duration: 0.3 }}
+                      >
+                        <CardDescription className="text-center text-purple-200/70">
+                          Entra nel tuo spazio onirico personale
+                        </CardDescription>
+                      </motion.div>
                     </div>
                   </CardHeader>
                   <form onSubmit={handleLogin}>
                     <CardContent className="space-y-5 pb-6">
-                      <div className="space-y-2.5">
+                      <motion.div 
+                        className="space-y-2.5"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.3 }}
+                      >
                         <Label htmlFor="email" className="text-purple-100">Email</Label>
                         <div className="relative group">
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 h-4 w-4 transition-colors group-hover:text-white" />
@@ -259,13 +403,22 @@ const Auth = () => {
                             className="pl-10 bg-white/10 border-purple-400/30 focus:border-purple-400/70 text-white placeholder:text-purple-200/50 rounded-lg transition-all"
                           />
                         </div>
-                      </div>
-                      <div className="space-y-2.5">
+                      </motion.div>
+                      <motion.div 
+                        className="space-y-2.5"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7, duration: 0.3 }}
+                      >
                         <div className="flex items-center justify-between">
                           <Label htmlFor="password" className="text-purple-100">Password</Label>
-                          <a href="#" className="text-xs text-purple-300 hover:text-white transition-colors">
+                          <motion.a 
+                            href="#" 
+                            className="text-xs text-purple-300 hover:text-white transition-colors"
+                            whileHover={{ scale: 1.05, x: 2 }}
+                          >
                             Password dimenticata?
-                          </a>
+                          </motion.a>
                         </div>
                         <div className="relative group">
                           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 h-4 w-4 transition-colors group-hover:text-white" />
@@ -279,32 +432,46 @@ const Auth = () => {
                             className="pl-10 bg-white/10 border-purple-400/30 focus:border-purple-400/70 text-white placeholder:text-purple-200/50 rounded-lg transition-all"
                           />
                         </div>
-                      </div>
+                      </motion.div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-5 px-6 pb-7 pt-1">
-                      <Button 
-                        type="submit" 
-                        className="w-full relative bg-gradient-to-r from-[#4447ad] to-[#9b87f5] hover:from-[#4f55bf] hover:to-[#a586fb] shadow-lg shadow-purple-900/20 hover:shadow-purple-900/30 transition-all rounded-lg h-11 overflow-hidden"
-                        disabled={authLoading || loading}
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8, duration: 0.3 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[100%] animate-shimmer"></div>
-                        {(authLoading || loading) ? (
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                        ) : (
-                          <LogIn className="h-5 w-5 mr-2" />
-                        )}
-                        Accedi
-                      </Button>
-                      <p className="text-sm text-center text-purple-200/70">
+                        <Button 
+                          type="submit" 
+                          className="w-full relative bg-gradient-to-r from-[#4447ad] to-[#9b87f5] hover:from-[#4f55bf] hover:to-[#a586fb] shadow-lg shadow-purple-900/20 hover:shadow-purple-900/30 transition-all rounded-lg h-11 overflow-hidden"
+                          disabled={authLoading || loading}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[100%] animate-shimmer"></div>
+                          {(authLoading || loading) ? (
+                            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          ) : (
+                            <LogIn className="h-5 w-5 mr-2" />
+                          )}
+                          Accedi
+                        </Button>
+                      </motion.div>
+                      <motion.p 
+                        className="text-sm text-center text-purple-200/70"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.9, duration: 0.3 }}
+                      >
                         Non hai un account?{" "}
-                        <button
+                        <motion.button
                           type="button"
                           onClick={() => setActiveTab("register")}
                           className="text-purple-300 hover:text-white transition-colors font-medium"
+                          whileHover={{ scale: 1.05 }}
                         >
                           Registrati
-                        </button>
-                      </p>
+                        </motion.button>
+                      </motion.p>
                     </CardFooter>
                   </form>
                 </Card>
@@ -319,22 +486,46 @@ const Auth = () => {
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.5, duration: 0.5 }}
                     >
-                      <div className="p-3.5 rounded-full bg-gradient-to-br from-[#4447ad]/30 to-[#9b87f5]/30 border border-[#9b87f5]/40 shadow-glow">
+                      <motion.div 
+                        className="p-3.5 rounded-full bg-gradient-to-br from-[#4447ad]/30 to-[#9b87f5]/30 border border-[#9b87f5]/40 shadow-glow"
+                        whileHover={{ scale: 1.1, rotate: -5 }}
+                        animate={{ 
+                          boxShadow: ['0 0 15px rgba(139, 92, 246, 0.3)', '0 0 25px rgba(139, 92, 246, 0.5)', '0 0 15px rgba(139, 92, 246, 0.3)'] 
+                        }}
+                        transition={{ boxShadow: { duration: 2, repeat: Infinity, ease: "easeInOut" } }}
+                      >
                         <UserPlus className="h-7 w-7 text-purple-200" />
-                      </div>
+                      </motion.div>
                     </motion.div>
                     <div className="space-y-1.5 text-center">
-                      <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                        Crea un account
-                      </CardTitle>
-                      <CardDescription className="text-center text-purple-200/70">
-                        Inizia il tuo viaggio nel limbo dei sussurri
-                      </CardDescription>
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.3 }}
+                      >
+                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                          Crea un account
+                        </CardTitle>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7, duration: 0.3 }}
+                      >
+                        <CardDescription className="text-center text-purple-200/70">
+                          Inizia il tuo viaggio nel limbo dei sussurri
+                        </CardDescription>
+                      </motion.div>
                     </div>
                   </CardHeader>
                   <form onSubmit={handleRegister}>
                     <CardContent className="space-y-5 pb-6">
-                      <div className="space-y-2.5">
+                      <motion.div 
+                        className="space-y-2.5"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6, duration: 0.3 }}
+                      >
                         <Label htmlFor="register-email" className="text-purple-100">Email</Label>
                         <div className="relative group">
                           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 h-4 w-4 transition-colors group-hover:text-white" />
@@ -348,8 +539,13 @@ const Auth = () => {
                             className="pl-10 bg-white/10 border-purple-400/30 focus:border-purple-400/70 text-white placeholder:text-purple-200/50 rounded-lg transition-all"
                           />
                         </div>
-                      </div>
-                      <div className="space-y-2.5">
+                      </motion.div>
+                      <motion.div 
+                        className="space-y-2.5"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.7, duration: 0.3 }}
+                      >
                         <Label htmlFor="register-password" className="text-purple-100">Password</Label>
                         <div className="relative group">
                           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 h-4 w-4 transition-colors group-hover:text-white" />
@@ -363,8 +559,13 @@ const Auth = () => {
                             className="pl-10 bg-white/10 border-purple-400/30 focus:border-purple-400/70 text-white placeholder:text-purple-200/50 rounded-lg transition-all"
                           />
                         </div>
-                      </div>
-                      <div className="space-y-2.5">
+                      </motion.div>
+                      <motion.div 
+                        className="space-y-2.5"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8, duration: 0.3 }}
+                      >
                         <Label htmlFor="confirm-password" className="text-purple-100">Conferma Password</Label>
                         <div className="relative group">
                           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300 h-4 w-4 transition-colors group-hover:text-white" />
@@ -378,32 +579,46 @@ const Auth = () => {
                             className="pl-10 bg-white/10 border-purple-400/30 focus:border-purple-400/70 text-white placeholder:text-purple-200/50 rounded-lg transition-all"
                           />
                         </div>
-                      </div>
+                      </motion.div>
                     </CardContent>
                     <CardFooter className="flex flex-col gap-5 px-6 pb-7 pt-1">
-                      <Button 
-                        type="submit" 
-                        className="w-full relative bg-gradient-to-r from-[#4447ad] to-[#9b87f5] hover:from-[#4f55bf] hover:to-[#a586fb] shadow-lg shadow-purple-900/20 hover:shadow-purple-900/30 transition-all rounded-lg h-11 overflow-hidden"
-                        disabled={authLoading || loading}
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.9, duration: 0.3 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[100%] animate-shimmer"></div>
-                        {(authLoading || loading) ? (
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                        ) : (
-                          <UserPlus className="h-5 w-5 mr-2" />
-                        )}
-                        Registrati
-                      </Button>
-                      <p className="text-sm text-center text-purple-200/70">
+                        <Button 
+                          type="submit" 
+                          className="w-full relative bg-gradient-to-r from-[#4447ad] to-[#9b87f5] hover:from-[#4f55bf] hover:to-[#a586fb] shadow-lg shadow-purple-900/20 hover:shadow-purple-900/30 transition-all rounded-lg h-11 overflow-hidden"
+                          disabled={authLoading || loading}
+                        >
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[100%] animate-shimmer"></div>
+                          {(authLoading || loading) ? (
+                            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          ) : (
+                            <UserPlus className="h-5 w-5 mr-2" />
+                          )}
+                          Registrati
+                        </Button>
+                      </motion.div>
+                      <motion.p 
+                        className="text-sm text-center text-purple-200/70"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 1, duration: 0.3 }}
+                      >
                         Hai già un account?{" "}
-                        <button
+                        <motion.button
                           type="button"
                           onClick={() => setActiveTab("login")}
                           className="text-purple-300 hover:text-white transition-colors font-medium"
+                          whileHover={{ scale: 1.05 }}
                         >
                           Accedi
-                        </button>
-                      </p>
+                        </motion.button>
+                      </motion.p>
                     </CardFooter>
                   </form>
                 </Card>
@@ -418,7 +633,19 @@ const Auth = () => {
               transition={{ delay: 0.8, duration: 0.5 }}
               className="flex items-center justify-center space-x-2"
             >
-              <Sparkles className="h-4 w-4 text-purple-300/70" />
+              <motion.div
+                animate={{ 
+                  rotate: [0, 20, 0, -20, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 5, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+              >
+                <Sparkles className="h-4 w-4 text-purple-300/70" />
+              </motion.div>
               <p className="text-sm text-purple-200/70">
                 Sussurri nell'Etere — Un viaggio tra sogno e realtà
               </p>
