@@ -13,17 +13,22 @@ export const useWhispers = (filters: {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [filtersChanged, setFiltersChanged] = useState(false);
 
   const loadWhispers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+      
+      // Aggiunge un piccolo ritardo per garantire che lo stato di loading sia visibile
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      
       const data = await getWhispers(filters);
       setWhispers(data);
       
-      // Notify only when explicitly refreshing, not on filters change or initial load
-      if (!isInitialLoad && !loading) {
-        if (filters.emotion || filters.theme) {
+      // Notifica solo per refresh manuale o cambio filtri, non al caricamento iniziale
+      if (!isInitialLoad) {
+        if (filtersChanged) {
           let message = "Filtro applicato";
           if (filters.emotion && filters.theme) {
             message = `Filtro applicato: ${filters.emotion} / ${filters.theme}`;
@@ -36,7 +41,11 @@ export const useWhispers = (filters: {
           toast.success(message, {
             position: "bottom-center",
           });
+          
+          // Resetta la flag dei filtri
+          setFiltersChanged(false);
         } else {
+          // Notifica solo per refresh manuale esplicito
           toast.success("Sussurri aggiornati", {
             description: "Gli ultimi sussurri sono stati caricati",
             position: "bottom-center",
@@ -44,6 +53,7 @@ export const useWhispers = (filters: {
         }
       }
       
+      // Imposta isInitialLoad a false dopo il primo caricamento
       setIsInitialLoad(false);
     } catch (err) {
       setError(err as Error);
@@ -54,14 +64,21 @@ export const useWhispers = (filters: {
     } finally {
       setLoading(false);
     }
-  }, [filters.emotion, filters.theme, filters.mode, loading, isInitialLoad]);
+  }, [filters.emotion, filters.theme, filters.mode, isInitialLoad, filtersChanged]);
 
+  // Effetto per caricare i sussurri quando cambiano i filtri
   useEffect(() => {
+    // Segna che i filtri sono cambiati solo se non è il caricamento iniziale
+    if (!isInitialLoad) {
+      setFiltersChanged(true);
+    }
     loadWhispers();
-  }, [loadWhispers]);
+  }, [filters.emotion, filters.theme, filters.mode, loadWhispers]);
 
+  // Funzione per aggiornare manualmente i sussurri
   const refresh = useCallback(() => {
-    setIsInitialLoad(false); // Set to false so toast will show on manual refresh
+    // Annulla la flag dei filtri per far sì che venga mostrata la notifica "Sussurri aggiornati"
+    setFiltersChanged(false); 
     loadWhispers();
   }, [loadWhispers]);
 
