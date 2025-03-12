@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { WhisperCard } from "@/components/WhisperCard";
@@ -12,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import { ImageSlider3D } from "@/components/ImageSlider3D";
 
 const SpaceParticles = ({ count = 50 }) => (
   <div className="fixed inset-0 pointer-events-none">
@@ -116,12 +114,10 @@ const Index = () => {
   };
 
   const handleEmotionClick = (emotion: Emotion) => {
-    // Modificato: ora naviga alla pagina filtrata dedicata
     navigate(`/filtered/${emotion}`);
   };
 
   const handleThemeClick = (theme: Theme) => {
-    // Modificato: ora naviga alla pagina filtrata dedicata
     navigate(`/filtered/${theme}`);
   };
 
