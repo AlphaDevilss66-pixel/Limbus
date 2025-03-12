@@ -25,6 +25,18 @@ export default {
           800: "#3a3c8d",
           900: "#33366d",
         },
+        purple: {
+          50: "#faf5ff",
+          100: "#f3e8ff",
+          200: "#e9d5ff",
+          300: "#d8b4fe",
+          400: "#c084fc",
+          500: "#a855f7",
+          600: "#9333ea",
+          700: "#7e22ce",
+          800: "#6b21a8",
+          900: "#581c87",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -65,6 +77,14 @@ export default {
           "50%": { filter: "blur(1px)" },
           "100%": { filter: "blur(0px)" },
         },
+        "glow-pulse": {
+          "0%, 100%": { 
+            "text-shadow": "0 0 4px rgba(79, 85, 191, 0.2), 0 0 8px rgba(79, 85, 191, 0.1)" 
+          },
+          "50%": { 
+            "text-shadow": "0 0 8px rgba(79, 85, 191, 0.4), 0 0 16px rgba(79, 85, 191, 0.2)" 
+          },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
@@ -74,6 +94,10 @@ export default {
         foglia: "foglia 8s ease-in-out infinite",
         goccia: "goccia 6s ease-in-out infinite",
         nebbia: "nebbia 10s ease-in-out infinite",
+        "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+      },
+      boxShadow: {
+        glow: "0 0 15px rgba(102, 112, 204, 0.2), 0 0 30px rgba(102, 112, 204, 0.1)",
       },
     },
   },

@@ -37,6 +37,10 @@ export const getWhispers = async (filters?: {
       throw error;
     }
 
+    if (!data || data.length === 0) {
+      return [];
+    }
+
     // Ottieni i conteggi delle risonanze e delle risposte per tutti i whisper
     const whisperIds = data.map(whisper => whisper.id);
     

@@ -63,13 +63,13 @@ export const WhisperCard = ({
   return (
     <div
       className={cn(
-        "whisper-card relative",
+        "whisper-card relative hover:shadow-glow",
         getVisualClass(),
         className
       )}
     >
       {whisper.isWhisperOfDay && (
-        <span className="absolute -top-2 -right-2 whisper-tag bg-limbus-100 text-limbus-700">
+        <span className="absolute -top-2 -right-2 whisper-tag bg-gradient-to-r from-amber-200 to-amber-400 text-amber-900 animate-pulse-slow">
           Whisper del Giorno
         </span>
       )}
@@ -89,16 +89,16 @@ export const WhisperCard = ({
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex flex-wrap gap-2">
           {whisper.emotion && (
-            <span className="whisper-tag bg-pink-100 text-pink-700">
+            <span className="whisper-tag bg-gradient-to-r from-pink-100 to-pink-300 text-pink-700">
               {whisper.emotion}
             </span>
           )}
           {whisper.theme && (
-            <span className="whisper-tag bg-blue-100 text-blue-700">
+            <span className="whisper-tag bg-gradient-to-r from-blue-100 to-blue-300 text-blue-700">
               {whisper.theme}
             </span>
           )}
-          <span className="whisper-tag bg-gray-100 text-gray-700 text-xs">
+          <span className="whisper-tag bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-xs">
             {new Date(whisper.createdAt).toLocaleDateString("it-IT", {
               day: "numeric",
               month: "short",
@@ -110,20 +110,20 @@ export const WhisperCard = ({
           <Popover>
             <PopoverTrigger asChild>
               <button 
-                className="flex items-center gap-1 transition-colors hover:text-limbus-600"
+                className="flex items-center gap-1 transition-colors hover:text-limbus-600 hover:scale-110"
                 disabled={isSubmitting}
               >
-                <Heart size={18} />
+                <Heart size={18} className="hover:text-pink-500 transition-all" />
                 <span className="text-sm">{whisper.resonanceCount}</span>
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-2">
+            <PopoverContent className="w-auto p-2 bg-gradient-to-br from-white to-gray-50 backdrop-blur-md border border-limbus-100">
               <div className="flex flex-col gap-1">
                 {resonanceTypes.map((resonance) => (
                   <button
                     key={resonance.type}
                     onClick={() => handleResonance(resonance.type)}
-                    className={cn("px-3 py-1 rounded-full text-xs font-medium", resonance.color)}
+                    className={cn("px-3 py-1 rounded-full text-xs font-medium transition-all hover:scale-105", resonance.color)}
                     disabled={isSubmitting}
                   >
                     {resonance.label}
@@ -134,21 +134,24 @@ export const WhisperCard = ({
           </Popover>
           
           <button 
-            className="transition-colors hover:text-limbus-600"
-            onClick={() => setShowResponses(!showResponses)}
+            className="transition-colors hover:text-limbus-600 hover:scale-110"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowResponses(!showResponses);
+            }}
             disabled={isSubmitting}
           >
-            <MessageCircle size={18} />
+            <MessageCircle size={18} className="hover:text-blue-500 transition-all" />
           </button>
         </div>
       </div>
       
       {showResponses && whisper.responses && whisper.responses.length > 0 && (
         <div className="mt-4 pt-4 border-t border-gray-100">
-          <h4 className="text-xs font-medium text-gray-500 mb-2">Pensiero collettivo</h4>
+          <h4 className="text-xs font-medium text-limbus-500 mb-2">Pensiero collettivo</h4>
           <div className="space-y-2">
             {whisper.responses.map((response) => (
-              <div key={response.id} className="text-sm p-2 bg-gray-50 rounded-md">
+              <div key={response.id} className="text-sm p-2 bg-gradient-to-r from-limbus-50 to-limbus-100 rounded-md shadow-sm animate-fade-in">
                 {response.content}
               </div>
             ))}

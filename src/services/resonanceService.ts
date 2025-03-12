@@ -22,7 +22,7 @@ export const addResonance = async (
     // Aggiorna il conteggio delle risonanze nel whisper
     const { error: updateError } = await supabase.rpc(
       "increment_resonance_count", 
-      { whisper_id: whisperId } as { whisper_id: number }
+      { whisper_id: whisperId }
     );
 
     if (updateError) {

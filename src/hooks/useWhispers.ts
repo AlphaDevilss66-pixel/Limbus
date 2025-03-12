@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Emotion, Theme, Whisper, WhisperMode } from "@/types";
 import { getWhispers } from "@/services/whisperService";
 
@@ -12,23 +12,27 @@ export const useWhispers = (filters: {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const loadWhispers = async () => {
-      try {
-        setLoading(true);
-        const data = await getWhispers(filters);
-        
-        setWhispers(data);
-      } catch (err) {
-        setError(err as Error);
-        console.error("Failed to fetch whispers:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadWhispers();
+  const loadWhispers = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await getWhispers(filters);
+      setWhispers(data);
+    } catch (err) {
+      setError(err as Error);
+      console.error("Failed to fetch whispers:", err);
+    } finally {
+      setLoading(false);
+    }
   }, [filters.emotion, filters.theme, filters.mode]);
 
-  return { whispers, loading, error, setWhispers };
+  useEffect(() => {
+    loadWhispers();
+  }, [loadWhispers]);
+
+  const refresh = useCallback(() => {
+    loadWhispers();
+  }, [loadWhispers]);
+
+  return { whispers, loading, error, setWhispers, refresh };
 };

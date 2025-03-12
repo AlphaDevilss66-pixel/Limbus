@@ -32,20 +32,44 @@
   }
 
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-gradient-to-br from-limbus-50 via-purple-50 to-blue-50 text-foreground antialiased min-h-screen;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
+    background-attachment: fixed;
   }
 
   .glass {
-    @apply backdrop-blur-lg bg-white/30 border border-white/20;
+    @apply backdrop-blur-lg bg-white/30 border border-white/20 transition-all shadow-sm hover:shadow-md;
   }
 
   .whisper-card {
-    @apply glass rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg;
+    @apply glass rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg;
   }
 
   .whisper-tag {
     @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-colors;
+  }
+  
+  .shadow-glow {
+    box-shadow: 0 0 15px rgba(102, 112, 204, 0.15), 
+                0 0 30px rgba(102, 112, 204, 0.1);
+  }
+  
+  .shadow-glow-intense {
+    box-shadow: 0 0 20px rgba(102, 112, 204, 0.3), 
+                0 0 40px rgba(102, 112, 204, 0.2);
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 5px rgba(102, 112, 204, 0.3);
+  }
+  
+  .gradient-border {
+    position: relative;
+    border: double 2px transparent;
+    background-image: linear-gradient(white, white), 
+                      linear-gradient(to right, #6670cc, #8c95d9);
+    background-origin: border-box;
+    background-clip: content-box, border-box;
   }
 }
 
@@ -79,6 +103,16 @@
   100% { filter: blur(0px); }
 }
 
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(5px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 10px rgba(102, 112, 204, 0.2); }
+  50% { box-shadow: 0 0 20px rgba(102, 112, 204, 0.4); }
+}
+
 /* Animation classes */
 .animate-float {
   animation: float 3s ease-in-out infinite;
@@ -98,6 +132,14 @@
 
 .animate-nebbia {
   animation: nebbia 10s ease-in-out infinite;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s infinite;
 }
 
 /* Visualization modes */
