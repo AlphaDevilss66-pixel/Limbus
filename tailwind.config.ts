@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -135,6 +134,8 @@ export default {
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
         shimmer: "shimmer 8s linear infinite",
         sparkle: "sparkle 2s ease-in-out infinite",
+        glow: 'glow 3s ease-in-out infinite',
+        'float-slow': 'float 6s ease-in-out infinite',
       },
       boxShadow: {
         glow: "0 0 15px rgba(102, 112, 204, 0.2), 0 0 30px rgba(102, 112, 204, 0.1)",
@@ -146,6 +147,7 @@ export default {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+        'card-glow': 'radial-gradient(circle at center, var(--tw-gradient-stops))',
       },
     },
   },

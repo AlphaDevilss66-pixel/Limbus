@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -32,35 +31,35 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-limbus-50 via-purple-50 to-blue-50 text-foreground antialiased min-h-screen;
+    @apply bg-gradient-to-br from-purple-100 via-limbus-50 to-blue-100 text-foreground antialiased min-h-screen;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
     background-attachment: fixed;
   }
 
   .glass {
-    @apply backdrop-blur-lg bg-white/30 border border-white/20 transition-all shadow-sm hover:shadow-md;
+    @apply backdrop-blur-lg bg-white/40 border border-white/30 transition-all shadow-sm hover:shadow-md;
   }
 
   .glass-card {
-    @apply backdrop-blur-md bg-white/40 border border-white/30 rounded-xl shadow-md transition-all duration-300;
+    @apply backdrop-blur-md bg-white/50 border border-white/40 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl;
   }
 
   .whisper-card {
-    @apply glass rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg;
+    @apply bg-gradient-to-br from-white/60 via-purple-50/60 to-blue-50/60 backdrop-blur-md rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg border border-white/40;
   }
 
   .whisper-tag {
-    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-colors;
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-gradient-to-r transition-colors shadow-sm;
   }
   
   .shadow-glow {
-    box-shadow: 0 0 15px rgba(102, 112, 204, 0.15), 
-                0 0 30px rgba(102, 112, 204, 0.1);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.2), 
+                0 0 40px rgba(139, 92, 246, 0.1);
   }
   
   .shadow-glow-intense {
-    box-shadow: 0 0 20px rgba(102, 112, 204, 0.3), 
-                0 0 40px rgba(102, 112, 204, 0.2);
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.3), 
+                0 0 60px rgba(139, 92, 246, 0.2);
   }
   
   .text-glow {

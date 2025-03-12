@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Heart, MessageCircle, Wind, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -34,10 +33,10 @@ export const WhisperCard = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getVisualClass = () => {
-    if (whisper.mode === "vento") return "animate-float border-blue-300";
-    if (whisper.mode === "fuoco") return "animate-pulse-slow border-orange-300";
-    if (whisper.isWhisperOfDay) return "animate-float border-limbus-300";
-    return "";
+    if (whisper.mode === "vento") return "animate-float bg-gradient-to-br from-blue-50/60 via-blue-100/60 to-white/60";
+    if (whisper.mode === "fuoco") return "animate-pulse-slow bg-gradient-to-br from-amber-50/60 via-red-50/60 to-white/60";
+    if (whisper.isWhisperOfDay) return "animate-float bg-gradient-to-br from-amber-50/60 via-yellow-50/60 to-white/60";
+    return "bg-gradient-to-br from-purple-50/60 via-limbus-50/60 to-white/60";
   };
 
   const getModeIcon = () => {
@@ -69,7 +68,7 @@ export const WhisperCard = ({
       )}
     >
       {whisper.isWhisperOfDay && (
-        <span className="absolute -top-2 -right-2 whisper-tag bg-gradient-to-r from-amber-200 to-amber-400 text-amber-900 animate-pulse-slow">
+        <span className="absolute -top-2 -right-2 whisper-tag from-amber-300 to-amber-500 text-white animate-pulse-slow shadow-glow">
           Whisper del Giorno
         </span>
       )}
@@ -77,28 +76,21 @@ export const WhisperCard = ({
       <div className="flex items-start gap-2 mb-3">
         {getModeIcon()}
         <p className="text-lg leading-relaxed text-gray-800 flex-1">{whisper.content}</p>
-        {whisper.audioUrl && (
-          <audio
-            src={whisper.audioUrl}
-            controls
-            className="mt-2 w-full max-w-[200px]"
-          />
-        )}
       </div>
       
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex flex-wrap gap-2">
           {whisper.emotion && (
-            <span className="whisper-tag bg-gradient-to-r from-pink-100 to-pink-300 text-pink-700">
+            <span className="whisper-tag from-pink-400 to-purple-400 text-white">
               {whisper.emotion}
             </span>
           )}
           {whisper.theme && (
-            <span className="whisper-tag bg-gradient-to-r from-blue-100 to-blue-300 text-blue-700">
+            <span className="whisper-tag from-blue-400 to-cyan-400 text-white">
               {whisper.theme}
             </span>
           )}
-          <span className="whisper-tag bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 text-xs">
+          <span className="whisper-tag from-gray-400 to-gray-500 text-white text-xs">
             {new Date(whisper.createdAt).toLocaleDateString("it-IT", {
               day: "numeric",
               month: "short",
