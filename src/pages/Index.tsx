@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { WhisperCard } from "@/components/WhisperCard";
@@ -175,15 +176,6 @@ const Index = () => {
     }
   };
 
-  // Images for the 3D slider
-  const spaceImages = [
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg"
-  ];
-
   return (
     <div className={cn("min-h-screen transition-colors duration-1000 relative overflow-hidden", getContainerClass())}>
       <SpaceParticles count={200} />
@@ -260,7 +252,7 @@ const Index = () => {
                 ease: "linear" 
               }}
             >
-              I tuoi sussurri cosmici
+              I tuoi sussurri
             </motion.h1>
             <motion.div 
               className="w-32 h-1 mx-auto bg-gradient-to-r from-purple-500 to-blue-500 rounded-full mb-5"
@@ -307,16 +299,6 @@ const Index = () => {
                 <Orbit className="h-7 w-7 text-blue-300" />
               </motion.div>
             </div>
-          </motion.div>
-          
-          {/* Space Slider Section */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="mb-12 relative z-10"
-          >
-            <ImageSlider3D image={spaceImages[0]} />
           </motion.div>
           
           {(filters.emotion || filters.theme) && (

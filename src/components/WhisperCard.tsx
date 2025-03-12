@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Heart, MessageCircle, Wind, Flame, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -291,7 +292,7 @@ export const WhisperCard = ({
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="text-sm p-2 bg-gradient-to-r from-limbus-50 to-limbus-100 rounded-md shadow-sm"
+                  className="text-sm p-2 bg-gradient-to-r from-limbus-50 to-limbus-100 rounded-md shadow-sm text-gray-800"
                 >
                   {response.content}
                 </motion.div>

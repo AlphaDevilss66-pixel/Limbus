@@ -63,6 +63,21 @@
                 0 0 60px rgba(139, 92, 246, 0.2);
   }
   
+  .shadow-glow-blue {
+    box-shadow: 0 0 20px rgba(96, 165, 250, 0.3), 
+                0 0 40px rgba(96, 165, 250, 0.2);
+  }
+  
+  .shadow-glow-purple {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.25), 
+                0 0 40px rgba(139, 92, 246, 0.15);
+  }
+  
+  .shadow-glow-green {
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.3), 
+                0 0 40px rgba(74, 222, 128, 0.2);
+  }
+  
   .text-glow {
     text-shadow: 0 0 5px rgba(102, 112, 204, 0.3);
   }
