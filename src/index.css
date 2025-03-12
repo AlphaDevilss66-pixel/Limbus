@@ -95,9 +95,35 @@
     background-attachment: fixed;
   }
   
-  /* Particle animation for intro */
-  .particle {
-    animation: float-around 20s ease-in-out infinite, pulse-opacity 10s ease-in-out infinite;
+  /* 3D Slider CSS */
+  .slider-3d-container {
+    @apply relative overflow-hidden;
+    perspective: 1500px;
+  }
+  
+  .slider-3d-item {
+    @apply absolute inset-0 transition-all duration-700;
+    transform-style: preserve-3d;
+  }
+  
+  .slide-active {
+    @apply z-20 opacity-100;
+    transform: translateZ(0) rotateY(0);
+  }
+  
+  .slide-next {
+    @apply z-10 opacity-70;
+    transform: translateZ(-100px) translateX(100px) rotateY(-10deg);
+  }
+  
+  .slide-prev {
+    @apply z-10 opacity-70;
+    transform: translateZ(-100px) translateX(-100px) rotateY(10deg);
+  }
+  
+  .slide-hidden {
+    @apply opacity-0;
+    transform: translateZ(-200px) translateX(0) rotateY(0);
   }
 }
 
@@ -171,9 +197,29 @@
   100% { background-position: -200% 0; }
 }
 
+/* 3D Transform animations */
+@keyframes float-3d {
+  0% { transform: translateY(0) translateZ(0) rotateX(0) rotateY(0); }
+  50% { transform: translateY(-10px) translateZ(20px) rotateX(2deg) rotateY(2deg); }
+  100% { transform: translateY(0) translateZ(0) rotateX(0) rotateY(0); }
+}
+
+@keyframes rotate-3d {
+  0% { transform: rotateY(0deg); }
+  100% { transform: rotateY(360deg); }
+}
+
 /* Animation classes */
 .animate-float {
   animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-3d {
+  animation: float-3d 6s ease-in-out infinite;
+}
+
+.animate-rotate-3d {
+  animation: rotate-3d 15s linear infinite;
 }
 
 .animate-pulse-slow {

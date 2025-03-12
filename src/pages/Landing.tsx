@@ -1,18 +1,40 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
-import { Leaf, Droplet, CloudFog, MessageCircle, Heart, Send, LogIn, LogOut, User, Star, Sparkles } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { MessageCircle, Heart, Send, LogIn, LogOut, User, Star, Sparkles, Leaf, Droplet, CloudFog } from "lucide-react";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { IntroAnimation } from "@/components/IntroAnimation";
+import { ImageSlider3D } from "@/components/ImageSlider3D";
 
 const Landing = () => {
   const { user, signOut } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  
+  // Scroll animation references
   const featuresRef = useRef(null);
   const visualsRef = useRef(null);
+  const heroRef = useRef(null);
+  const featuresContainerRef = useRef(null);
+  const ctaRef = useRef(null);
+  
+  // Scroll animation values
+  const { scrollYProgress } = useScroll();
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
+  const featuresY = useTransform(scrollYProgress, [0.2, 0.3], [100, 0]);
+  const featuresOpacity = useTransform(scrollYProgress, [0.2, 0.3], [0, 1]);
+  
+  // Parallax effect for each feature card
+  const { scrollYProgress: featuresScrollProgress } = useScroll({
+    target: featuresContainerRef,
+    offset: ["start end", "end start"]
+  });
+  
+  const card1Y = useTransform(featuresScrollProgress, [0, 1], [-50, 50]);
+  const card2Y = useTransform(featuresScrollProgress, [0, 1], [0, 0]);
+  const card3Y = useTransform(featuresScrollProgress, [0, 1], [50, -50]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,6 +58,15 @@ const Landing = () => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  // Sample images for the 3D slider
+  const sliderImages = [
+    "/placeholder.svg",
+    "/placeholder.svg",
+    "/placeholder.svg",
+    "/placeholder.svg",
+    "/placeholder.svg"
+  ];
+
   return (
     <div className="min-h-screen overflow-hidden relative">
       {/* Intro Animation */}
@@ -45,19 +76,45 @@ const Landing = () => {
 
       {/* Animated Background */}
       <div className="fixed inset-0 w-full h-full -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-limbus-900/10 via-purple-500/5 to-blue-500/10 animate-gradient-shift"></div>
+        <motion.div 
+          animate={{ 
+            background: [
+              "linear-gradient(to br, rgba(89, 91, 212, 0.1), rgba(169, 80, 198, 0.05), rgba(80, 180, 198, 0.1))",
+              "linear-gradient(to br, rgba(80, 180, 198, 0.1), rgba(89, 91, 212, 0.05), rgba(169, 80, 198, 0.1))",
+              "linear-gradient(to br, rgba(169, 80, 198, 0.1), rgba(80, 180, 198, 0.05), rgba(89, 91, 212, 0.1))",
+            ]
+          }}
+          transition={{ 
+            duration: 20, 
+            repeat: Infinity,
+            ease: "linear"
+          }}
+          className="absolute inset-0"
+        ></motion.div>
         <div className="absolute inset-0">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div 
+          {Array.from({ length: 30 }).map((_, i) => (
+            <motion.div 
               key={i}
               className="particle absolute rounded-full bg-white/20 backdrop-blur-sm"
               style={{
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 100 + 50}px`,
-                height: `${Math.random() * 100 + 50}px`,
+                width: `${Math.random() * 120 + 30}px`,
+                height: `${Math.random() * 120 + 30}px`,
                 animationDelay: `${Math.random() * 10}s`,
                 animationDuration: `${Math.random() * 30 + 20}s`,
+              }}
+              animate={{
+                x: [0, Math.random() * 100 - 50],
+                y: [0, Math.random() * 100 - 50],
+                opacity: [0.2, 0.6, 0.2],
+                scale: [1, 1.2, 1],
+                rotate: [0, 180, 360],
+              }}
+              transition={{
+                duration: Math.random() * 30 + 20,
+                repeat: Infinity,
+                ease: "linear",
               }}
             />
           ))}
@@ -140,8 +197,12 @@ const Landing = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 relative">
+      {/* Hero Section with Parallax */}
+      <motion.section 
+        ref={heroRef}
+        style={{ opacity: heroOpacity, scale: heroScale }}
+        className="pt-32 pb-20 px-4 relative"
+      >
         <div className="absolute inset-0 bg-[url('/light-pattern.svg')] opacity-5" />
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -230,34 +291,20 @@ const Landing = () => {
           </div>
         </motion.div>
         
-        {/* Animated particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ y: '-100%', x: `${Math.random() * 100}%`, opacity: 0.3 }}
-              animate={{ 
-                y: '200%', 
-                x: `${Math.random() * 100}%`,
-                opacity: [0.3, 0.8, 0.3],
-                scale: [1, 1.2, 1]
-              }}
-              transition={{ 
-                duration: Math.random() * 20 + 15, 
-                repeat: Infinity, 
-                ease: "linear",
-                delay: Math.random() * 10
-              }}
-              className="absolute w-8 h-8 rounded-full bg-limbus-300/20 backdrop-blur-sm"
-            />
-          ))}
+        {/* 3D Image Slider */}
+        <div className="mt-20 max-w-5xl mx-auto">
+          <ImageSlider3D images={sliderImages} />
         </div>
-      </section>
+      </motion.section>
 
-      {/* Features Section */}
-      <section ref={featuresRef} className="py-20 px-4 bg-gradient-to-b from-limbus-50/50 to-purple-50/50 relative overflow-hidden">
+      {/* Features Section with Parallax Scroll Effect */}
+      <motion.section 
+        ref={featuresRef}
+        style={{ opacity: featuresOpacity, y: featuresY }}
+        className="py-20 px-4 bg-gradient-to-b from-limbus-50/50 to-purple-50/50 relative overflow-hidden"
+      >
         <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5" />
-        <div className="container mx-auto relative">
+        <div ref={featuresContainerRef} className="container mx-auto relative">
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -267,8 +314,9 @@ const Landing = () => {
             Come funziona Limbus
           </motion.h2>
           
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-10 relative">
             <motion.div 
+              style={{ y: card1Y }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
@@ -293,6 +341,7 @@ const Landing = () => {
             </motion.div>
             
             <motion.div 
+              style={{ y: card2Y }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -325,6 +374,7 @@ const Landing = () => {
             </motion.div>
             
             <motion.div 
+              style={{ y: card3Y }}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.4 }}
@@ -357,9 +407,9 @@ const Landing = () => {
           </div>
         </div>
         
-        {/* Animated background elements */}
+        {/* Parallax floating elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 8 }).map((_, i) => (
+          {Array.from({ length: 15 }).map((_, i) => (
             <motion.div
               key={i}
               initial={{ 
@@ -369,10 +419,11 @@ const Landing = () => {
                 scale: Math.random() * 0.5 + 0.5
               }}
               animate={{ 
-                x: `${Math.random() * 100}%`,
-                y: `${Math.random() * 100}%`,
+                x: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
+                y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
                 rotate: [0, 180, 360],
-                opacity: [0.1, 0.3, 0.1]
+                opacity: [0.1, 0.3, 0.1],
+                scale: [1, Math.random() * 0.5 + 1, 1]
               }}
               transition={{ 
                 duration: Math.random() * 20 + 20, 
@@ -383,7 +434,7 @@ const Landing = () => {
             />
           ))}
         </div>
-      </section>
+      </motion.section>
 
       {/* Visual Modes Section */}
       <section ref={visualsRef} className="py-20 px-4 relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-limbus-50/30">
@@ -543,11 +594,18 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-limbus-100/80 via-purple-100/50 to-blue-100/60 relative overflow-hidden">
+      {/* CTA Section with Scroll Parallax */}
+      <motion.section 
+        ref={ctaRef}
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="py-20 px-4 bg-gradient-to-br from-limbus-100/80 via-purple-100/50 to-blue-100/60 relative overflow-hidden"
+      >
         <div className="absolute inset-0 bg-[url('/wave-pattern.svg')] opacity-5" />
         <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: 15 }).map((_, i) => (
+          {Array.from({ length: 20 }).map((_, i) => (
             <motion.div
               key={i}
               className="absolute rounded-full bg-white/10"
@@ -561,7 +619,8 @@ const Landing = () => {
                 x: [0, Math.random() * 50 - 25],
                 y: [0, Math.random() * 50 - 25],
                 scale: [1, Math.random() * 0.3 + 0.8, 1],
-                opacity: [0.3, 0.5, 0.3]
+                opacity: [0.3, 0.5, 0.3],
+                rotate: [0, Math.random() * 180],
               }}
               transition={{
                 duration: Math.random() * 10 + 10,
@@ -573,8 +632,9 @@ const Landing = () => {
         </div>
         <div className="container mx-auto relative">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
             className="max-w-3xl mx-auto text-center"
           >
@@ -592,89 +652,4 @@ const Landing = () => {
                 <Star className="h-4 w-4" />
               </motion.div>
               <span className="text-sm font-medium">Unisciti alla community</span>
-            </motion.div>
-            <motion.h2 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              viewport={{ once: true }}
-              className="text-3xl font-bold bg-gradient-to-r from-limbus-800 to-limbus-600 bg-clip-text text-transparent mb-6"
-            >
-              Pronto ad entrare nel Limbo?
-            </motion.h2>
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              viewport={{ once: true }}
-              className="text-xl text-gray-600 mb-10"
-            >
-              Unisciti a noi e lascia che i tuoi pensieri trovino il loro spazio in questo limbo digitale.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              <Button 
-                asChild 
-                size="lg" 
-                className="rounded-full px-8 shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-limbus-500 to-limbus-700 hover:from-limbus-600 hover:to-limbus-800"
-              >
-                <Link to="/whispers">
-                  <motion.div 
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    className="mr-2"
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                  </motion.div>
-                  Inizia a sussurrare
-                </Link>
-              </Button>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="py-10 px-4 bg-gradient-to-b from-limbus-900 to-limbus-950 text-white">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="flex items-center gap-2 mb-6 md:mb-0"
-            >
-              <motion.div 
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 10, -10, 0],
-                }}
-                transition={{ repeat: Infinity, duration: 4 }}
-              >
-                <MessageCircle className="h-6 w-6" />
-              </motion.div>
-              <h2 className="text-xl font-bold">Limbus</h2>
-            </motion.div>
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="text-center md:text-right"
-            >
-              <p className="text-gray-400">© {new Date().getFullYear()} Limbus. Tutti i diritti riservati.</p>
-              <p className="mt-1 text-sm text-gray-500">Un luogo dove i pensieri si librano come sussurri.</p>
-            </motion.div>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-};
-
-export default Landing;
+            </
