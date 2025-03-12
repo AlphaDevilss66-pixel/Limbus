@@ -48,3 +48,74 @@
     @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-medium transition-colors;
   }
 }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes foglia {
+  0% { transform: rotate(0deg) translateX(0); }
+  25% { transform: rotate(5deg) translateX(5px); }
+  50% { transform: rotate(0deg) translateX(0); }
+  75% { transform: rotate(-5deg) translateX(-5px); }
+  100% { transform: rotate(0deg) translateX(0); }
+}
+
+@keyframes goccia {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes nebbia {
+  0% { filter: blur(0px); }
+  50% { filter: blur(1px); }
+  100% { filter: blur(0px); }
+}
+
+/* Animation classes */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-foglia {
+  animation: foglia 8s ease-in-out infinite;
+}
+
+.animate-goccia {
+  animation: goccia 6s ease-in-out infinite;
+}
+
+.animate-nebbia {
+  animation: nebbia 10s ease-in-out infinite;
+}
+
+/* Visualization modes */
+.visual-foglie .whisper-card {
+  @apply animate-foglia relative;
+}
+
+.visual-gocce .whisper-card {
+  @apply animate-goccia bg-white/40 border-white/30 backdrop-blur-sm;
+}
+
+.visual-nebbia .whisper-card {
+  @apply animate-nebbia backdrop-blur-md bg-white/20;
+}
+
+/* Media query for mobile devices */
+@media (max-width: 640px) {
+  .whisper-card {
+    @apply p-4;
+  }
+}
