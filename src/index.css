@@ -41,6 +41,10 @@
     @apply backdrop-blur-lg bg-white/30 border border-white/20 transition-all shadow-sm hover:shadow-md;
   }
 
+  .glass-card {
+    @apply backdrop-blur-md bg-white/40 border border-white/30 rounded-xl shadow-md transition-all duration-300;
+  }
+
   .whisper-card {
     @apply glass rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg;
   }
@@ -70,6 +74,14 @@
                       linear-gradient(to right, #6670cc, #8c95d9);
     background-origin: border-box;
     background-clip: content-box, border-box;
+  }
+
+  .shimmer-bg {
+    @apply bg-shimmer bg-[length:200%_100%] animate-shimmer;
+  }
+
+  .whisper-main-card {
+    @apply glass-card border-limbus-200/50 hover:border-limbus-300/60 hover:shadow-glow transition-all duration-300;
   }
 }
 
@@ -113,6 +125,11 @@
   50% { box-shadow: 0 0 20px rgba(102, 112, 204, 0.4); }
 }
 
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* Animation classes */
 .animate-float {
   animation: float 3s ease-in-out infinite;
@@ -140,6 +157,10 @@
 
 .animate-glow-pulse {
   animation: glow-pulse 3s infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 8s linear infinite;
 }
 
 /* Visualization modes */

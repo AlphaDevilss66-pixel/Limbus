@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { Emotion, Theme, Whisper, WhisperMode } from "@/types";
 import { getWhispers } from "@/services/whisperService";
+import { toast } from "sonner";
 
 export const useWhispers = (filters: {
   emotion?: Emotion;
@@ -18,9 +19,20 @@ export const useWhispers = (filters: {
       setError(null);
       const data = await getWhispers(filters);
       setWhispers(data);
+      
+      // Notify only on refresh, not initial load
+      if (!loading) {
+        toast.success("Sussurri aggiornati", {
+          description: "Gli ultimi sussurri sono stati caricati",
+          position: "bottom-center",
+        });
+      }
     } catch (err) {
       setError(err as Error);
       console.error("Failed to fetch whispers:", err);
+      toast.error("Impossibile caricare i sussurri", {
+        description: "Riprova più tardi",
+      });
     } finally {
       setLoading(false);
     }

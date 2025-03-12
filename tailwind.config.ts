@@ -37,6 +37,30 @@ export default {
           800: "#6b21a8",
           900: "#581c87",
         },
+        blue: {
+          50: "#eff6ff",
+          100: "#dbeafe",
+          200: "#bfdbfe",
+          300: "#93c5fd",
+          400: "#60a5fa",
+          500: "#3b82f6",
+          600: "#2563eb",
+          700: "#1d4ed8",
+          800: "#1e40af",
+          900: "#1e3a8a",
+        },
+        amber: {
+          50: "#fffbeb",
+          100: "#fef3c7",
+          200: "#fde68a",
+          300: "#fcd34d",
+          400: "#fbbf24",
+          500: "#f59e0b",
+          600: "#d97706",
+          700: "#b45309",
+          800: "#92400e",
+          900: "#78350f",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -85,6 +109,20 @@ export default {
             "text-shadow": "0 0 8px rgba(79, 85, 191, 0.4), 0 0 16px rgba(79, 85, 191, 0.2)" 
           },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "200% 0" },
+          "100%": { backgroundPosition: "-200% 0" },
+        },
+        sparkle: {
+          "0%, 100%": {
+            transform: "scale(0.75)",
+            opacity: "0.5"
+          },
+          "50%": {
+            transform: "scale(1)",
+            opacity: "1"
+          }
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
@@ -95,9 +133,19 @@ export default {
         goccia: "goccia 6s ease-in-out infinite",
         nebbia: "nebbia 10s ease-in-out infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
+        shimmer: "shimmer 8s linear infinite",
+        sparkle: "sparkle 2s ease-in-out infinite",
       },
       boxShadow: {
         glow: "0 0 15px rgba(102, 112, 204, 0.2), 0 0 30px rgba(102, 112, 204, 0.1)",
+        "glow-intense": "0 0 25px rgba(102, 112, 204, 0.3), 0 0 50px rgba(102, 112, 204, 0.15)",
+        "glow-blue": "0 0 15px rgba(93, 134, 240, 0.3), 0 0 30px rgba(93, 134, 240, 0.15)",
+        "glow-purple": "0 0 15px rgba(168, 85, 247, 0.3), 0 0 30px rgba(168, 85, 247, 0.15)",
+        "glow-amber": "0 0 15px rgba(245, 158, 11, 0.3), 0 0 30px rgba(245, 158, 11, 0.15)",
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'shimmer': 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
       },
     },
   },
