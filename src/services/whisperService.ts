@@ -6,6 +6,7 @@ import { uploadAudio } from "./audioService";
 
 export { addResonance } from "./resonanceService";
 export { uploadAudio } from "./audioService";
+export { addResponse } from "./responseService";
 
 export const getWhispers = async (filters?: {
   emotion?: Emotion;

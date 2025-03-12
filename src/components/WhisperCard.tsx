@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Heart, MessageCircle, Wind, Flame } from "lucide-react";
+import { Heart, MessageCircle, Wind, Flame, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Whisper, ResonanceType } from "@/types";
 import { toast } from "sonner";
@@ -11,6 +10,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { addResonance } from "@/services/whisperService";
+import { addResponse } from "@/services/responseService";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 interface WhisperCardProps {
   whisper: Whisper;
@@ -33,6 +35,8 @@ export const WhisperCard = ({
 }: WhisperCardProps) => {
   const [showResponses, setShowResponses] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newResponse, setNewResponse] = useState("");
+  const [showResponseForm, setShowResponseForm] = useState(false);
 
   const getVisualClass = () => {
     if (whisper.mode === "vento") return "animate-float bg-gradient-to-br from-blue-50/60 via-blue-100/60 to-white/60";
@@ -70,6 +74,27 @@ export const WhisperCard = ({
     } catch (error) {
       console.error("Error adding resonance:", error);
       toast.error("Si è verificato un errore nell'aggiungere la risonanza");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleAddResponse = async () => {
+    if (!newResponse.trim()) {
+      toast.error("Il pensiero non può essere vuoto");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await addResponse(whisper.id, newResponse.trim());
+      toast.success("Pensiero aggiunto con successo");
+      setNewResponse("");
+      setShowResponseForm(false);
+      if (onUpdate) onUpdate();
+    } catch (error) {
+      console.error("Error adding response:", error);
+      toast.error("Si è verificato un errore nell'aggiungere il pensiero");
     } finally {
       setIsSubmitting(false);
     }
@@ -171,6 +196,7 @@ export const WhisperCard = ({
             onClick={(e) => {
               e.stopPropagation();
               setShowResponses(!showResponses);
+              setShowResponseForm(false);
             }}
             disabled={isSubmitting}
             whileHover={{ scale: 1.1 }}
@@ -181,25 +207,72 @@ export const WhisperCard = ({
         </div>
       </div>
       
-      {showResponses && whisper.responses && whisper.responses.length > 0 && (
+      {showResponses && (
         <motion.div 
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           className="mt-4 pt-4 border-t border-gray-100"
         >
-          <h4 className="text-xs font-medium text-limbus-500 mb-2">Pensiero collettivo</h4>
+          <div className="flex justify-between items-center mb-2">
+            <h4 className="text-xs font-medium text-limbus-500">Pensiero collettivo</h4>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowResponseForm(!showResponseForm)}
+              className="text-xs font-medium text-limbus-600 hover:text-limbus-800 transition-colors"
+            >
+              {showResponseForm ? 'Annulla' : 'Aggiungi pensiero'}
+            </motion.button>
+          </div>
+
+          {showResponseForm && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-4"
+            >
+              <Textarea
+                placeholder="Condividi il tuo pensiero..."
+                value={newResponse}
+                onChange={(e) => setNewResponse(e.target.value)}
+                className="w-full mb-2 resize-none bg-white/50 backdrop-blur-sm border-limbus-200 focus:border-limbus-400"
+              />
+              <div className="flex justify-end">
+                <Button
+                  size="sm"
+                  onClick={handleAddResponse}
+                  disabled={isSubmitting || !newResponse.trim()}
+                  className="bg-gradient-to-r from-limbus-500 to-purple-500 hover:from-limbus-600 hover:to-purple-600 text-white"
+                >
+                  {isSubmitting ? (
+                    <span className="animate-pulse">Invio...</span>
+                  ) : (
+                    <>
+                      <Send size={14} />
+                      <span>Invia</span>
+                    </>
+                  )}
+                </Button>
+              </div>
+            </motion.div>
+          )}
+
           <div className="space-y-2">
-            {whisper.responses.map((response, index) => (
-              <motion.div 
-                key={response.id} 
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="text-sm p-2 bg-gradient-to-r from-limbus-50 to-limbus-100 rounded-md shadow-sm"
-              >
-                {response.content}
-              </motion.div>
-            ))}
+            {whisper.responses && whisper.responses.length > 0 ? (
+              whisper.responses.map((response, index) => (
+                <motion.div 
+                  key={response.id} 
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="text-sm p-2 bg-gradient-to-r from-limbus-50 to-limbus-100 rounded-md shadow-sm"
+                >
+                  {response.content}
+                </motion.div>
+              ))
+            ) : (
+              <p className="text-sm text-gray-500 italic">Nessun pensiero condiviso ancora.</p>
+            )}
           </div>
         </motion.div>
       )}
