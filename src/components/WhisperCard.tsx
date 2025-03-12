@@ -12,10 +12,12 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { addResonance, addResponse } from "@/services/whisperService";
 
 interface WhisperCardProps {
   whisper: Whisper;
   className?: string;
+  onUpdate?: () => void;
 }
 
 const resonanceTypes: {type: ResonanceType, label: string, color: string}[] = [
@@ -29,10 +31,12 @@ const resonanceTypes: {type: ResonanceType, label: string, color: string}[] = [
 export const WhisperCard = ({
   whisper,
   className,
+  onUpdate,
 }: WhisperCardProps) => {
   const [showResponses, setShowResponses] = useState(false);
   const [response, setResponse] = useState("");
   const [isResponseOpen, setIsResponseOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getVisualClass = () => {
     if (whisper.mode === "vento") return "animate-float border-blue-300";
@@ -47,19 +51,36 @@ export const WhisperCard = ({
     return null;
   };
 
-  const handleResonance = (type: ResonanceType) => {
-    toast.success(`Hai risuonato: ${resonanceTypes.find(r => r.type === type)?.label}`);
-    // TODO: Implement backend resonance
+  const handleResonance = async (type: ResonanceType) => {
+    try {
+      setIsSubmitting(true);
+      await addResonance(whisper.id, type);
+      toast.success(`Hai risuonato: ${resonanceTypes.find(r => r.type === type)?.label}`);
+      if (onUpdate) onUpdate();
+    } catch (error) {
+      console.error("Error adding resonance:", error);
+      toast.error("Si è verificato un errore nell'aggiungere la risonanza");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleAddResponse = () => {
+  const handleAddResponse = async () => {
     if (!response.trim()) return;
     
-    // TODO: Implement backend response submission
-    console.log("New response:", response);
-    toast.success("Risposta inviata");
-    setResponse("");
-    setIsResponseOpen(false);
+    try {
+      setIsSubmitting(true);
+      await addResponse(whisper.id, response);
+      toast.success("Risposta inviata");
+      setResponse("");
+      setIsResponseOpen(false);
+      if (onUpdate) onUpdate();
+    } catch (error) {
+      console.error("Error adding response:", error);
+      toast.error("Si è verificato un errore nell'inviare la risposta");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -111,7 +132,10 @@ export const WhisperCard = ({
         <div className="flex items-center gap-3 text-gray-500">
           <Popover>
             <PopoverTrigger asChild>
-              <button className="flex items-center gap-1 transition-colors hover:text-limbus-600">
+              <button 
+                className="flex items-center gap-1 transition-colors hover:text-limbus-600"
+                disabled={isSubmitting}
+              >
                 <Heart size={18} />
                 <span className="text-sm">{whisper.resonanceCount}</span>
               </button>
@@ -123,6 +147,7 @@ export const WhisperCard = ({
                     key={resonance.type}
                     onClick={() => handleResonance(resonance.type)}
                     className={cn("px-3 py-1 rounded-full text-xs font-medium", resonance.color)}
+                    disabled={isSubmitting}
                   >
                     {resonance.label}
                   </button>
@@ -134,13 +159,17 @@ export const WhisperCard = ({
           <button 
             className="transition-colors hover:text-limbus-600"
             onClick={() => setShowResponses(!showResponses)}
+            disabled={isSubmitting}
           >
             <MessageCircle size={18} />
           </button>
           
           <Popover open={isResponseOpen} onOpenChange={setIsResponseOpen}>
             <PopoverTrigger asChild>
-              <button className="transition-colors hover:text-limbus-600">
+              <button 
+                className="transition-colors hover:text-limbus-600"
+                disabled={isSubmitting}
+              >
                 <PlusCircle size={18} />
               </button>
             </PopoverTrigger>
@@ -152,13 +181,15 @@ export const WhisperCard = ({
                   value={response}
                   onChange={(e) => setResponse(e.target.value)}
                   className="min-h-[80px]"
+                  disabled={isSubmitting}
                 />
                 <Button
                   size="sm"
                   onClick={handleAddResponse}
                   className="w-full bg-limbus-600 hover:bg-limbus-700"
+                  disabled={isSubmitting}
                 >
-                  Contribuisci
+                  {isSubmitting ? "Inviando..." : "Contribuisci"}
                 </Button>
               </div>
             </PopoverContent>

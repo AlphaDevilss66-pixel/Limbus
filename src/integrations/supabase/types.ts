@@ -9,7 +9,100 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      resonances: {
+        Row: {
+          created_at: string
+          id: number
+          type: string
+          whisper_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          type: string
+          whisper_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          type?: string
+          whisper_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resonances_whisper_id_fkey"
+            columns: ["whisper_id"]
+            isOneToOne: false
+            referencedRelation: "whispers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      responses: {
+        Row: {
+          content: string
+          created_at: string
+          id: number
+          whisper_id: number | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: number
+          whisper_id?: number | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: number
+          whisper_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "responses_whisper_id_fkey"
+            columns: ["whisper_id"]
+            isOneToOne: false
+            referencedRelation: "whispers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      whispers: {
+        Row: {
+          audio_url: string | null
+          content: string | null
+          created_at: string
+          emotion: string | null
+          id: number
+          is_whisper_of_day: boolean | null
+          mode: string | null
+          resonance_count: number | null
+          theme: string | null
+        }
+        Insert: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          emotion?: string | null
+          id?: number
+          is_whisper_of_day?: boolean | null
+          mode?: string | null
+          resonance_count?: number | null
+          theme?: string | null
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          emotion?: string | null
+          id?: number
+          is_whisper_of_day?: boolean | null
+          mode?: string | null
+          resonance_count?: number | null
+          theme?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

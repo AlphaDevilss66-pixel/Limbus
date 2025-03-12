@@ -13,6 +13,7 @@ import { Mic, Send, Wind, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Emotion, Theme, WhisperMode } from "@/types";
+import { createWhisper, uploadAudio } from "@/services/whisperService";
 
 const emotions: Emotion[] = [
   "Felicità",
@@ -34,13 +35,18 @@ const themes: Theme[] = [
   "Fallimenti",
 ];
 
-export const WhisperForm = () => {
+interface WhisperFormProps {
+  onWhisperCreated: () => void;
+}
+
+export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
   const [content, setContent] = useState("");
   const [emotion, setEmotion] = useState<Emotion>("");
   const [theme, setTheme] = useState<Theme>("");
   const [mode, setMode] = useState<WhisperMode>("standard");
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -86,25 +92,52 @@ export const WhisperForm = () => {
     setMode(prevMode => prevMode === newMode ? "standard" : newMode);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!content && !audioUrl) {
       toast.error("Inserisci un pensiero o registra un audio");
       return;
     }
 
-    // TODO: Implement whisper submission to backend
-    console.log({ content, emotion, theme, mode, audioUrl });
-    
-    // Show success message
-    toast.success("Il tuo sussurro è stato condiviso");
-    
-    // Clear form
-    setContent("");
-    setEmotion("");
-    setTheme("");
-    setMode("standard");
-    setAudioUrl(null);
+    try {
+      setIsSubmitting(true);
+      
+      // Upload audio if exists
+      let uploadedAudioUrl = null;
+      if (audioUrl) {
+        const response = await fetch(audioUrl);
+        const blob = await response.blob();
+        uploadedAudioUrl = await uploadAudio(blob);
+      }
+      
+      // Create whisper
+      await createWhisper({
+        content,
+        emotion: emotion || undefined,
+        theme: theme || undefined,
+        audioUrl: uploadedAudioUrl || undefined,
+        mode,
+      });
+      
+      // Show success message
+      toast.success("Il tuo sussurro è stato condiviso");
+      
+      // Clear form
+      setContent("");
+      setEmotion("");
+      setTheme("");
+      setMode("standard");
+      setAudioUrl(null);
+      
+      // Notify parent component
+      onWhisperCreated();
+    } catch (error) {
+      console.error("Error submitting whisper:", error);
+      toast.error("Si è verificato un errore nel condividere il tuo sussurro");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -118,6 +151,7 @@ export const WhisperForm = () => {
         value={content}
         onChange={(e) => setContent(e.target.value)}
         className="min-h-[120px] resize-none bg-transparent text-lg"
+        disabled={isSubmitting}
       />
       
       {audioUrl && (
@@ -127,6 +161,7 @@ export const WhisperForm = () => {
             type="button" 
             onClick={() => setAudioUrl(null)} 
             className="text-xs text-limbus-600 mt-1"
+            disabled={isSubmitting}
           >
             Rimuovi audio
           </button>
@@ -134,7 +169,11 @@ export const WhisperForm = () => {
       )}
 
       <div className="flex flex-wrap gap-4">
-        <Select value={emotion} onValueChange={(val) => setEmotion(val as Emotion)}>
+        <Select
+          value={emotion}
+          onValueChange={(val) => setEmotion(val as Emotion)}
+          disabled={isSubmitting}
+        >
           <SelectTrigger className="w-full sm:w-auto flex-1">
             <SelectValue placeholder="Emozione" />
           </SelectTrigger>
@@ -147,7 +186,11 @@ export const WhisperForm = () => {
           </SelectContent>
         </Select>
         
-        <Select value={theme} onValueChange={(val) => setTheme(val as Theme)}>
+        <Select
+          value={theme}
+          onValueChange={(val) => setTheme(val as Theme)}
+          disabled={isSubmitting}
+        >
           <SelectTrigger className="w-full sm:w-auto flex-1">
             <SelectValue placeholder="Tema" />
           </SelectTrigger>
@@ -172,6 +215,7 @@ export const WhisperForm = () => {
               mode === "vento" && "bg-blue-100 text-blue-700 border-blue-300"
             )}
             onClick={() => toggleMode("vento")}
+            disabled={isSubmitting}
           >
             <Wind size={14} className="mr-1" />
             Vento
@@ -185,6 +229,7 @@ export const WhisperForm = () => {
               mode === "fuoco" && "bg-orange-100 text-orange-700 border-orange-300"
             )}
             onClick={() => toggleMode("fuoco")}
+            disabled={isSubmitting}
           >
             <Flame size={14} className="mr-1" />
             Fuoco
@@ -198,14 +243,28 @@ export const WhisperForm = () => {
               isRecording && "bg-red-100 text-red-700 border-red-300"
             )}
             onClick={isRecording ? stopRecording : startRecording}
+            disabled={isSubmitting}
           >
             <Mic size={14} className={cn("mr-1", isRecording && "animate-pulse")} />
             {isRecording ? "Ferma" : "Audio"}
           </Button>
         </div>
         
-        <Button type="submit" className="bg-limbus-600 hover:bg-limbus-700">
-          <Send size={16} className="mr-2" /> Sussurra
+        <Button
+          type="submit"
+          className="bg-limbus-600 hover:bg-limbus-700"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <span className="flex items-center">
+              <span className="animate-spin mr-2">⏳</span> 
+              Inviando...
+            </span>
+          ) : (
+            <>
+              <Send size={16} className="mr-2" /> Sussurra
+            </>
+          )}
         </Button>
       </div>
     </form>

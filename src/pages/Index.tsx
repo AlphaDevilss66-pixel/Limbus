@@ -3,120 +3,12 @@ import { useState, useEffect } from "react";
 import { WhisperCard } from "@/components/WhisperCard";
 import { WhisperForm } from "@/components/WhisperForm";
 import { WhisperFilter } from "@/components/WhisperFilter";
-import { Emotion, Theme, Whisper, VisualMode, WhisperMode } from "@/types";
+import { Emotion, Theme, VisualMode, WhisperMode } from "@/types";
 import { cn } from "@/lib/utils";
-
-// Sample data for demonstration
-const sampleWhispers: Whisper[] = [
-  {
-    id: 1,
-    content: "A volte mi sento come una foglia che galleggia sull'acqua.",
-    emotion: "Nostalgia",
-    theme: "Vita",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-    resonanceCount: 42,
-    resonances: [
-      { type: "comprendo", count: 15 },
-      { type: "pensare", count: 27 },
-    ],
-    mode: "standard",
-    isWhisperOfDay: true,
-    responses: [
-      {
-        id: 101,
-        content: "Sospeso tra due mondi, senza appartenere a nessuno dei due.",
-        createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 mins ago
-        parentId: 1,
-      },
-      {
-        id: 102,
-        content: "Eppure quella foglia trova il suo equilibrio, la sua pace.",
-        createdAt: new Date(Date.now() - 1000 * 60 * 15), // 15 mins ago
-        parentId: 1,
-      },
-    ],
-  },
-  {
-    id: 2,
-    content: "Nel silenzio della notte, i sogni parlano più forte delle parole.",
-    emotion: "Speranza",
-    theme: "Sogni",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 hours ago
-    resonanceCount: 23,
-    resonances: [
-      { type: "comprendo", count: 8 },
-      { type: "anchio", count: 15 },
-    ],
-    mode: "vento",
-    responses: [],
-  },
-  {
-    id: 3,
-    content: "Ogni tramonto è una promessa di un nuovo inizio.",
-    emotion: "Felicità",
-    theme: "Vita",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 8), // 8 hours ago
-    resonanceCount: 15,
-    resonances: [
-      { type: "sentire", count: 10 },
-      { type: "condivido", count: 5 },
-    ],
-    mode: "fuoco",
-    responses: [
-      {
-        id: 103,
-        content: "E ogni alba è la realizzazione di quella promessa.",
-        createdAt: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
-        parentId: 3,
-      },
-    ],
-  },
-  {
-    id: 4,
-    content: "Ho smesso di aspettarmi qualcosa dagli altri, così ho iniziato a trovare tutto in me stesso.",
-    emotion: "Rabbia",
-    theme: "Solitudine",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 12), // 12 hours ago
-    resonanceCount: 31,
-    resonances: [
-      { type: "comprendo", count: 20 },
-      { type: "anchio", count: 11 },
-    ],
-    mode: "fuoco",
-    responses: [],
-  },
-  {
-    id: 5,
-    content: "Ci sono giorni in cui il passato sembra più reale del presente.",
-    emotion: "Nostalgia",
-    theme: "Ricordi",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-    resonanceCount: 18,
-    resonances: [
-      { type: "pensare", count: 9 },
-      { type: "sentire", count: 9 },
-    ],
-    mode: "vento",
-    responses: [],
-  },
-  {
-    id: 6,
-    audioUrl: "https://cdn.freesound.org/previews/459/459658_4778055-lq.mp3",
-    content: "",
-    emotion: "Paura",
-    theme: "Morte",
-    createdAt: new Date(Date.now() - 1000 * 60 * 60 * 36), // 1.5 days ago
-    resonanceCount: 7,
-    resonances: [
-      { type: "comprendo", count: 7 },
-    ],
-    mode: "standard",
-    responses: [],
-  },
-];
+import { useWhispers } from "@/hooks/useWhispers";
+import { Loader2 } from "lucide-react";
 
 const Index = () => {
-  const [filteredWhispers, setFilteredWhispers] = useState<Whisper[]>(sampleWhispers);
   const [filters, setFilters] = useState<{
     emotion?: Emotion;
     theme?: Theme;
@@ -126,23 +18,16 @@ const Index = () => {
     visualMode: "standard",
   });
 
-  useEffect(() => {
-    let result = [...sampleWhispers];
-    
-    if (filters.emotion) {
-      result = result.filter((whisper) => whisper.emotion === filters.emotion);
-    }
-    
-    if (filters.theme) {
-      result = result.filter((whisper) => whisper.theme === filters.theme);
-    }
-    
-    if (filters.mode) {
-      result = result.filter((whisper) => whisper.mode === filters.mode);
-    }
-    
-    setFilteredWhispers(result);
-  }, [filters]);
+  const { whispers, loading, error, setWhispers } = useWhispers({
+    emotion: filters.emotion,
+    theme: filters.theme,
+    mode: filters.mode,
+  });
+
+  const handleRefresh = () => {
+    // Force a refetch by triggering a state update
+    setWhispers([]);
+  };
 
   const getContainerClass = () => {
     switch (filters.visualMode) {
@@ -157,7 +42,7 @@ const Index = () => {
     }
   };
 
-  const getCardClass = (whisper: Whisper) => {
+  const getCardClass = () => {
     switch (filters.visualMode) {
       case "foglie":
         return "animate-float";
@@ -180,29 +65,40 @@ const Index = () => {
           Condividi i tuoi pensieri anonimi e scopri quelli degli altri. Un luogo dove le parole si librano nell'aria.
         </p>
         
-        <WhisperForm />
+        <WhisperForm onWhisperCreated={handleRefresh} />
         
         <div className="mt-8">
           <WhisperFilter onFilterChange={setFilters} />
           
-          <div className={cn(
-            "space-y-6",
-            filters.visualMode === "foglie" && "relative",
-          )}>
-            {filteredWhispers.map((whisper) => (
-              <WhisperCard
-                key={whisper.id}
-                whisper={whisper}
-                className={getCardClass(whisper)}
-              />
-            ))}
-            
-            {filteredWhispers.length === 0 && (
-              <div className="text-center py-10 text-gray-500">
-                Nessun sussurro trovato con i filtri selezionati.
-              </div>
-            )}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-limbus-600" />
+            </div>
+          ) : error ? (
+            <div className="text-center py-10 text-red-500">
+              Si è verificato un errore nel caricare i sussurri. Riprova più tardi.
+            </div>
+          ) : (
+            <div className={cn(
+              "space-y-6",
+              filters.visualMode === "foglie" && "relative",
+            )}>
+              {whispers.map((whisper) => (
+                <WhisperCard
+                  key={whisper.id}
+                  whisper={whisper}
+                  className={getCardClass()}
+                  onUpdate={handleRefresh}
+                />
+              ))}
+              
+              {whispers.length === 0 && (
+                <div className="text-center py-10 text-gray-500">
+                  Nessun sussurro trovato con i filtri selezionati.
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
