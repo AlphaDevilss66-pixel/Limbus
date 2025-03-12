@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
+import { ImageSlider3D } from "@/components/ImageSlider3D";
 
 const SpaceParticles = ({ count = 50 }) => (
   <div className="fixed inset-0 pointer-events-none">
@@ -174,6 +175,15 @@ const Index = () => {
     }
   };
 
+  // Images for the 3D slider
+  const spaceImages = [
+    "/placeholder.svg",
+    "/placeholder.svg",
+    "/placeholder.svg",
+    "/placeholder.svg",
+    "/placeholder.svg"
+  ];
+
   return (
     <div className={cn("min-h-screen transition-colors duration-1000 relative overflow-hidden", getContainerClass())}>
       <SpaceParticles count={200} />
@@ -297,6 +307,16 @@ const Index = () => {
                 <Orbit className="h-7 w-7 text-blue-300" />
               </motion.div>
             </div>
+          </motion.div>
+          
+          {/* Space Slider Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="mb-12 relative z-10"
+          >
+            <ImageSlider3D images={spaceImages} />
           </motion.div>
           
           {(filters.emotion || filters.theme) && (
