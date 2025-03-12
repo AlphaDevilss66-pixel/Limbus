@@ -1,5 +1,5 @@
 
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface ParallaxLayersProps {
   sliderRef: React.RefObject<HTMLDivElement>;
