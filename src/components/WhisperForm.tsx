@@ -1,5 +1,5 @@
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -9,12 +9,39 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mic, Send, Wind, Flame, Sparkles } from "lucide-react";
+import { Mic, Send, Wind, Flame, Sparkles, BookLock, Dices, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { Emotion, Theme, WhisperMode } from "@/types";
-import { createWhisper, uploadAudio } from "@/services/whisperService";
+import { Emotion, Theme, WhisperMode, WhisperSpecialType } from "@/types";
+import { 
+  createWhisper, 
+  uploadAudio, 
+  createDestinyWhisper,
+  createTimeCapsuleWhisper,
+  createSecretWhisper
+} from "@/services/whisperService";
 import { motion } from "framer-motion";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 const emotions: Emotion[] = [
   "Felicità",
@@ -36,6 +63,13 @@ const themes: Theme[] = [
   "Fallimenti",
 ];
 
+const timeCapsuleOptions = [
+  { label: "1 anno", value: 1 },
+  { label: "2 anni", value: 2 },
+  { label: "5 anni", value: 5 },
+  { label: "10 anni", value: 10 }
+];
+
 interface WhisperFormProps {
   onWhisperCreated: () => void;
 }
@@ -48,6 +82,12 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeSpecialType, setActiveSpecialType] = useState<WhisperSpecialType | "">("");
+  const [timeCapsuleYears, setTimeCapsuleYears] = useState(1);
+  const [secretDialogOpen, setSecretDialogOpen] = useState(false);
+  const [destinyDialogOpen, setDestinyDialogOpen] = useState(false);
+  const [timeCapsuleDialogOpen, setTimeCapsuleDialogOpen] = useState(false);
+  
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -113,16 +153,28 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
       }
       
       // Create whisper with the new interface
-      await createWhisper({
+      const whisperData = {
         content,
         emotion: emotion || undefined,
         theme: theme || undefined,
         audioUrl: uploadedAudioUrl || undefined,
         mode,
-      });
+      };
       
-      // Show success message
-      toast.success("Il tuo sussurro è stato condiviso");
+      // Create different types of whispers based on activeSpecialType
+      if (activeSpecialType === "biblioteca") {
+        await createSecretWhisper(whisperData);
+        toast.success("Il tuo segreto è stato aggiunto alla Biblioteca Invisibile");
+      } else if (activeSpecialType === "destino") {
+        await createDestinyWhisper(whisperData);
+        toast.success("Il tuo sussurro è stato affidato al destino");
+      } else if (activeSpecialType === "tempo") {
+        await createTimeCapsuleWhisper({ ...whisperData, releaseYears: timeCapsuleYears });
+        toast.success(`Il tuo sussurro verrà rivelato tra ${timeCapsuleYears} ${timeCapsuleYears === 1 ? 'anno' : 'anni'}`);
+      } else {
+        await createWhisper(whisperData);
+        toast.success("Il tuo sussurro è stato condiviso");
+      }
       
       // Clear form
       setContent("");
@@ -130,6 +182,12 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
       setTheme("");
       setMode("standard");
       setAudioUrl(null);
+      setActiveSpecialType("");
+      
+      // Close any open dialogs
+      setSecretDialogOpen(false);
+      setDestinyDialogOpen(false);
+      setTimeCapsuleDialogOpen(false);
       
       // Notify parent component
       onWhisperCreated();
@@ -210,8 +268,8 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
         </Select>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             type="button"
             variant="outline"
@@ -262,22 +320,204 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
           </Button>
         </div>
         
-        <Button
-          type="submit"
-          className="bg-gradient-to-r from-limbus-600 to-purple-600 hover:from-limbus-700 hover:to-purple-700 text-white shadow-glow rounded-xl transition-all duration-300"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <span className="flex items-center">
-              <span className="animate-spin mr-2">⏳</span> 
-              Inviando...
-            </span>
-          ) : (
-            <>
-              <Send size={16} className="mr-2" /> Sussurra
-            </>
-          )}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          {/* Biblioteca Invisibile */}
+          <Dialog open={secretDialogOpen} onOpenChange={setSecretDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "flex items-center text-xs rounded-xl transition-all duration-300",
+                  activeSpecialType === "biblioteca" 
+                    ? "bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-700 border-indigo-300 shadow-glow" 
+                    : "bg-white/50 border-limbus-200/30 hover:bg-indigo-50"
+                )}
+                onClick={() => {
+                  setActiveSpecialType("biblioteca");
+                }}
+                disabled={isSubmitting}
+              >
+                <BookLock size={14} className="mr-1" />
+                Biblioteca
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-white/90 backdrop-blur-md">
+              <DialogHeader>
+                <DialogTitle>Biblioteca Invisibile</DialogTitle>
+                <DialogDescription>
+                  Condividi un segreto che non hai mai rivelato a nessuno. Entrerà nella Biblioteca Invisibile, accessibile solo a chi ha lasciato almeno un pensiero.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <p className="text-sm text-gray-500 mb-4">
+                  Scrivendo qui, confermi che stai condividendo un segreto personale che diventerà parte della Biblioteca Invisibile.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <DialogClose asChild>
+                    <Button variant="outline" size="sm">Annulla</Button>
+                  </DialogClose>
+                  <Button 
+                    type="submit" 
+                    size="sm"
+                    className="bg-indigo-600 hover:bg-indigo-700"
+                    onClick={() => {
+                      if (!content) {
+                        toast.error("Inserisci un segreto da condividere");
+                        return;
+                      }
+                      handleSubmit(new Event('submit') as unknown as React.FormEvent);
+                    }}
+                  >
+                    Condividi Segreto
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Modalità Destino */}
+          <Dialog open={destinyDialogOpen} onOpenChange={setDestinyDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "flex items-center text-xs rounded-xl transition-all duration-300",
+                  activeSpecialType === "destino" 
+                    ? "bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 border-purple-300 shadow-glow" 
+                    : "bg-white/50 border-limbus-200/30 hover:bg-purple-50"
+                )}
+                onClick={() => {
+                  setActiveSpecialType("destino");
+                }}
+                disabled={isSubmitting}
+              >
+                <Dices size={14} className="mr-1" />
+                Destino
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-white/90 backdrop-blur-md">
+              <DialogHeader>
+                <DialogTitle>Sussurro del Destino</DialogTitle>
+                <DialogDescription>
+                  Affida il tuo pensiero al destino. Apparirà casualmente in futuro, senza che tu possa controllare quando e a chi verrà mostrato.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <p className="text-sm text-gray-500 mb-4">
+                  Il tuo pensiero potrebbe apparire domani, tra un mese o persino tra anni, creando connessioni imprevedibili con chi lo leggerà.
+                </p>
+                <div className="flex justify-end gap-2">
+                  <DialogClose asChild>
+                    <Button variant="outline" size="sm">Annulla</Button>
+                  </DialogClose>
+                  <Button 
+                    type="submit" 
+                    size="sm"
+                    className="bg-purple-600 hover:bg-purple-700"
+                    onClick={() => {
+                      if (!content) {
+                        toast.error("Inserisci un pensiero da affidare al destino");
+                        return;
+                      }
+                      handleSubmit(new Event('submit') as unknown as React.FormEvent);
+                    }}
+                  >
+                    Affida al Destino
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          {/* Scrigno del Tempo */}
+          <Dialog open={timeCapsuleDialogOpen} onOpenChange={setTimeCapsuleDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className={cn(
+                  "flex items-center text-xs rounded-xl transition-all duration-300",
+                  activeSpecialType === "tempo" 
+                    ? "bg-gradient-to-r from-cyan-100 to-cyan-200 text-cyan-700 border-cyan-300 shadow-glow" 
+                    : "bg-white/50 border-limbus-200/30 hover:bg-cyan-50"
+                )}
+                onClick={() => {
+                  setActiveSpecialType("tempo");
+                }}
+                disabled={isSubmitting}
+              >
+                <Clock size={14} className="mr-1" />
+                Tempo
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-white/90 backdrop-blur-md">
+              <DialogHeader>
+                <DialogTitle>Scrigno del Tempo</DialogTitle>
+                <DialogDescription>
+                  Scrivi un messaggio per il futuro. Verrà rivelato solo dopo il periodo di tempo che sceglierai.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="py-4">
+                <div className="mb-4">
+                  <label className="text-sm font-medium mb-1 block">Rivela tra:</label>
+                  <Select value={String(timeCapsuleYears)} onValueChange={(val) => setTimeCapsuleYears(Number(val))}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Scegli quando rivelare" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeCapsuleOptions.map((option) => (
+                        <SelectItem key={option.value} value={String(option.value)}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex justify-end gap-2">
+                  <DialogClose asChild>
+                    <Button variant="outline" size="sm">Annulla</Button>
+                  </DialogClose>
+                  <Button 
+                    type="submit" 
+                    size="sm"
+                    className="bg-cyan-600 hover:bg-cyan-700"
+                    onClick={() => {
+                      if (!content) {
+                        toast.error("Inserisci un messaggio per il futuro");
+                        return;
+                      }
+                      handleSubmit(new Event('submit') as unknown as React.FormEvent);
+                    }}
+                  >
+                    Invia nel Futuro
+                  </Button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <Button
+            type="submit"
+            className="bg-gradient-to-r from-limbus-600 to-purple-600 hover:from-limbus-700 hover:to-purple-700 text-white shadow-glow rounded-xl transition-all duration-300"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center">
+                <span className="animate-spin mr-2">⏳</span> 
+                Inviando...
+              </span>
+            ) : (
+              <>
+                <Send size={16} className="mr-2" /> Sussurra
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </motion.form>
   );

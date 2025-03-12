@@ -1,4 +1,5 @@
 
+
 export type Emotion =
   | "Felicità"
   | "Tristezza"
@@ -23,6 +24,8 @@ export type VisualMode = "foglie" | "gocce" | "nebbia" | "standard";
 
 export type WhisperMode = "vento" | "fuoco" | "standard";
 
+export type WhisperSpecialType = "biblioteca" | "destino" | "tempo" | "passato" | "normale";
+
 export type ResonanceType = "comprendo" | "anchio" | "pensare" | "sentire" | "condivido";
 
 export interface Whisper {
@@ -40,6 +43,9 @@ export interface Whisper {
   mode: WhisperMode;
   isWhisperOfDay?: boolean;
   responses?: WhisperResponse[];
+  specialType?: WhisperSpecialType;
+  releaseDate?: Date; // For time capsule whispers
+  isSecret?: boolean; // For invisible library
 }
 
 export interface WhisperResponse {

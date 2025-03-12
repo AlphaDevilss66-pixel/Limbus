@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { X, Filter } from "lucide-react";
+import { X, Filter, BookLock, Dices, Clock, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -73,10 +73,26 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
 
   const hasActiveFilters = emotion || theme || mode;
 
+  // Function to cycle through visual modes
+  const cycleVisualMode = () => {
+    const nextMode: VisualMode = 
+      visualMode === "standard" ? "foglie" : 
+      visualMode === "foglie" ? "gocce" : 
+      visualMode === "gocce" ? "nebbia" : "standard";
+    
+    setVisualMode(nextMode);
+    onFilterChange({
+      emotion: emotion || undefined,
+      theme: theme || undefined,
+      mode: (mode as WhisperMode) || undefined,
+      visualMode: nextMode,
+    });
+  };
+
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between">
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-3 items-center">
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
               <Button 
@@ -94,7 +110,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80">
+            <PopoverContent className="w-80 bg-white/95 backdrop-blur-sm border-limbus-200/50">
               <div className="space-y-4 p-1">
                 <h3 className="font-medium text-sm">Filtra i sussurri</h3>
                 
@@ -207,28 +223,38 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
           )}
         </div>
         
-        <Button 
-          size="sm" 
-          variant="outline" 
-          className="text-xs bg-gray-100 border-gray-200"
-          onClick={() => {
-            // Toggle through visual modes when clicked
-            const nextMode: VisualMode = 
-              visualMode === "standard" ? "foglie" : 
-              visualMode === "foglie" ? "gocce" : 
-              visualMode === "gocce" ? "nebbia" : "standard";
-            
-            setVisualMode(nextMode);
-            onFilterChange({
-              emotion: emotion || undefined,
-              theme: theme || undefined,
-              mode: (mode as WhisperMode) || undefined,
-              visualMode: nextMode,
-            });
-          }}
-        >
-          Standard
-        </Button>
+        <div className="flex gap-2 items-center">
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="text-xs bg-purple-100 border-purple-300 text-purple-700 hover:bg-purple-200"
+            onClick={cycleVisualMode}
+          >
+            <span>{visualMode === "standard" ? "Standard" : 
+                  visualMode === "foglie" ? "Foglie" : 
+                  visualMode === "gocce" ? "Gocce" : "Nebbia"}</span>
+          </Button>
+          
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="text-xs bg-indigo-100 border-indigo-300 text-indigo-700 hover:bg-indigo-200"
+            onClick={() => window.location.href = "/biblioteca"}
+          >
+            <BookLock size={14} className="mr-1" />
+            <span>Biblioteca</span>
+          </Button>
+          
+          <Button 
+            size="sm" 
+            variant="outline" 
+            className="text-xs bg-amber-100 border-amber-300 text-amber-700 hover:bg-amber-200"
+            onClick={() => window.location.href = "/passato"}
+          >
+            <History size={14} className="mr-1" />
+            <span>Passato</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
