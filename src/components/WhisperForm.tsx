@@ -2,7 +2,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const emotions = [
   "Felicità",
@@ -47,20 +53,30 @@ export const WhisperForm = () => {
         className="min-h-[120px] resize-none bg-transparent text-lg"
       />
       <div className="flex gap-4">
-        <Select
-          value={emotion}
-          onValueChange={setEmotion}
-          options={emotions}
-          placeholder="Emozione"
-          className="w-1/2"
-        />
-        <Select
-          value={theme}
-          onValueChange={setTheme}
-          options={themes}
-          placeholder="Tema"
-          className="w-1/2"
-        />
+        <Select value={emotion} onValueChange={setEmotion}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Emozione" />
+          </SelectTrigger>
+          <SelectContent>
+            {emotions.map((emotion) => (
+              <SelectItem key={emotion} value={emotion}>
+                {emotion}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Select value={theme} onValueChange={setTheme}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Tema" />
+          </SelectTrigger>
+          <SelectContent>
+            {themes.map((theme) => (
+              <SelectItem key={theme} value={theme}>
+                {theme}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="flex justify-end">
         <Button type="submit" className="bg-limbus-600 hover:bg-limbus-700">
