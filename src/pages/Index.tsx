@@ -316,7 +316,7 @@ const Index = () => {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="mb-12 relative z-10"
           >
-            <ImageSlider3D images={spaceImages} />
+            <ImageSlider3D image={spaceImages[0]} />
           </motion.div>
           
           {(filters.emotion || filters.theme) && (

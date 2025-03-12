@@ -269,7 +269,7 @@ const Landing = () => {
         </motion.div>
         
         <div className="mt-20 max-w-5xl mx-auto">
-          <ImageSlider3D images={sliderImages} />
+          <ImageSlider3D image={sliderImages[0]} />
         </div>
       </motion.section>
 
