@@ -129,7 +129,7 @@ const Landing = () => {
               </Button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Features Section */}
