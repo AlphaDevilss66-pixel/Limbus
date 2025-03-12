@@ -12,6 +12,7 @@ export const useWhispers = (filters: {
   const [whispers, setWhispers] = useState<Whisper[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const loadWhispers = useCallback(async () => {
     try {
@@ -21,12 +22,29 @@ export const useWhispers = (filters: {
       setWhispers(data);
       
       // Notify only when explicitly refreshing, not on filters change or initial load
-      if (!loading && !filters.emotion && !filters.theme && !filters.mode) {
-        toast.success("Sussurri aggiornati", {
-          description: "Gli ultimi sussurri sono stati caricati",
-          position: "bottom-center",
-        });
+      if (!isInitialLoad && !loading) {
+        if (filters.emotion || filters.theme) {
+          let message = "Filtro applicato";
+          if (filters.emotion && filters.theme) {
+            message = `Filtro applicato: ${filters.emotion} / ${filters.theme}`;
+          } else if (filters.emotion) {
+            message = `Filtro applicato: ${filters.emotion}`;
+          } else if (filters.theme) {
+            message = `Filtro applicato: ${filters.theme}`;
+          }
+          
+          toast.success(message, {
+            position: "bottom-center",
+          });
+        } else {
+          toast.success("Sussurri aggiornati", {
+            description: "Gli ultimi sussurri sono stati caricati",
+            position: "bottom-center",
+          });
+        }
       }
+      
+      setIsInitialLoad(false);
     } catch (err) {
       setError(err as Error);
       console.error("Failed to fetch whispers:", err);
@@ -36,13 +54,14 @@ export const useWhispers = (filters: {
     } finally {
       setLoading(false);
     }
-  }, [filters.emotion, filters.theme, filters.mode]);
+  }, [filters.emotion, filters.theme, filters.mode, loading, isInitialLoad]);
 
   useEffect(() => {
     loadWhispers();
   }, [loadWhispers]);
 
   const refresh = useCallback(() => {
+    setIsInitialLoad(false); // Set to false so toast will show on manual refresh
     loadWhispers();
   }, [loadWhispers]);
 

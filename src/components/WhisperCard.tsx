@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Heart, MessageCircle, Wind, Flame, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Whisper, ResonanceType } from "@/types";
+import { Whisper, ResonanceType, Emotion, Theme } from "@/types";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import {
@@ -13,11 +14,14 @@ import { addResonance } from "@/services/whisperService";
 import { addResponse } from "@/services/responseService";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface WhisperCardProps {
   whisper: Whisper;
   className?: string;
   onUpdate?: () => void;
+  onEmotionClick?: (emotion: Emotion) => void;
+  onThemeClick?: (theme: Theme) => void;
 }
 
 const resonanceTypes: {type: ResonanceType, label: string, color: string}[] = [
@@ -32,11 +36,14 @@ export const WhisperCard = ({
   whisper,
   className,
   onUpdate,
+  onEmotionClick,
+  onThemeClick,
 }: WhisperCardProps) => {
   const [showResponses, setShowResponses] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newResponse, setNewResponse] = useState("");
   const [showResponseForm, setShowResponseForm] = useState(false);
+  const navigate = useNavigate();
 
   const getVisualClass = () => {
     if (whisper.mode === "vento") return "animate-float bg-gradient-to-br from-blue-50/60 via-blue-100/60 to-white/60";
@@ -100,6 +107,22 @@ export const WhisperCard = ({
     }
   };
 
+  const handleEmotionClick = (emotion: Emotion) => {
+    if (emotion && onEmotionClick) {
+      onEmotionClick(emotion);
+    } else if (emotion) {
+      navigate(`/?emotion=${emotion}`);
+    }
+  };
+
+  const handleThemeClick = (theme: Theme) => {
+    if (theme && onThemeClick) {
+      onThemeClick(theme);
+    } else if (theme) {
+      navigate(`/?theme=${theme}`);
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ scale: 1.02, boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
@@ -131,20 +154,24 @@ export const WhisperCard = ({
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex flex-wrap gap-2">
           {whisper.emotion && (
-            <motion.span 
+            <motion.button 
               whileHover={{ scale: 1.05 }}
-              className="whisper-tag from-pink-400 to-purple-400 text-white"
+              className="whisper-tag from-pink-400 to-purple-400 text-white cursor-pointer"
+              onClick={() => handleEmotionClick(whisper.emotion)}
+              aria-label={`Filtra per emozione: ${whisper.emotion}`}
             >
               {whisper.emotion}
-            </motion.span>
+            </motion.button>
           )}
           {whisper.theme && (
-            <motion.span 
+            <motion.button 
               whileHover={{ scale: 1.05 }}
-              className="whisper-tag from-blue-400 to-cyan-400 text-white"
+              className="whisper-tag from-blue-400 to-cyan-400 text-white cursor-pointer"
+              onClick={() => handleThemeClick(whisper.theme)}
+              aria-label={`Filtra per tema: ${whisper.theme}`}
             >
               {whisper.theme}
-            </motion.span>
+            </motion.button>
           )}
           <motion.span 
             className="whisper-tag from-gray-400 to-gray-500 text-white text-xs"

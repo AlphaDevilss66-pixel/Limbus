@@ -1,26 +1,45 @@
 
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { WhisperCard } from "@/components/WhisperCard";
 import { WhisperForm } from "@/components/WhisperForm";
 import { WhisperFilter } from "@/components/WhisperFilter";
 import { Emotion, Theme, VisualMode, WhisperMode } from "@/types";
 import { cn } from "@/lib/utils";
 import { useWhispers } from "@/hooks/useWhispers";
-import { Loader2, LogOut, Home, Sparkles, Wind, Flame } from "lucide-react";
+import { Loader2, LogOut, Home, Sparkles, Wind, Flame, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { Badge } from "@/components/ui/badge";
 
 const Index = () => {
   const { signOut, user } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  
+  const emotionParam = queryParams.get('emotion') as Emotion | null;
+  const themeParam = queryParams.get('theme') as Theme | null;
+  
   const [filters, setFilters] = useState<{
     emotion?: Emotion;
     theme?: Theme;
     mode?: WhisperMode;
     visualMode: VisualMode;
   }>({
+    emotion: emotionParam || undefined,
+    theme: themeParam || undefined,
     visualMode: "standard",
   });
+
+  // Update filters when URL changes
+  useEffect(() => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      emotion: emotionParam || undefined,
+      theme: themeParam || undefined,
+    }));
+  }, [emotionParam, themeParam]);
 
   const { whispers, loading, error, setWhispers, refresh } = useWhispers({
     emotion: filters.emotion,
@@ -30,6 +49,43 @@ const Index = () => {
 
   const handleRefresh = () => {
     refresh();
+  };
+
+  const handleEmotionClick = (emotion: Emotion) => {
+    setFilters(prev => ({ ...prev, emotion }));
+    navigate(`/?emotion=${emotion}${filters.theme ? `&theme=${filters.theme}` : ''}`);
+  };
+
+  const handleThemeClick = (theme: Theme) => {
+    setFilters(prev => ({ ...prev, theme }));
+    navigate(`/?theme=${theme}${filters.emotion ? `&emotion=${filters.emotion}` : ''}`);
+  };
+
+  const clearFilters = () => {
+    setFilters(prev => ({ ...prev, emotion: undefined, theme: undefined }));
+    navigate('/');
+  };
+
+  const handleFilterChange = (newFilters: {
+    emotion?: Emotion;
+    theme?: Theme;
+    mode?: WhisperMode;
+    visualMode: VisualMode;
+  }) => {
+    setFilters(newFilters);
+    
+    // Update URL if emotion or theme filters change
+    const params = new URLSearchParams();
+    if (newFilters.emotion) params.set('emotion', newFilters.emotion);
+    if (newFilters.theme) params.set('theme', newFilters.theme);
+    
+    // Only navigate if the filters have actually changed
+    if (
+      newFilters.emotion !== emotionParam || 
+      newFilters.theme !== themeParam
+    ) {
+      navigate(params.toString() ? `/?${params.toString()}` : '/');
+    }
   };
 
   const getContainerClass = () => {
@@ -118,10 +174,65 @@ const Index = () => {
             </div>
           </div>
           
+          {/* Active filters display */}
+          {(filters.emotion || filters.theme) && (
+            <div className="mb-4 flex flex-wrap gap-2 justify-center items-center animate-fade-in">
+              <span className="text-xs text-gray-600">Filtri attivi:</span>
+              {filters.emotion && (
+                <Badge 
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white flex items-center gap-1 px-3 py-1"
+                  variant="default"
+                >
+                  {filters.emotion}
+                  <button 
+                    onClick={() => {
+                      setFilters(prev => ({ ...prev, emotion: undefined }));
+                      const params = new URLSearchParams(location.search);
+                      params.delete('emotion');
+                      navigate(params.toString() ? `/?${params.toString()}` : '/');
+                    }}
+                    className="ml-1 rounded-full hover:bg-white/20 p-0.5"
+                    aria-label="Rimuovi filtro emozione"
+                  >
+                    <X size={12} />
+                  </button>
+                </Badge>
+              )}
+              {filters.theme && (
+                <Badge 
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white flex items-center gap-1 px-3 py-1"
+                  variant="default"
+                >
+                  {filters.theme}
+                  <button 
+                    onClick={() => {
+                      setFilters(prev => ({ ...prev, theme: undefined }));
+                      const params = new URLSearchParams(location.search);
+                      params.delete('theme');
+                      navigate(params.toString() ? `/?${params.toString()}` : '/');
+                    }}
+                    className="ml-1 rounded-full hover:bg-white/20 p-0.5"
+                    aria-label="Rimuovi filtro tema"
+                  >
+                    <X size={12} />
+                  </button>
+                </Badge>
+              )}
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={clearFilters}
+                className="text-xs text-gray-500 hover:text-limbus-600 p-1 h-auto"
+              >
+                Cancella tutti
+              </Button>
+            </div>
+          )}
+          
           <WhisperForm onWhisperCreated={handleRefresh} />
           
           <div className="mt-8">
-            <WhisperFilter onFilterChange={setFilters} />
+            <WhisperFilter onFilterChange={handleFilterChange} />
             
             {loading ? (
               <div className="flex justify-center py-20">
@@ -149,6 +260,8 @@ const Index = () => {
                     whisper={whisper}
                     className={getCardClass()}
                     onUpdate={handleRefresh}
+                    onEmotionClick={handleEmotionClick}
+                    onThemeClick={handleThemeClick}
                   />
                 ))}
                 

@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Emotion, ResonanceType, Theme, Whisper, WhisperMode } from "@/types";
 import { getResonancesForWhispers } from "./resonanceService";
