@@ -7,7 +7,7 @@ interface ImageSlider3DProps {
   image?: string;
 }
 
-export const ImageSlider3D = ({ image = '/lovable-uploads/12b7f842-0562-4dba-9b72-560963a3d038.png' }: ImageSlider3DProps) => {
+export const ImageSlider3D = ({ image = '/lovable-uploads/27ee9841-d7d1-45e9-977f-3c8c9f1c37c5.png' }: ImageSlider3DProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -45,7 +45,7 @@ export const ImageSlider3D = ({ image = '/lovable-uploads/12b7f842-0562-4dba-9b7
           </div>
           
           {/* Content overlay */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 bg-black/30 backdrop-blur-sm">
             <motion.h2 
               className="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
               animate={{ 
