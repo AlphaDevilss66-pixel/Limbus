@@ -1,18 +1,15 @@
 
 import { useState } from "react";
-import { Heart, MessageCircle, Wind, Flame, Music, PlusCircle } from "lucide-react";
+import { Heart, MessageCircle, Wind, Flame } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Whisper, ResonanceType, WhisperResponse } from "@/types";
+import { Whisper, ResonanceType } from "@/types";
 import { toast } from "sonner";
-import { Badge } from "@/components/ui/badge";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
-import { addResonance, addResponse } from "@/services/whisperService";
+import { addResonance } from "@/services/whisperService";
 
 interface WhisperCardProps {
   whisper: Whisper;
@@ -34,8 +31,6 @@ export const WhisperCard = ({
   onUpdate,
 }: WhisperCardProps) => {
   const [showResponses, setShowResponses] = useState(false);
-  const [response, setResponse] = useState("");
-  const [isResponseOpen, setIsResponseOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const getVisualClass = () => {
@@ -60,24 +55,6 @@ export const WhisperCard = ({
     } catch (error) {
       console.error("Error adding resonance:", error);
       toast.error("Si è verificato un errore nell'aggiungere la risonanza");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleAddResponse = async () => {
-    if (!response.trim()) return;
-    
-    try {
-      setIsSubmitting(true);
-      await addResponse(whisper.id, response);
-      toast.success("Risposta inviata");
-      setResponse("");
-      setIsResponseOpen(false);
-      if (onUpdate) onUpdate();
-    } catch (error) {
-      console.error("Error adding response:", error);
-      toast.error("Si è verificato un errore nell'inviare la risposta");
     } finally {
       setIsSubmitting(false);
     }
@@ -163,37 +140,6 @@ export const WhisperCard = ({
           >
             <MessageCircle size={18} />
           </button>
-          
-          <Popover open={isResponseOpen} onOpenChange={setIsResponseOpen}>
-            <PopoverTrigger asChild>
-              <button 
-                className="transition-colors hover:text-limbus-600"
-                disabled={isSubmitting}
-              >
-                <PlusCircle size={18} />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-72">
-              <div className="space-y-2">
-                <h3 className="text-sm font-medium">Aggiungi al pensiero collettivo</h3>
-                <Textarea
-                  placeholder="Continua questo pensiero..."
-                  value={response}
-                  onChange={(e) => setResponse(e.target.value)}
-                  className="min-h-[80px]"
-                  disabled={isSubmitting}
-                />
-                <Button
-                  size="sm"
-                  onClick={handleAddResponse}
-                  className="w-full bg-limbus-600 hover:bg-limbus-700"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Inviando..." : "Contribuisci"}
-                </Button>
-              </div>
-            </PopoverContent>
-          </Popover>
         </div>
       </div>
       

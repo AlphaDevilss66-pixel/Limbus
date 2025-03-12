@@ -6,7 +6,6 @@ import { getResponsesForWhispers } from "./responseService";
 import { uploadAudio } from "./audioService";
 
 export { addResonance } from "./resonanceService";
-export { addResponse } from "./responseService";
 export { uploadAudio } from "./audioService";
 
 export const getWhispers = async (filters?: {
