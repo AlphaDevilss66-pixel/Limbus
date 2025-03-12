@@ -124,7 +124,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                       <SelectValue placeholder="Qualsiasi emozione" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Qualsiasi emozione</SelectItem>
+                      <SelectItem value="all">Qualsiasi emozione</SelectItem>
                       {emotions.map((item) => (
                         <SelectItem key={item} value={item}>
                           {item}
@@ -141,7 +141,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                       <SelectValue placeholder="Qualsiasi tema" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Qualsiasi tema</SelectItem>
+                      <SelectItem value="all">Qualsiasi tema</SelectItem>
                       {themes.map((item) => (
                         <SelectItem key={item} value={item}>
                           {item}
@@ -158,7 +158,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                       <SelectValue placeholder="Qualsiasi modalità" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Qualsiasi modalità</SelectItem>
+                      <SelectItem value="all">Qualsiasi modalità</SelectItem>
                       <SelectItem value="vento">Vento</SelectItem>
                       <SelectItem value="fuoco">Fuoco</SelectItem>
                     </SelectContent>
