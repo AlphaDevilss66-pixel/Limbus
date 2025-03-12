@@ -11,7 +11,7 @@ export const addResonance = async (
       .from("resonances")
       .insert({
         whisper_id: whisperId,
-        type
+        type: type as string
       });
 
     if (error) {

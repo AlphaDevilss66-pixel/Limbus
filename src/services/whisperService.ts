@@ -92,7 +92,7 @@ export const createWhisper = async (whisperData: {
         emotion: emotion || null,
         theme: theme || null,
         audio_url: audioUrl,
-        mode,
+        mode: mode as string,
         resonance_count: 0
       })
       .select()
