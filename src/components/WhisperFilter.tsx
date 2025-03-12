@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { X, Filter, BookLock, History } from "lucide-react";
+import { X, Filter, BookLock, History, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -71,6 +71,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
     setTheme("");
     setMode("");
     onFilterChange({ visualMode });
+    setIsOpen(false);
   };
 
   const hasActiveFilters = emotion || theme || mode;
@@ -93,7 +94,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
 
   return (
     <div className="mb-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex flex-wrap gap-3 items-center">
           <Popover open={isOpen} onOpenChange={setIsOpen}>
             <PopoverTrigger asChild>
@@ -101,7 +102,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                 variant="outline" 
                 size="sm" 
                 className={cn(
-                  "flex items-center gap-1", 
+                  "flex items-center gap-1 bg-white/70 hover:bg-white/90 transition-all", 
                   hasActiveFilters && "bg-limbus-100 border-limbus-300"
                 )}
               >
@@ -112,14 +113,14 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 bg-white/95 backdrop-blur-sm border-limbus-200/50">
-              <div className="space-y-4 p-1">
-                <h3 className="font-medium text-sm">Filtra i sussurri</h3>
+            <PopoverContent className="w-80 bg-white/95 backdrop-blur-sm border-limbus-200/50 p-4 rounded-xl shadow-glow">
+              <div className="space-y-4">
+                <h3 className="font-medium text-sm text-limbus-700">Filtra i sussurri</h3>
                 
                 <div className="space-y-2">
-                  <label className="text-xs font-medium">Emozione</label>
+                  <label className="text-xs font-medium text-limbus-600">Emozione</label>
                   <Select value={emotion} onValueChange={(val) => setEmotion(val as Emotion)}>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full bg-white/80 border-limbus-200">
                       <SelectValue placeholder="Qualsiasi emozione" />
                     </SelectTrigger>
                     <SelectContent>
@@ -134,9 +135,9 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-xs font-medium">Tema</label>
+                  <label className="text-xs font-medium text-limbus-600">Tema</label>
                   <Select value={theme} onValueChange={(val) => setTheme(val as Theme)}>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full bg-white/80 border-limbus-200">
                       <SelectValue placeholder="Qualsiasi tema" />
                     </SelectTrigger>
                     <SelectContent>
@@ -151,9 +152,9 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                 </div>
                 
                 <div className="space-y-2">
-                  <label className="text-xs font-medium">Modalità</label>
+                  <label className="text-xs font-medium text-limbus-600">Modalità</label>
                   <Select value={mode} onValueChange={(val) => setMode(val as WhisperMode)}>
-                    <SelectTrigger className="w-full">
+                    <SelectTrigger className="w-full bg-white/80 border-limbus-200">
                       <SelectValue placeholder="Qualsiasi modalità" />
                     </SelectTrigger>
                     <SelectContent>
@@ -169,14 +170,14 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                     variant="ghost" 
                     size="sm" 
                     onClick={clearFilters}
-                    className="text-xs"
+                    className="text-xs text-gray-500 hover:text-gray-700"
                   >
                     <X size={12} className="mr-1" />
                     Cancella filtri
                   </Button>
                   <Button 
                     size="sm" 
-                    className="bg-limbus-600 hover:bg-limbus-700"
+                    className="bg-gradient-to-r from-limbus-600 to-purple-600 hover:from-limbus-700 hover:to-purple-700 text-white shadow-glow-purple"
                     onClick={handleFilterChange}
                   >
                     Applica
@@ -232,6 +233,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
             className="text-xs bg-purple-100 border-purple-300 text-purple-700 hover:bg-purple-200"
             onClick={cycleVisualMode}
           >
+            <Sparkles size={14} className="mr-1 text-purple-500" />
             <span>{visualMode === "standard" ? "Standard" : 
                   visualMode === "foglie" ? "Foglie" : 
                   visualMode === "gocce" ? "Gocce" : "Nebbia"}</span>
@@ -240,20 +242,20 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
           <Button 
             size="sm" 
             variant="outline" 
-            className="text-xs bg-indigo-100 border-indigo-300 text-indigo-700 hover:bg-indigo-200"
+            className="text-xs bg-indigo-100 border-indigo-300 text-indigo-700 hover:bg-indigo-200 shadow-glow-blue"
             onClick={() => navigate("/biblioteca")}
           >
-            <BookLock size={14} className="mr-1" />
+            <BookLock size={14} className="mr-1 text-indigo-500" />
             <span>Biblioteca</span>
           </Button>
           
           <Button 
             size="sm" 
             variant="outline" 
-            className="text-xs bg-amber-100 border-amber-300 text-amber-700 hover:bg-amber-200"
+            className="text-xs bg-amber-100 border-amber-300 text-amber-700 hover:bg-amber-200 shadow-glow-green"
             onClick={() => navigate("/passato")}
           >
-            <History size={14} className="mr-1" />
+            <History size={14} className="mr-1 text-amber-500" />
             <span>Passato</span>
           </Button>
         </div>

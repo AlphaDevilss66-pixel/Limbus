@@ -1,675 +1,256 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext";
-import { MessageCircle, Heart, Send, LogIn, LogOut, User, Star, Sparkles, Leaf, Droplet, CloudFog } from "lucide-react";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
+import { Link } from "react-router-dom";
 import { IntroAnimation } from "@/components/IntroAnimation";
+import { ArrowRight, BookLock, Clock, History, Sparkles, Send } from "lucide-react";
+import { useState, useEffect } from "react";
 import { ImageSlider3D } from "@/components/ImageSlider3D";
 
 const Landing = () => {
-  const { user, signOut } = useAuth();
-  const [scrolled, setScrolled] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
-  
-  const featuresRef = useRef(null);
-  const visualsRef = useRef(null);
-  const heroRef = useRef(null);
-  const featuresContainerRef = useRef(null);
-  const ctaRef = useRef(null);
-  
-  const { scrollYProgress } = useScroll();
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
-  const featuresY = useTransform(scrollYProgress, [0.2, 0.3], [100, 0]);
-  const featuresOpacity = useTransform(scrollYProgress, [0.2, 0.3], [0, 1]);
-  
-  const { scrollYProgress: featuresScrollProgress } = useScroll({
-    target: featuresContainerRef,
-    offset: ["start end", "end start"]
-  });
-  
-  const card1Y = useTransform(featuresScrollProgress, [0, 1], [-50, 50]);
-  const card2Y = useTransform(featuresScrollProgress, [0, 1], [0, 0]);
-  const card3Y = useTransform(featuresScrollProgress, [0, 1], [50, -50]);
+  const [introCompleted, setIntroCompleted] = useState(false);
+  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    
-    const timer = setTimeout(() => {
-      setShowIntro(false);
-    }, 3500);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      clearTimeout(timer);
-    };
+    // Check if intro has been shown before
+    const hasSeenIntro = localStorage.getItem("hasSeenIntro");
+    if (hasSeenIntro) {
+      setIntroCompleted(true);
+      setShowContent(true);
+    }
   }, []);
 
-  const scrollToSection = (ref) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  const handleIntroComplete = () => {
+    setIntroCompleted(true);
+    localStorage.setItem("hasSeenIntro", "true");
+    setTimeout(() => {
+      setShowContent(true);
+    }, 500);
   };
 
-  const sliderImages = [
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg",
-    "/placeholder.svg"
+  const features = [
+    {
+      icon: <Sparkles className="h-6 w-6 text-white" />,
+      title: "Sussurri dell'anima",
+      description: "Condividi i tuoi pensieri più profondi in modo anonimo, lasciando una traccia della tua essenza nel mondo.",
+      color: "from-purple-500 to-indigo-600"
+    },
+    {
+      icon: <BookLock className="h-6 w-6 text-white" />,
+      title: "Biblioteca Invisibile",
+      description: "Accedi a pensieri segreti e profondi, visibili solo a chi ha condiviso qualcosa di sé.",
+      color: "from-indigo-600 to-blue-700"
+    },
+    {
+      icon: <Send className="h-6 w-6 text-white" />,
+      title: "Messaggio al Destino",
+      description: "Affida i tuoi pensieri al futuro, lasciando che appaiano in momenti inaspettati e a persone sconosciute.",
+      color: "from-blue-600 to-indigo-700"
+    },
+    {
+      icon: <Clock className="h-6 w-6 text-white" />,
+      title: "Scrigno del Tempo",
+      description: "Crea messaggi per il futuro, che verranno svelati solo dopo un periodo di tempo che sceglierai tu.",
+      color: "from-violet-600 to-purple-700"
+    },
+    {
+      icon: <History className="h-6 w-6 text-white" />,
+      title: "Voci dal Passato",
+      description: "Riscopri pensieri dimenticati che tornano alla luce per risuonare con nuove anime.",
+      color: "from-amber-600 to-orange-700"
+    }
   ];
 
   return (
-    <div className="min-h-screen overflow-hidden relative">
-      <AnimatePresence>
-        {showIntro && <IntroAnimation onComplete={() => setShowIntro(false)} />}
-      </AnimatePresence>
-
-      <div className="fixed inset-0 w-full h-full -z-10">
-        <motion.div 
-          animate={{ 
-            background: [
-              "linear-gradient(to br, rgba(89, 91, 212, 0.1), rgba(169, 80, 198, 0.05), rgba(80, 180, 198, 0.1))",
-              "linear-gradient(to br, rgba(80, 180, 198, 0.1), rgba(89, 91, 212, 0.05), rgba(169, 80, 198, 0.1))",
-              "linear-gradient(to br, rgba(169, 80, 198, 0.1), rgba(80, 180, 198, 0.05), rgba(89, 91, 212, 0.1))",
-            ]
-          }}
-          transition={{ 
-            duration: 20, 
-            repeat: Infinity,
-            ease: "linear"
-          }}
-          className="absolute inset-0"
-        />
-        <div className="absolute inset-0">
-          {Array.from({ length: 30 }).map((_, i) => (
-            <motion.div 
-              key={i}
-              className="particle absolute rounded-full bg-white/20 backdrop-blur-sm"
-              style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 120 + 30}px`,
-                height: `${Math.random() * 120 + 30}px`,
-                animationDelay: `${Math.random() * 10}s`,
-                animationDuration: `${Math.random() * 30 + 20}s`,
-              }}
-              animate={{
-                x: [0, Math.random() * 100 - 50],
-                y: [0, Math.random() * 100 - 50],
-                opacity: [0.2, 0.6, 0.2],
-                scale: [1, 1.2, 1],
-                rotate: [0, 180, 360],
-              }}
-              transition={{
-                duration: Math.random() * 30 + 20,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-          ))}
+    <div className="min-h-screen relative text-white overflow-hidden">
+      {!introCompleted ? (
+        <IntroAnimation onComplete={handleIntroComplete} />
+      ) : !showContent ? (
+        <div className="flex justify-center items-center h-screen">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="w-10 h-10 border-t-2 border-b-2 border-white rounded-full animate-spin"
+          ></motion.div>
         </div>
-      </div>
-
-      <header className={`fixed w-full transition-all duration-500 z-50 ${
-        scrolled ? "bg-white/80 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-5"
-      }`}>
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: showIntro ? 3.5 : 0, duration: 0.5 }}
-            className="flex items-center gap-2"
-          >
-            <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.6 }}
-            >
-              <MessageCircle className="h-6 w-6 text-limbus-600" />
-            </motion.div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-limbus-600 to-limbus-800 bg-clip-text text-transparent">
-              Limbus
-            </h1>
-          </motion.div>
-          <motion.div 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: showIntro ? 3.8 : 0, duration: 0.5 }}
-            className="flex items-center gap-4"
-          >
-            {user ? (
-              <>
-                <Button asChild variant="ghost" className="flex items-center gap-2 hover:bg-limbus-100 hover:text-limbus-700">
-                  <Link to="/whispers">
-                    <MessageCircle className="mr-2 h-4 w-4" />
-                    <span>I miei sussurri</span>
-                  </Link>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => signOut()} 
-                  className="flex items-center gap-2 border-limbus-200 hover:bg-limbus-100 hover:text-limbus-700"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Esci</span>
-                </Button>
-              </>
-            ) : (
-              <Button 
-                asChild 
-                variant="default" 
-                size="sm" 
-                className="flex items-center gap-2 bg-gradient-to-r from-limbus-500 to-limbus-700 hover:from-limbus-600 hover:to-limbus-800 transition-all duration-300"
-              >
-                <Link to="/auth">
-                  <LogIn className="h-4 w-4" />
-                  <span>Accedi</span>
-                </Link>
-              </Button>
-            )}
-          </motion.div>
-        </div>
-      </header>
-
-      <motion.section 
-        ref={heroRef}
-        style={{ opacity: heroOpacity, scale: heroScale }}
-        className="pt-32 pb-20 px-4 relative"
-      >
-        <div className="absolute inset-0 bg-[url('/light-pattern.svg')] opacity-5" />
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: showIntro ? 4 : 0.2, duration: 0.8 }}
-          className="container mx-auto relative"
+      ) : (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          className="relative"
         >
-          <div className="max-w-3xl mx-auto text-center">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: showIntro ? 4.2 : 0.4, duration: 0.5 }}
-              className="mb-6 inline-block"
+          {/* Background gradient radials */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-purple-600/10 blur-3xl"></div>
+            <div className="absolute top-1/3 -left-20 w-80 h-80 rounded-full bg-indigo-600/10 blur-3xl"></div>
+            <div className="absolute bottom-0 right-1/4 w-60 h-60 rounded-full bg-blue-600/10 blur-3xl"></div>
+          </div>
+
+          {/* Cosmic subtle particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30">
+            {Array.from({ length: 50 }).map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute rounded-full bg-white"
+                style={{
+                  width: Math.random() * 3 + 1,
+                  height: Math.random() * 3 + 1,
+                  top: `${Math.random() * 100}%`,
+                  left: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  opacity: [0.1, 0.5, 0.1],
+                  scale: [1, 1.5, 1],
+                }}
+                transition={{
+                  duration: Math.random() * 5 + 3,
+                  repeat: Infinity,
+                  delay: Math.random() * 5,
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Main content */}
+          <div className="container mx-auto px-4 relative z-10">
+            {/* Hero section */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="flex flex-col items-center justify-center min-h-screen text-center py-20"
             >
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-limbus-100 to-limbus-200 text-limbus-800"
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.8 }}
+                className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
               >
-                <motion.div
-                  animate={{ rotate: [0, 15, -15, 0] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                >
-                  <Sparkles className="h-4 w-4 text-limbus-600" />
-                </motion.div>
-                <span className="text-sm font-medium">Scopri il potere dei sussurri</span>
-              </motion.div>
-            </motion.div>
-            <motion.h1 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: showIntro ? 4.4 : 0.6, duration: 0.8 }}
-              className="text-5xl md:text-6xl font-bold mb-6 leading-tight"
-            >
-              <span className="text-transparent bg-gradient-to-r from-limbus-800 via-limbus-700 to-limbus-600 bg-clip-text animate-text-gradient-shift">
-                Condividi i tuoi pensieri nel limbo digitale
-              </span>
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: showIntro ? 4.6 : 0.8, duration: 0.8 }}
-              className="text-xl text-gray-600 mb-10 leading-relaxed"
-            >
-              Limbus è uno spazio dove i pensieri si librano nell'aria come sussurri, 
-              senza peso e senza giudizio. Un luogo dove condividere emozioni, 
-              riflessioni e storie in totale anonimato.
-            </motion.p>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: showIntro ? 4.8 : 1, duration: 0.5 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
-            >
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  asChild 
-                  size="lg" 
-                  className="rounded-full px-8 shadow-lg hover:shadow-xl transition-all bg-gradient-to-r from-limbus-500 to-limbus-700 hover:from-limbus-600 hover:to-limbus-800"
-                >
-                  <Link to="/whispers">
-                    <motion.div
-                      animate={{ x: [0, 5, 0] }}
-                      transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                      className="mr-2"
-                    >
-                      <Send className="h-5 w-5" />
-                    </motion.div>
-                    Inizia a sussurrare
-                  </Link>
-                </Button>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  asChild 
-                  variant="outline" 
-                  size="lg" 
-                  className="rounded-full px-8 border-2 border-limbus-200 hover:bg-limbus-50 hover:border-limbus-300 transition-all duration-300"
+                <span className="bg-gradient-to-r from-white via-purple-200 to-indigo-200 text-transparent bg-clip-text">
+                  Sussurri
+                </span>
+                <br />
+                <span className="bg-gradient-to-r from-indigo-300 via-purple-200 to-white text-transparent bg-clip-text">
+                  nell'Etere
+                </span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.8 }}
+                className="text-xl text-indigo-100 max-w-2xl mb-10"
+              >
+                Un luogo dove i pensieri, come sussurri, vagano liberi nell'etere in attesa di risuonare con anime affini.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.1, duration: 0.5 }}
+              >
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full py-6 px-8 text-lg shadow-[0_0_20px_rgba(139,92,246,0.5)]"
                 >
                   <Link to="/auth">
-                    <User className="mr-2 h-5 w-5" />
-                    Crea un account
+                    Inizia il viaggio <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
               </motion.div>
-            </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.4, duration: 1 }}
+                className="mt-32 mb-16"
+              >
+                <div className="w-8 h-8 mx-auto border-b-2 border-r-2 border-white/60 transform rotate-45 animate-bounce"></div>
+              </motion.div>
+            </motion.section>
+
+            {/* Features section */}
+            <section className="py-20">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="text-center mb-16"
+              >
+                <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+                  Esperienze Uniche
+                </h2>
+                <div className="w-20 h-1 mx-auto bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full mb-6"></div>
+                <p className="text-indigo-100 max-w-2xl mx-auto">
+                  Scopri tutte le modalità per esprimere i tuoi pensieri e connetterti con il mondo in modo significativo.
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                {features.map((feature, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 * index, duration: 0.5 }}
+                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-[0_8px_30px_rgba(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(139,92,246,0.2)] transition-all hover:-translate-y-1"
+                  >
+                    <div className={`bg-gradient-to-r ${feature.color} p-3 rounded-xl inline-flex mb-4`}>
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-xl font-bold mb-3 text-white">{feature.title}</h3>
+                    <p className="text-indigo-100">{feature.description}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </section>
+
+            {/* Interactive section with 3D effect */}
+            <section className="py-20">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1 }}
+                className="max-w-7xl mx-auto relative perspective"
+              >
+                <ImageSlider3D />
+              </motion.div>
+            </section>
+
+            {/* Footer/Call to action */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="py-20 text-center"
+            >
+              <div className="max-w-3xl mx-auto backdrop-blur-md bg-indigo-500/10 rounded-3xl p-12 border border-indigo-300/10 shadow-[0_0_30px_rgba(99,102,241,0.2)]">
+                <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent">
+                  Pronto a iniziare il tuo viaggio?
+                </h2>
+                <p className="text-indigo-100 mb-10">
+                  Unisciti alla comunità di anime che sussurrano i loro pensieri più profondi e scoprono connessioni inaspettate.
+                </p>
+                <Button
+                  asChild
+                  size="lg"
+                  className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full px-8 py-6 text-lg shadow-[0_0_15px_rgba(139,92,246,0.3)]"
+                >
+                  <Link to="/auth">
+                    Crea il tuo primo sussurro <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
+            </motion.section>
+
+            <footer className="py-10 text-center text-indigo-200/60 text-sm">
+              <p>© {new Date().getFullYear()} Sussurri nell'Etere • Un'esperienza immersiva di condivisione</p>
+            </footer>
           </div>
         </motion.div>
-        
-        <div className="mt-20 max-w-5xl mx-auto">
-          <ImageSlider3D image={sliderImages[0]} />
-        </div>
-      </motion.section>
-
-      <motion.section 
-        ref={featuresRef}
-        style={{ opacity: featuresOpacity, y: featuresY }}
-        className="py-20 px-4 bg-gradient-to-b from-limbus-50/50 to-purple-50/50 relative overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-5" />
-        <div ref={featuresContainerRef} className="container mx-auto relative">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold text-center bg-gradient-to-r from-limbus-800 to-limbus-600 bg-clip-text text-transparent mb-16"
-          >
-            Come funziona Limbus
-          </motion.h2>
-          
-          <div className="grid md:grid-cols-3 gap-10 relative">
-            <motion.div 
-              style={{ y: card1Y }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              whileHover={{ 
-                y: -10,
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-              }}
-              className="glass p-8 rounded-2xl text-center transition-all duration-300"
-            >
-              <motion.div 
-                whileHover={{ rotate: 360, scale: 1.1 }}
-                transition={{ duration: 0.8 }}
-                className="bg-gradient-to-br from-limbus-100 to-limbus-200 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6 shadow-inner"
-              >
-                <MessageCircle className="h-8 w-8 text-limbus-600" />
-              </motion.div>
-              <h3 className="text-xl font-semibold text-limbus-900 mb-4">Condividi un Sussurro</h3>
-              <p className="text-gray-600">
-                Scrivi i tuoi pensieri, scegli un'emozione e un tema, e lascia che il tuo messaggio si libri nel limbo.
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              style={{ y: card2Y }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{ 
-                y: -10,
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-              }}
-              className="glass p-8 rounded-2xl text-center transition-all duration-300"
-            >
-              <motion.div 
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="bg-gradient-to-br from-limbus-100 to-limbus-200 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6 shadow-inner"
-              >
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    color: ["#4f55bf", "#a855f7", "#4f55bf"]
-                  }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                >
-                  <Heart className="h-8 w-8 text-limbus-600" />
-                </motion.div>
-              </motion.div>
-              <h3 className="text-xl font-semibold text-limbus-900 mb-4">Risuona con gli Altri</h3>
-              <p className="text-gray-600">
-                Leggi i sussurri degli altri e lascia una risonanza quando un messaggio tocca le tue corde emotive.
-              </p>
-            </motion.div>
-            
-            <motion.div 
-              style={{ y: card3Y }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              viewport={{ once: true }}
-              whileHover={{ 
-                y: -10,
-                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-              }}
-              className="glass p-8 rounded-2xl text-center transition-all duration-300"
-            >
-              <motion.div 
-                whileHover={{ rotateY: 180 }}
-                transition={{ duration: 0.8 }}
-                className="bg-gradient-to-br from-limbus-100 to-limbus-200 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6 shadow-inner"
-              >
-                <motion.div
-                  animate={{ 
-                    rotate: [0, 15, -15, 0],
-                  }}
-                  transition={{ repeat: Infinity, duration: 3 }}
-                >
-                  <Star className="h-8 w-8 text-limbus-600" />
-                </motion.div>
-              </motion.div>
-              <h3 className="text-xl font-semibold text-limbus-900 mb-4">Visualizzazioni Uniche</h3>
-              <p className="text-gray-600">
-                Scegli come visualizzare i sussurri: come foglie che ondeggiano, gocce che cadono o nebbia che avvolge.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-        
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {Array.from({ length: 15 }).map((_, i) => (
-            <motion.div
-              key={i}
-              initial={{ 
-                x: `${Math.random() * 100}%`, 
-                y: `${Math.random() * 100}%`,
-                opacity: 0.1,
-                scale: Math.random() * 0.5 + 0.5
-              }}
-              animate={{ 
-                x: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
-                y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
-                rotate: [0, 180, 360],
-                opacity: [0.1, 0.3, 0.1],
-                scale: [1, Math.random() * 0.5 + 1, 1]
-              }}
-              transition={{ 
-                duration: Math.random() * 20 + 20, 
-                repeat: Infinity, 
-                ease: "linear"
-              }}
-              className="absolute w-32 h-32 rounded-full bg-gradient-to-r from-limbus-200/20 to-purple-200/20 backdrop-blur-sm"
-            />
-          ))}
-        </div>
-      </motion.section>
-
-      <section ref={visualsRef} className="py-20 px-4 relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-limbus-50/30">
-        <div className="absolute inset-0 bg-[url('/dots-pattern.svg')] opacity-5" />
-        <div className="container mx-auto relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-3xl font-bold text-limbus-900 mb-4">Modalità di Visualizzazione</h2>
-            <p className="text-center text-gray-600 max-w-2xl mx-auto">
-              Limbus offre diversi modi di visualizzare i sussurri, ognuno con la sua estetica unica
-            </p>
-          </motion.div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
-              className="bg-gradient-to-b from-green-50 to-green-100 p-6 rounded-2xl overflow-hidden relative h-80 shadow-md hover:shadow-lg transition-all group"
-            >
-              <motion.div 
-                className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-20 transition-opacity"
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 5, -5, 0]
-                }}
-                transition={{ repeat: Infinity, duration: 5 }}
-              >
-                <Leaf className="text-green-500 h-32 w-32" />
-              </motion.div>
-              <div className="relative z-10">
-                <motion.div
-                  animate={{ 
-                    rotate: [0, 10, -10, 0],
-                    y: [0, -5, 0]
-                  }}
-                  transition={{ repeat: Infinity, duration: 4 }}
-                >
-                  <Leaf className="h-8 w-8 text-green-600 mb-4" />
-                </motion.div>
-                <h3 className="text-xl font-semibold text-green-800 mb-2">Foglie</h3>
-                <p className="text-green-700">
-                  I sussurri si muovono delicatamente come foglie al vento, ondeggiando con un ritmo naturale e rilassante.
-                </p>
-              </div>
-              <div className="absolute bottom-4 right-4">
-                <motion.div 
-                  className="animate-foglia bg-white/40 border border-white/30 p-4 rounded-lg shadow-md text-green-800"
-                  animate={{ y: [0, -5, 0] }}
-                  transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                >
-                  Un esempio di sussurro...
-                </motion.div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
-              className="bg-gradient-to-b from-blue-50 to-blue-100 p-6 rounded-2xl overflow-hidden relative h-80 shadow-md hover:shadow-lg transition-all group"
-            >
-              <motion.div 
-                className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-20 transition-opacity"
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  opacity: [0.1, 0.2, 0.1]
-                }}
-                transition={{ repeat: Infinity, duration: 4 }}
-              >
-                <Droplet className="text-blue-500 h-32 w-32" />
-              </motion.div>
-              <div className="relative z-10">
-                <motion.div
-                  animate={{ 
-                    y: [0, 5, 0],
-                    scale: [1, 1.1, 1]
-                  }}
-                  transition={{ repeat: Infinity, duration: 3 }}
-                >
-                  <Droplet className="h-8 w-8 text-blue-600 mb-4" />
-                </motion.div>
-                <h3 className="text-xl font-semibold text-blue-800 mb-2">Gocce</h3>
-                <p className="text-blue-700">
-                  I sussurri appaiono come gocce di pioggia, con un effetto liquido che crea un'atmosfera serena e contemplativa.
-                </p>
-              </div>
-              <div className="absolute bottom-4 right-4">
-                <motion.div 
-                  className="animate-goccia bg-white/40 border border-white/30 p-4 rounded-lg shadow-md text-blue-800"
-                  animate={{ 
-                    scale: [1, 1.03, 1],
-                    y: [0, -2, 0]
-                  }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                >
-                  Un esempio di sussurro...
-                </motion.div>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.03 }}
-              className="bg-gradient-to-b from-gray-50 to-gray-100 p-6 rounded-2xl overflow-hidden relative h-80 shadow-md hover:shadow-lg transition-all group"
-            >
-              <motion.div 
-                className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-20 transition-opacity"
-                animate={{ 
-                  filter: ["blur(0px)", "blur(2px)", "blur(0px)"],
-                  scale: [1, 1.05, 1]
-                }}
-                transition={{ repeat: Infinity, duration: 6 }}
-              >
-                <CloudFog className="text-gray-500 h-32 w-32" />
-              </motion.div>
-              <div className="relative z-10">
-                <motion.div
-                  animate={{ 
-                    x: [0, 5, -5, 0],
-                    filter: ["blur(0px)", "blur(1px)", "blur(0px)"]
-                  }}
-                  transition={{ repeat: Infinity, duration: 5 }}
-                >
-                  <CloudFog className="h-8 w-8 text-gray-600 mb-4" />
-                </motion.div>
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">Nebbia</h3>
-                <p className="text-gray-700">
-                  I sussurri sono avvolti in un velo di nebbia, creando un'atmosfera misteriosa e sognante.
-                </p>
-              </div>
-              <div className="absolute bottom-4 right-4">
-                <motion.div 
-                  className="animate-nebbia backdrop-blur-md bg-white/20 p-4 rounded-lg shadow-md text-gray-800"
-                  animate={{ 
-                    filter: ["blur(0px)", "blur(1px)", "blur(0px)"],
-                    opacity: [0.9, 0.7, 0.9]
-                  }}
-                  transition={{ repeat: Infinity, duration: 4 }}
-                >
-                  Un esempio di sussurro...
-                </motion.div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <motion.section 
-        ref={ctaRef}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
-        className="py-20 px-4 bg-gradient-to-br from-limbus-100/80 via-purple-100/50 to-blue-100/60 relative overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-[url('/wave-pattern.svg')] opacity-5" />
-        <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute rounded-full bg-white/10"
-              style={{
-                width: `${Math.random() * 100 + 50}px`,
-                height: `${Math.random() * 100 + 50}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-              }}
-              animate={{
-                x: [0, Math.random() * 50 - 25],
-                y: [0, Math.random() * 50 - 25],
-                scale: [1, Math.random() * 0.3 + 0.8, 1],
-                opacity: [0.3, 0.5, 0.3],
-                rotate: [0, Math.random() * 180],
-              }}
-              transition={{
-                duration: Math.random() * 10 + 10,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-          ))}
-        </div>
-        <div className="container mx-auto relative">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto text-center"
-          >
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 backdrop-blur-sm text-limbus-800 mb-6"
-            >
-              <motion.div
-                animate={{ 
-                  rotate: [0, 180, 360],
-                  scale: [1, 1.2, 1]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                <Star className="h-4 w-4" />
-              </motion.div>
-              <span className="text-sm font-medium">Unisciti alla community</span>
-            </motion.div>
-            
-            <h2 className="text-3xl md:text-4xl font-bold text-limbus-900 mb-6">
-              Pronti a lasciare il vostro segno nel limbo?
-            </h2>
-            
-            <p className="text-lg text-limbus-700 mb-10 max-w-2xl mx-auto">
-              Unisciti alla nostra community di sognatori, pensatori e narratori. Condividi i tuoi pensieri e scopri 
-              quelli degli altri in un'esperienza unica e coinvolgente.
-            </p>
-            
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <Button 
-                asChild
-                size="lg" 
-                className="rounded-full px-10 py-6 text-lg bg-gradient-to-r from-limbus-600 to-limbus-800 hover:from-limbus-700 hover:to-limbus-900 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                <Link to="/auth">
-                  Inizia il tuo viaggio
-                </Link>
-              </Button>
-            </motion.div>
-          </motion.div>
-        </div>
-      </motion.section>
-      
-      <footer className="py-10 px-4 bg-gradient-to-b from-limbus-50 to-limbus-100/60">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-6 md:mb-0">
-              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.6 }}>
-                <MessageCircle className="h-6 w-6 text-limbus-700 mr-2" />
-              </motion.div>
-              <h3 className="text-xl font-bold text-limbus-800">Limbus</h3>
-            </div>
-            
-            <div className="text-center md:text-right text-limbus-700 text-sm">
-              <p>© {new Date().getFullYear()} Limbus. Tutti i diritti riservati.</p>
-              <p>Un luogo dove i pensieri vivono in libertà.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      )}
     </div>
   );
 };

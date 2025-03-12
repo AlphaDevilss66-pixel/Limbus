@@ -22,7 +22,7 @@ const AppRoutes = () => {
   
   // Determine the background class based on the current route
   const getBackgroundClass = () => {
-    if (location.pathname === '/') return '';
+    if (location.pathname === '/') return 'bg-gradient-to-br from-limbus-900 via-purple-900 to-blue-900 text-white';
     if (location.pathname === '/auth') return 'bg-auth';
     if (location.pathname === '/whispers') return 'whispers-page';
     if (location.pathname.startsWith('/filtered')) return 'filtered-page';
@@ -81,7 +81,7 @@ const App = () => (
     <AuthProvider>
       <TooltipProvider>
         <Toaster />
-        <Sonner />
+        <Sonner position="top-right" closeButton theme="light" richColors />
         <BrowserRouter>
           <AppRoutes />
         </BrowserRouter>
