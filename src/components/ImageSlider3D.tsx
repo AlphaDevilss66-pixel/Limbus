@@ -7,7 +7,7 @@ interface ImageSlider3DProps {
   image?: string;
 }
 
-export const ImageSlider3D = ({ image = '/lovable-uploads/27ee9841-d7d1-45e9-977f-3c8c9f1c37c5.png' }: ImageSlider3DProps) => {
+export const ImageSlider3D = ({ image }: ImageSlider3DProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -35,13 +35,9 @@ export const ImageSlider3D = ({ image = '/lovable-uploads/27ee9841-d7d1-45e9-977
       {/* Main content */}
       <div className="absolute inset-0 flex items-center justify-center z-10">
         <div className="relative w-full max-w-5xl mx-auto h-[90%] rounded-2xl overflow-hidden">
-          {/* Main image */}
+          {/* Abstract geometric background instead of image */}
           <div className="absolute inset-0 w-full h-full">
-            <img 
-              src={image} 
-              alt="Limbus Experience" 
-              className="w-full h-full object-cover rounded-2xl"
-            />
+            <div className="w-full h-full bg-gradient-to-br from-limbus-900/70 to-purple-800/70 rounded-2xl"></div>
           </div>
           
           {/* Content overlay */}
