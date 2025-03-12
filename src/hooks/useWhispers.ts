@@ -20,7 +20,7 @@ export const useWhispers = (filters: {
       setLoading(true);
       setError(null);
       
-      // Aggiunge un piccolo ritardo per garantire che lo stato di loading sia visibile
+      // Un breve ritardo per assicurare che lo stato di loading sia visibile
       await new Promise((resolve) => setTimeout(resolve, 300));
       
       const data = await getWhispers(filters);
@@ -64,7 +64,7 @@ export const useWhispers = (filters: {
     } finally {
       setLoading(false);
     }
-  }, [filters.emotion, filters.theme, filters.mode, isInitialLoad, filtersChanged]);
+  }, [filters, isInitialLoad, filtersChanged]);
 
   // Effetto per caricare i sussurri quando cambiano i filtri
   useEffect(() => {
@@ -73,7 +73,7 @@ export const useWhispers = (filters: {
       setFiltersChanged(true);
     }
     loadWhispers();
-  }, [filters.emotion, filters.theme, filters.mode, loadWhispers]);
+  }, [filters.emotion, filters.theme, filters.mode]);
 
   // Funzione per aggiornare manualmente i sussurri
   const refresh = useCallback(() => {
