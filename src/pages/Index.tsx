@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { WhisperCard } from "@/components/WhisperCard";
@@ -7,7 +6,7 @@ import { WhisperFilter } from "@/components/WhisperFilter";
 import { Emotion, Theme, VisualMode, WhisperMode } from "@/types";
 import { cn } from "@/lib/utils";
 import { useWhispers } from "@/hooks/useWhispers";
-import { Loader2, LogOut, Home, Sparkles, Wind, Flame, X, Feather, Stars, Rocket, Planet, Moon, Sun, Orbit } from "lucide-react";
+import { Loader2, LogOut, Home, Sparkles, Wind, Flame, X, Feather, Stars, Rocket, Globe, Moon, Sun, Orbit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
@@ -96,7 +95,6 @@ const Index = () => {
     visualMode: "standard",
   });
 
-  // Update filters when URL changes
   useEffect(() => {
     setFilters(prevFilters => ({
       ...prevFilters,
@@ -138,12 +136,10 @@ const Index = () => {
   }) => {
     setFilters(newFilters);
     
-    // Update URL if emotion or theme filters change
     const params = new URLSearchParams();
     if (newFilters.emotion) params.set('emotion', newFilters.emotion);
     if (newFilters.theme) params.set('theme', newFilters.theme);
     
-    // Only navigate if the filters have actually changed
     if (
       newFilters.emotion !== emotionParam || 
       newFilters.theme !== themeParam
@@ -182,16 +178,14 @@ const Index = () => {
     <div className={cn("min-h-screen transition-colors duration-1000 relative overflow-hidden", getContainerClass())}>
       <SpaceParticles count={200} />
       
-      {/* Orbital elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden flex items-center justify-center">
         <div className="relative w-[800px] h-[800px]">
-          <OrbitalElement icon={Planet} size={50} duration={30} radius={350} color="text-purple-500" delay={2} />
+          <OrbitalElement icon={Globe} size={50} duration={30} radius={350} color="text-purple-500" delay={2} />
           <OrbitalElement icon={Moon} size={30} duration={15} radius={250} color="text-blue-400" />
           <OrbitalElement icon={Stars} size={40} duration={25} radius={300} color="text-amber-400" delay={5} />
         </div>
       </div>
       
-      {/* Header/Navbar */}
       <header className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/90 via-slate-800/90 to-purple-800/90 backdrop-blur-lg shadow-md border-b border-purple-500/20">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2 text-purple-300 hover:text-purple-200 transition-colors">
@@ -305,7 +299,6 @@ const Index = () => {
             </div>
           </motion.div>
           
-          {/* Active filters display */}
           {(filters.emotion || filters.theme) && (
             <motion.div 
               initial={{ opacity: 0, y: 10 }}
