@@ -1,7 +1,9 @@
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }
 
@@ -39,4 +41,67 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* Glass Effect Elements */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.glass-effect:hover {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Card styling */
+.fancy-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.fancy-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Button effects */
+.glow-button {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.glow-button::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #6670cc, #8c95d9, #6670cc);
+  z-index: -1;
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glow-button:hover::after {
+  opacity: 0.7;
+}
+
+/* Text gradient */
+.text-gradient {
+  background: linear-gradient(90deg, #6670cc, #8b5cf6, #93c5fd);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }

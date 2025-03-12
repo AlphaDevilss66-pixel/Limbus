@@ -42,11 +42,11 @@
   }
 
   .glass-card {
-    @apply backdrop-blur-md bg-white/50 border border-white/40 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl;
+    @apply backdrop-blur-md bg-white/60 border border-white/50 rounded-xl shadow-md transition-all duration-300 hover:shadow-xl;
   }
 
   .whisper-card {
-    @apply bg-gradient-to-br from-white/60 via-purple-50/60 to-blue-50/60 backdrop-blur-md rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg border border-white/40;
+    @apply bg-gradient-to-br from-white/80 via-white/70 to-blue-50/70 backdrop-blur-md rounded-2xl p-6 transition-all duration-300 hover:scale-[1.01] hover:shadow-lg border border-white/50;
   }
 
   .whisper-tag {
@@ -253,4 +253,34 @@
 @keyframes sparkle {
   0%, 100% { opacity: 0.2; transform: scale(1); }
   50% { opacity: 0.7; transform: scale(1.2); }
+}
+
+/* Add scale effect on hover for cards */
+.hover-scale {
+  transition: transform 0.3s ease-out;
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+/* Add glowing accent for special elements */
+.glow-accent {
+  position: relative;
+}
+
+.glow-accent::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(45deg, #6670cc, #9b87f5, #8c95d9);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }

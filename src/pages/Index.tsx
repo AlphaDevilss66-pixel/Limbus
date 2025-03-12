@@ -7,10 +7,11 @@ import { WhisperFilter } from "@/components/WhisperFilter";
 import { Emotion, Theme, VisualMode, WhisperMode } from "@/types";
 import { cn } from "@/lib/utils";
 import { useWhispers } from "@/hooks/useWhispers";
-import { Loader2, LogOut, Home, Sparkles, Wind, Flame, X } from "lucide-react";
+import { Loader2, LogOut, Home, Sparkles, Wind, Flame, X, Feather } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 const Index = () => {
   const { signOut, user } = useAuth();
@@ -93,24 +94,24 @@ const Index = () => {
       case "foglie":
         return "bg-gradient-to-b from-green-50 via-green-200 to-green-100 bg-fixed";
       case "gocce":
-        return "bg-gradient-to-b from-blue-100 via-blue-200 to-blue-100 bg-fixed";
+        return "bg-gradient-to-b from-blue-100 via-blue-300 to-blue-100 bg-fixed";
       case "nebbia":
         return "bg-gradient-to-br from-gray-100 via-purple-100 to-blue-100 bg-fixed";
       default:
-        return "bg-gradient-to-br from-limbus-100 via-purple-100 to-blue-200 bg-fixed";
+        return "bg-gradient-to-br from-limbus-100/80 via-purple-100/70 to-blue-200/80 bg-fixed";
     }
   };
 
   const getCardClass = () => {
     switch (filters.visualMode) {
       case "foglie":
-        return "animate-float shadow-glow border-green-200";
+        return "animate-float shadow-glow-intense border-green-200 bg-white/60";
       case "gocce":
-        return "bg-white/40 border-white/30 backdrop-blur-sm shadow-glow";
+        return "bg-white/40 border-white/30 backdrop-blur-sm shadow-glow-blue";
       case "nebbia":
-        return "backdrop-blur-md bg-white/20 shadow-glow";
+        return "backdrop-blur-md bg-white/20 shadow-glow-purple";
       default:
-        return "shadow-glow border-limbus-200";
+        return "shadow-glow-intense bg-white/60 backdrop-blur-md border-limbus-200/50 hover:border-limbus-300";
     }
   };
 
@@ -118,9 +119,9 @@ const Index = () => {
     <div className={cn("min-h-screen transition-colors duration-500 relative overflow-hidden", getContainerClass())}>
       {/* Elementi decorativi di sfondo */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-purple-300/20 blur-3xl"></div>
-        <div className="absolute top-1/3 -left-20 w-80 h-80 rounded-full bg-limbus-300/20 blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-60 h-60 rounded-full bg-blue-300/20 blur-3xl"></div>
+        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-purple-400/20 blur-3xl"></div>
+        <div className="absolute top-1/3 -left-20 w-80 h-80 rounded-full bg-limbus-400/20 blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-60 h-60 rounded-full bg-blue-400/20 blur-3xl"></div>
         
         {filters.visualMode === "standard" && (
           <>
@@ -133,15 +134,21 @@ const Index = () => {
       </div>
 
       {/* Header/Navbar */}
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-limbus-100/80 via-purple-100/80 to-blue-100/80 backdrop-blur-md shadow-md border-b border-limbus-200">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-limbus-100/90 via-purple-100/90 to-blue-100/90 backdrop-blur-md shadow-md border-b border-white/50">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Link to="/" className="flex items-center gap-2 text-limbus-900 hover:text-limbus-600 transition-colors">
             <Home className="h-5 w-5" />
             <span className="font-medium">Home</span>
           </Link>
           
-          <div className="text-center font-bold text-2xl bg-gradient-to-r from-limbus-600 to-purple-600 text-transparent bg-clip-text animate-glow-pulse shadow-glow-intense">
-            <Sparkles className="h-5 w-5 inline-block mr-2 text-limbus-400" />
+          <div className="text-center font-bold text-2xl bg-gradient-to-r from-limbus-600 to-purple-600 text-transparent bg-clip-text animate-glow-pulse shadow-glow-intense flex items-center">
+            <motion.div
+              initial={{ rotate: 0 }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <Sparkles className="h-6 w-6 mr-2 text-limbus-400" />
+            </motion.div>
             Limbus
           </div>
           
@@ -159,28 +166,59 @@ const Index = () => {
 
       <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-2xl mx-auto">
-          <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-limbus-700 via-purple-600 to-blue-600 text-transparent bg-clip-text animate-glow-pulse mb-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-10 text-center"
+          >
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-limbus-700 via-purple-600 to-blue-600 text-transparent bg-clip-text animate-text-gradient-shift mb-3">
               I tuoi sussurri
             </h1>
-            <div className="w-24 h-1 mx-auto bg-gradient-to-r from-limbus-500 to-purple-500 rounded-full mb-4"></div>
-            <p className="text-center text-gray-600 mb-4 max-w-md mx-auto animate-fade-in">
+            <div className="w-32 h-1 mx-auto bg-gradient-to-r from-limbus-500 to-purple-500 rounded-full mb-5"></div>
+            <p className="text-center text-gray-600 mb-5 max-w-md mx-auto animate-fade-in">
               Condividi i tuoi pensieri anonimi e scopri quelli degli altri. Un luogo dove le parole si librano nell'aria.
             </p>
-            <div className="flex justify-center gap-3 opacity-70">
-              <Wind className="h-5 w-5 text-blue-600 animate-foglia" />
-              <Flame className="h-5 w-5 text-orange-500 animate-pulse-slow" />
-              <Sparkles className="h-5 w-5 text-purple-500 animate-glow-pulse" />
+            <div className="flex justify-center gap-4 opacity-80">
+              <motion.div
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Wind className="h-6 w-6 text-blue-600" />
+              </motion.div>
+              <motion.div
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Flame className="h-6 w-6 text-orange-500" />
+              </motion.div>
+              <motion.div
+                animate={{ rotate: [0, 5, 0, -5, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Sparkles className="h-6 w-6 text-purple-500" />
+              </motion.div>
+              <motion.div
+                animate={{ y: [0, -4, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              >
+                <Feather className="h-6 w-6 text-limbus-500" />
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
           
           {/* Active filters display */}
           {(filters.emotion || filters.theme) && (
-            <div className="mb-4 flex flex-wrap gap-2 justify-center items-center animate-fade-in">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className="mb-6 flex flex-wrap gap-2 justify-center items-center animate-fade-in"
+            >
               <span className="text-xs text-gray-600">Filtri attivi:</span>
               {filters.emotion && (
                 <Badge 
-                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white flex items-center gap-1 px-3 py-1"
+                  className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white flex items-center gap-1 px-3 py-1 shadow-glow-purple"
                   variant="default"
                 >
                   {filters.emotion}
@@ -200,7 +238,7 @@ const Index = () => {
               )}
               {filters.theme && (
                 <Badge 
-                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white flex items-center gap-1 px-3 py-1"
+                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white flex items-center gap-1 px-3 py-1 shadow-glow-blue"
                   variant="default"
                 >
                   {filters.theme}
@@ -226,20 +264,37 @@ const Index = () => {
               >
                 Cancella tutti
               </Button>
-            </div>
+            </motion.div>
           )}
           
-          <WhisperForm onWhisperCreated={handleRefresh} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <WhisperForm onWhisperCreated={handleRefresh} />
+          </motion.div>
           
-          <div className="mt-8">
-            <WhisperFilter onFilterChange={handleFilterChange} />
+          <div className="mt-10">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <WhisperFilter onFilterChange={handleFilterChange} />
+            </motion.div>
             
             {loading ? (
               <div className="flex justify-center py-20">
-                <div className="p-6 glass-card rounded-xl text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-limbus-600 mx-auto mb-2" />
-                  <p className="text-limbus-600">Caricamento dei sussurri...</p>
-                </div>
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="p-8 glass-card rounded-xl text-center shadow-glow"
+                >
+                  <Loader2 className="h-10 w-10 animate-spin text-limbus-600 mx-auto mb-3" />
+                  <p className="text-limbus-600 font-medium">Caricamento dei sussurri...</p>
+                </motion.div>
               </div>
             ) : error ? (
               <div className="text-center py-10 bg-red-50 bg-opacity-70 rounded-xl border border-red-200 shadow-md">
@@ -251,26 +306,37 @@ const Index = () => {
               </div>
             ) : (
               <div className={cn(
-                "space-y-6 pt-4",
+                "space-y-6 pt-6",
                 filters.visualMode === "foglie" && "relative",
               )}>
-                {whispers.map((whisper) => (
-                  <WhisperCard
+                {whispers.map((whisper, index) => (
+                  <motion.div
                     key={whisper.id}
-                    whisper={whisper}
-                    className={getCardClass()}
-                    onUpdate={handleRefresh}
-                    onEmotionClick={handleEmotionClick}
-                    onThemeClick={handleThemeClick}
-                  />
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <WhisperCard
+                      whisper={whisper}
+                      className={getCardClass()}
+                      onUpdate={handleRefresh}
+                      onEmotionClick={handleEmotionClick}
+                      onThemeClick={handleThemeClick}
+                    />
+                  </motion.div>
                 ))}
                 
                 {whispers.length === 0 && (
-                  <div className="text-center py-10 animate-fade-in rounded-lg p-8 glass-card">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center py-10 animate-fade-in rounded-lg p-8 glass-card shadow-glow"
+                  >
                     <span className="text-4xl mb-4 block">🔍</span>
                     <h3 className="text-gray-700 font-medium mb-2">Nessun sussurro trovato</h3>
                     <p className="text-gray-500">Prova a modificare i filtri o a creare il primo sussurro.</p>
-                  </div>
+                  </motion.div>
                 )}
               </div>
             )}

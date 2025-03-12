@@ -9,11 +9,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mic, Send, Wind, Flame } from "lucide-react";
+import { Mic, Send, Wind, Flame, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Emotion, Theme, WhisperMode } from "@/types";
 import { createWhisper, uploadAudio } from "@/services/whisperService";
+import { motion } from "framer-motion";
 
 const emotions: Emotion[] = [
   "Felicità",
@@ -141,8 +142,13 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="whisper-card space-y-4">
-      <div className="text-xs font-semibold uppercase text-limbus-600 mb-2">
+    <motion.form 
+      onSubmit={handleSubmit} 
+      className="whisper-card space-y-4 bg-white/70 backdrop-blur-lg border border-white/60 shadow-glow-intense rounded-2xl p-6 transition-all duration-300"
+      whileHover={{ boxShadow: "0 0 25px rgba(102, 112, 204, 0.3), 0 0 50px rgba(102, 112, 204, 0.15)" }}
+    >
+      <div className="text-sm font-semibold uppercase text-limbus-600 mb-2 flex items-center">
+        <Sparkles className="h-4 w-4 mr-2" />
         Condividi il tuo sussurro
       </div>
       
@@ -150,17 +156,17 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
         placeholder="Condividi il tuo pensiero..."
         value={content}
         onChange={(e) => setContent(e.target.value)}
-        className="min-h-[120px] resize-none bg-transparent text-lg"
+        className="min-h-[120px] resize-none bg-white/50 backdrop-blur-sm border-limbus-200/30 focus:border-limbus-400/50 rounded-xl text-lg transition-all duration-300 focus:shadow-glow"
         disabled={isSubmitting}
       />
       
       {audioUrl && (
-        <div className="mt-2">
+        <div className="mt-2 p-3 bg-white/50 backdrop-blur-sm rounded-lg border border-limbus-200/30">
           <audio src={audioUrl} controls className="w-full" />
           <button 
             type="button" 
             onClick={() => setAudioUrl(null)} 
-            className="text-xs text-limbus-600 mt-1"
+            className="text-xs text-limbus-600 mt-2 hover:text-limbus-800 transition-colors"
             disabled={isSubmitting}
           >
             Rimuovi audio
@@ -174,10 +180,10 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
           onValueChange={(val) => setEmotion(val as Emotion)}
           disabled={isSubmitting}
         >
-          <SelectTrigger className="w-full sm:w-auto flex-1">
+          <SelectTrigger className="w-full sm:w-auto flex-1 bg-white/50 border-limbus-200/30 focus:border-limbus-400/50 rounded-xl">
             <SelectValue placeholder="Emozione" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white/90 backdrop-blur-md border-limbus-200/30">
             {emotions.map((emotion) => (
               <SelectItem key={emotion} value={emotion}>
                 {emotion}
@@ -191,10 +197,10 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
           onValueChange={(val) => setTheme(val as Theme)}
           disabled={isSubmitting}
         >
-          <SelectTrigger className="w-full sm:w-auto flex-1">
+          <SelectTrigger className="w-full sm:w-auto flex-1 bg-white/50 border-limbus-200/30 focus:border-limbus-400/50 rounded-xl">
             <SelectValue placeholder="Tema" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-white/90 backdrop-blur-md border-limbus-200/30">
             {themes.map((theme) => (
               <SelectItem key={theme} value={theme}>
                 {theme}
@@ -211,8 +217,10 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
             variant="outline"
             size="sm"
             className={cn(
-              "flex items-center text-xs",
-              mode === "vento" && "bg-blue-100 text-blue-700 border-blue-300"
+              "flex items-center text-xs rounded-xl transition-all duration-300",
+              mode === "vento" 
+                ? "bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 border-blue-300 shadow-glow-blue" 
+                : "bg-white/50 border-limbus-200/30 hover:bg-blue-50"
             )}
             onClick={() => toggleMode("vento")}
             disabled={isSubmitting}
@@ -225,8 +233,10 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
             variant="outline"
             size="sm"
             className={cn(
-              "flex items-center text-xs",
-              mode === "fuoco" && "bg-orange-100 text-orange-700 border-orange-300"
+              "flex items-center text-xs rounded-xl transition-all duration-300",
+              mode === "fuoco" 
+                ? "bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 border-orange-300 shadow-glow-amber" 
+                : "bg-white/50 border-limbus-200/30 hover:bg-orange-50"
             )}
             onClick={() => toggleMode("fuoco")}
             disabled={isSubmitting}
@@ -239,8 +249,10 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
             variant="outline"
             size="sm"
             className={cn(
-              "flex items-center text-xs",
-              isRecording && "bg-red-100 text-red-700 border-red-300"
+              "flex items-center text-xs rounded-xl transition-all duration-300",
+              isRecording 
+                ? "bg-gradient-to-r from-red-100 to-red-200 text-red-700 border-red-300 shadow-sm" 
+                : "bg-white/50 border-limbus-200/30 hover:bg-red-50"
             )}
             onClick={isRecording ? stopRecording : startRecording}
             disabled={isSubmitting}
@@ -252,7 +264,7 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
         
         <Button
           type="submit"
-          className="bg-limbus-600 hover:bg-limbus-700"
+          className="bg-gradient-to-r from-limbus-600 to-purple-600 hover:from-limbus-700 hover:to-purple-700 text-white shadow-glow rounded-xl transition-all duration-300"
           disabled={isSubmitting}
         >
           {isSubmitting ? (
@@ -267,6 +279,6 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
           )}
         </Button>
       </div>
-    </form>
+    </motion.form>
   );
 };
