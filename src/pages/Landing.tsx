@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { IntroAnimation } from "@/components/IntroAnimation";
-import { ImageSlider3D } from "@/components/ImageSlider3D";
 import { BookLock, Clock, History, Sparkles, Send } from "lucide-react";
 
 // Import refactored components
@@ -107,19 +106,6 @@ const Landing = () => {
 
             {/* Features section */}
             <FeaturesSection features={features} />
-
-            {/* Interactive section with 3D effect */}
-            <motion.section 
-              className="py-20"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-              viewport={{ once: true }}
-            >
-              <div className="max-w-7xl mx-auto relative perspective">
-                <ImageSlider3D />
-              </div>
-            </motion.section>
 
             {/* Footer/Call to action */}
             <FooterSection />
