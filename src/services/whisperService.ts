@@ -114,7 +114,7 @@ export const createWhisper = async (whisperData: {
         mode: mode as string,
         resonance_count: 0,
         special_type: specialType || null,
-        release_date: releaseDate || null,
+        release_date: releaseDate ? releaseDate.toISOString() : null,
         is_secret: isSecret || false
       })
       .select()
