@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { X, Filter, BookLock, Dices, Clock, History } from "lucide-react";
+import { X, Filter, BookLock, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -17,6 +17,7 @@ import {
 import { Emotion, Theme, VisualMode, WhisperMode } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 const emotions: Emotion[] = [
   "Felicità",
@@ -53,6 +54,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
   const [mode, setMode] = useState<WhisperMode | "">("");
   const [visualMode, setVisualMode] = useState<VisualMode>("standard");
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleFilterChange = () => {
     onFilterChange({
@@ -239,7 +241,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
             size="sm" 
             variant="outline" 
             className="text-xs bg-indigo-100 border-indigo-300 text-indigo-700 hover:bg-indigo-200"
-            onClick={() => window.location.href = "/biblioteca"}
+            onClick={() => navigate("/biblioteca")}
           >
             <BookLock size={14} className="mr-1" />
             <span>Biblioteca</span>
@@ -249,7 +251,7 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
             size="sm" 
             variant="outline" 
             className="text-xs bg-amber-100 border-amber-300 text-amber-700 hover:bg-amber-200"
-            onClick={() => window.location.href = "/passato"}
+            onClick={() => navigate("/passato")}
           >
             <History size={14} className="mr-1" />
             <span>Passato</span>

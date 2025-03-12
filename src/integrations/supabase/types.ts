@@ -74,9 +74,12 @@ export type Database = {
           created_at: string
           emotion: string | null
           id: number
+          is_secret: boolean | null
           is_whisper_of_day: boolean | null
           mode: string | null
+          release_date: string | null
           resonance_count: number | null
+          special_type: string | null
           theme: string | null
         }
         Insert: {
@@ -85,9 +88,12 @@ export type Database = {
           created_at?: string
           emotion?: string | null
           id?: number
+          is_secret?: boolean | null
           is_whisper_of_day?: boolean | null
           mode?: string | null
+          release_date?: string | null
           resonance_count?: number | null
+          special_type?: string | null
           theme?: string | null
         }
         Update: {
@@ -96,9 +102,12 @@ export type Database = {
           created_at?: string
           emotion?: string | null
           id?: number
+          is_secret?: boolean | null
           is_whisper_of_day?: boolean | null
           mode?: string | null
+          release_date?: string | null
           resonance_count?: number | null
+          special_type?: string | null
           theme?: string | null
         }
         Relationships: []
@@ -112,6 +121,10 @@ export type Database = {
         Args: {
           whisper_id: number
         }
+        Returns: undefined
+      }
+      update_old_whispers_to_past: {
+        Args: Record<PropertyKey, never>
         Returns: undefined
       }
     }

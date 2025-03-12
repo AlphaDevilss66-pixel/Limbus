@@ -1,5 +1,5 @@
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -9,17 +9,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Mic, Send, Wind, Flame, Sparkles, BookLock, Dices, Clock } from "lucide-react";
+import { 
+  Mic, 
+  Send, 
+  Wind, 
+  Flame, 
+  Sparkles, 
+  BookLock, 
+  Dices, 
+  Clock 
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Emotion, Theme, WhisperMode, WhisperSpecialType } from "@/types";
-import { 
-  createWhisper, 
-  uploadAudio, 
-  createDestinyWhisper,
-  createTimeCapsuleWhisper,
-  createSecretWhisper
-} from "@/services/whisperService";
+import { createWhisper, uploadAudio } from "@/services/whisperService";
+import { useWhisperSpecials } from "@/hooks/useWhisperSpecials";
 import { motion } from "framer-motion";
 import {
   Dialog,
@@ -28,20 +32,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 const emotions: Emotion[] = [
   "Felicità",
@@ -82,11 +74,18 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [activeSpecialType, setActiveSpecialType] = useState<WhisperSpecialType | "">("");
   const [timeCapsuleYears, setTimeCapsuleYears] = useState(1);
   const [secretDialogOpen, setSecretDialogOpen] = useState(false);
   const [destinyDialogOpen, setDestinyDialogOpen] = useState(false);
   const [timeCapsuleDialogOpen, setTimeCapsuleDialogOpen] = useState(false);
+  
+  const { 
+    activeSpecialType, 
+    setActiveSpecialType,
+    submitSecretWhisper,
+    submitDestinyWhisper,
+    submitTimeCapsuleWhisper
+  } = useWhisperSpecials();
   
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -152,7 +151,6 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
         uploadedAudioUrl = await uploadAudio(blob);
       }
       
-      // Create whisper with the new interface
       const whisperData = {
         content,
         emotion: emotion || undefined,
@@ -161,36 +159,42 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
         mode,
       };
       
-      // Create different types of whispers based on activeSpecialType
+      // Handle special whisper types
+      let success = false;
+      
       if (activeSpecialType === "biblioteca") {
-        await createSecretWhisper(whisperData);
-        toast.success("Il tuo segreto è stato aggiunto alla Biblioteca Invisibile");
+        success = await submitSecretWhisper(whisperData);
       } else if (activeSpecialType === "destino") {
-        await createDestinyWhisper(whisperData);
-        toast.success("Il tuo sussurro è stato affidato al destino");
+        success = await submitDestinyWhisper(whisperData);
       } else if (activeSpecialType === "tempo") {
-        await createTimeCapsuleWhisper({ ...whisperData, releaseYears: timeCapsuleYears });
-        toast.success(`Il tuo sussurro verrà rivelato tra ${timeCapsuleYears} ${timeCapsuleYears === 1 ? 'anno' : 'anni'}`);
+        success = await submitTimeCapsuleWhisper({
+          ...whisperData,
+          releaseYears: timeCapsuleYears
+        });
       } else {
+        // Regular whisper
         await createWhisper(whisperData);
         toast.success("Il tuo sussurro è stato condiviso");
+        success = true;
       }
       
-      // Clear form
-      setContent("");
-      setEmotion("");
-      setTheme("");
-      setMode("standard");
-      setAudioUrl(null);
-      setActiveSpecialType("");
-      
-      // Close any open dialogs
-      setSecretDialogOpen(false);
-      setDestinyDialogOpen(false);
-      setTimeCapsuleDialogOpen(false);
-      
-      // Notify parent component
-      onWhisperCreated();
+      if (success) {
+        // Clear form
+        setContent("");
+        setEmotion("");
+        setTheme("");
+        setMode("standard");
+        setAudioUrl(null);
+        setActiveSpecialType("");
+        
+        // Close any open dialogs
+        setSecretDialogOpen(false);
+        setDestinyDialogOpen(false);
+        setTimeCapsuleDialogOpen(false);
+        
+        // Notify parent component
+        onWhisperCreated();
+      }
     } catch (error) {
       console.error("Error submitting whisper:", error);
       toast.error("Si è verificato un errore nel condividere il tuo sussurro");

@@ -37,7 +37,7 @@ export const getWhispers = async (filters?: {
       query = query.eq("special_type", filters.specialType);
     } else {
       // By default, only show normal whispers and destiny whispers that are released
-      query = query.or('special_type.is.null,and(special_type.eq.destino,release_date.lte.now()),and(special_type.eq.tempo,release_date.lte.now()),special_type.eq.passato');
+      query = query.or(`special_type.is.null,and(special_type.eq.destino,release_date.lte.now()),and(special_type.eq.tempo,release_date.lte.now()),special_type.eq.passato`);
     }
 
     const { data, error } = await query.order("created_at", { ascending: false });
@@ -57,7 +57,7 @@ export const getWhispers = async (filters?: {
 
     return data.map(whisper => ({
       id: whisper.id,
-      content: whisper.content,
+      content: whisper.content || "",
       emotion: whisper.emotion as Emotion,
       theme: whisper.theme as Theme,
       createdAt: new Date(whisper.created_at),
@@ -72,9 +72,9 @@ export const getWhispers = async (filters?: {
       mode: (whisper.mode || "standard") as WhisperMode,
       isWhisperOfDay: whisper.is_whisper_of_day || false,
       responses: responsesByWhisper[whisper.id] || [],
-      specialType: whisper.special_type as WhisperSpecialType || undefined,
-      releaseDate: whisper.release_date ? new Date(whisper.release_date) : undefined,
-      isSecret: whisper.is_secret || false
+      specialType: (whisper as any).special_type as WhisperSpecialType || undefined,
+      releaseDate: (whisper as any).release_date ? new Date((whisper as any).release_date) : undefined,
+      isSecret: (whisper as any).is_secret || false
     }));
   } catch (error) {
     console.error("Error in getWhispers:", error);
@@ -127,7 +127,7 @@ export const createWhisper = async (whisperData: {
 
     return {
       id: data.id,
-      content: data.content,
+      content: data.content || "",
       emotion: data.emotion as Emotion,
       theme: data.theme as Theme,
       createdAt: new Date(data.created_at),
@@ -137,9 +137,9 @@ export const createWhisper = async (whisperData: {
       mode: (data.mode || "standard") as WhisperMode,
       isWhisperOfDay: data.is_whisper_of_day || false,
       responses: [],
-      specialType: data.special_type as WhisperSpecialType || undefined,
-      releaseDate: data.release_date ? new Date(data.release_date) : undefined,
-      isSecret: data.is_secret || false
+      specialType: (data as any).special_type as WhisperSpecialType || undefined,
+      releaseDate: (data as any).release_date ? new Date((data as any).release_date) : undefined,
+      isSecret: (data as any).is_secret || false
     };
   } catch (error) {
     console.error("Error in createWhisper:", error);

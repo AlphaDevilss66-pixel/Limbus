@@ -9,6 +9,8 @@ import NotFound from "./pages/NotFound";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import FilteredWhispers from "./pages/FilteredWhispers";
+import BibliotecaInvisibile from "./pages/BibliotecaInvisibile";
+import VociPassato from "./pages/VociPassato";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AnimatePresence } from "framer-motion";
@@ -24,6 +26,8 @@ const AppRoutes = () => {
     if (location.pathname === '/auth') return 'bg-auth';
     if (location.pathname === '/whispers') return 'whispers-page';
     if (location.pathname.startsWith('/filtered')) return 'filtered-page';
+    if (location.pathname === '/biblioteca') return 'biblioteca-page';
+    if (location.pathname === '/passato') return 'passato-page';
     return 'bg-magical';
   };
   
@@ -46,6 +50,22 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <FilteredWhispers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/biblioteca"
+            element={
+              <ProtectedRoute>
+                <BibliotecaInvisibile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/passato"
+            element={
+              <ProtectedRoute>
+                <VociPassato />
               </ProtectedRoute>
             }
           />
