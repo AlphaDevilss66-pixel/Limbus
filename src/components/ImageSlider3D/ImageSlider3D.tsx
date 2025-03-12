@@ -1,5 +1,6 @@
 
 import { useRef, useState } from 'react';
+import { motion } from 'framer-motion';
 import { CosmicBackground } from './CosmicBackground';
 import { SliderCard } from './SliderCard';
 import { NavigationDots } from './NavigationDots';
