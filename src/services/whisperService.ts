@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Emotion, ResonanceType, Theme, Whisper, WhisperMode } from "@/types";
 
@@ -157,7 +156,8 @@ export const createWhisper = async (whisperData: {
         emotion,
         theme,
         audio_url: audioUrl,
-        mode
+        mode,
+        resonance_count: 0
       })
       .select()
       .single();
