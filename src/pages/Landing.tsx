@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -13,21 +12,18 @@ const Landing = () => {
   const [scrolled, setScrolled] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
   
-  // Scroll animation references
   const featuresRef = useRef(null);
   const visualsRef = useRef(null);
   const heroRef = useRef(null);
   const featuresContainerRef = useRef(null);
   const ctaRef = useRef(null);
   
-  // Scroll animation values
   const { scrollYProgress } = useScroll();
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.9]);
   const featuresY = useTransform(scrollYProgress, [0.2, 0.3], [100, 0]);
   const featuresOpacity = useTransform(scrollYProgress, [0.2, 0.3], [0, 1]);
   
-  // Parallax effect for each feature card
   const { scrollYProgress: featuresScrollProgress } = useScroll({
     target: featuresContainerRef,
     offset: ["start end", "end start"]
@@ -44,7 +40,6 @@ const Landing = () => {
 
     window.addEventListener("scroll", handleScroll);
     
-    // Hide intro animation after 3.5 seconds
     const timer = setTimeout(() => {
       setShowIntro(false);
     }, 3500);
@@ -59,7 +54,6 @@ const Landing = () => {
     ref.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Sample images for the 3D slider
   const sliderImages = [
     "/placeholder.svg",
     "/placeholder.svg",
@@ -70,12 +64,10 @@ const Landing = () => {
 
   return (
     <div className="min-h-screen overflow-hidden relative">
-      {/* Intro Animation */}
       <AnimatePresence>
         {showIntro && <IntroAnimation onComplete={() => setShowIntro(false)} />}
       </AnimatePresence>
 
-      {/* Animated Background */}
       <div className="fixed inset-0 w-full h-full -z-10">
         <motion.div 
           animate={{ 
@@ -122,7 +114,6 @@ const Landing = () => {
         </div>
       </div>
 
-      {/* Header */}
       <header className={`fixed w-full transition-all duration-500 z-50 ${
         scrolled ? "bg-white/80 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-5"
       }`}>
@@ -149,25 +140,11 @@ const Landing = () => {
             transition={{ delay: showIntro ? 3.8 : 0, duration: 0.5 }}
             className="flex items-center gap-4"
           >
-            <motion.div 
-              whileHover={{ y: -3 }}
-              className="cursor-pointer text-limbus-600 hover:text-limbus-800 hidden md:flex"
-              onClick={() => scrollToSection(featuresRef)}
-            >
-              Caratteristiche
-            </motion.div>
-            <motion.div 
-              whileHover={{ y: -3 }}
-              className="cursor-pointer text-limbus-600 hover:text-limbus-800 hidden md:flex"
-              onClick={() => scrollToSection(visualsRef)}
-            >
-              Visualizzazioni
-            </motion.div>
             {user ? (
               <>
                 <Button asChild variant="ghost" className="flex items-center gap-2 hover:bg-limbus-100 hover:text-limbus-700">
                   <Link to="/whispers">
-                    <MessageCircle className="h-4 w-4" />
+                    <MessageCircle className="mr-2 h-4 w-4" />
                     <span>I miei sussurri</span>
                   </Link>
                 </Button>
@@ -198,7 +175,6 @@ const Landing = () => {
         </div>
       </header>
 
-      {/* Hero Section with Parallax */}
       <motion.section 
         ref={heroRef}
         style={{ opacity: heroOpacity, scale: heroScale }}
@@ -292,13 +268,11 @@ const Landing = () => {
           </div>
         </motion.div>
         
-        {/* 3D Image Slider */}
         <div className="mt-20 max-w-5xl mx-auto">
           <ImageSlider3D images={sliderImages} />
         </div>
       </motion.section>
 
-      {/* Features Section with Parallax Scroll Effect */}
       <motion.section 
         ref={featuresRef}
         style={{ opacity: featuresOpacity, y: featuresY }}
@@ -408,7 +382,6 @@ const Landing = () => {
           </div>
         </div>
         
-        {/* Parallax floating elements */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           {Array.from({ length: 15 }).map((_, i) => (
             <motion.div
@@ -437,7 +410,6 @@ const Landing = () => {
         </div>
       </motion.section>
 
-      {/* Visual Modes Section */}
       <section ref={visualsRef} className="py-20 px-4 relative overflow-hidden bg-gradient-to-br from-white via-blue-50/30 to-limbus-50/30">
         <div className="absolute inset-0 bg-[url('/dots-pattern.svg')] opacity-5" />
         <div className="container mx-auto relative">
@@ -595,7 +567,6 @@ const Landing = () => {
         </div>
       </section>
 
-      {/* CTA Section with Scroll Parallax */}
       <motion.section 
         ref={ctaRef}
         initial={{ opacity: 0 }}
@@ -682,7 +653,6 @@ const Landing = () => {
         </div>
       </motion.section>
       
-      {/* Footer */}
       <footer className="py-10 px-4 bg-gradient-to-b from-limbus-50 to-limbus-100/60">
         <div className="container mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center">
