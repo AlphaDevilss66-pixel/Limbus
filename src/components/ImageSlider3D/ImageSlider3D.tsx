@@ -4,7 +4,6 @@ import { CosmicBackground } from './CosmicBackground';
 import { SliderCard } from './SliderCard';
 import { NavigationDots } from './NavigationDots';
 import { SliderHeading } from './SliderHeading';
-import { motion } from 'framer-motion';
 
 interface ImageSlider3DProps {
   image?: string;
