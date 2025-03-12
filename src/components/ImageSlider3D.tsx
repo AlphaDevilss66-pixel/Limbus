@@ -1,185 +1,102 @@
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { ParallaxLayers } from './slider/ParallaxLayers';
-import { NavigationButtons } from './slider/NavigationButtons';
-import { SliderDots } from './slider/SliderDots';
-import { FloatingImages } from './slider/FloatingImages';
 
 interface ImageSlider3DProps {
-  images: string[];
+  image?: string;
 }
 
-export const ImageSlider3D = ({ images }: ImageSlider3DProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [direction, setDirection] = useState(0);
+export const ImageSlider3D = ({ image = '/lovable-uploads/12b7f842-0562-4dba-9b72-560963a3d038.png' }: ImageSlider3DProps) => {
   const sliderRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-
-  // Auto-rotate the slider
-  useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, [currentIndex]);
-
-  const nextSlide = () => {
-    setDirection(1);
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  };
-
-  const prevSlide = () => {
-    setDirection(-1);
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
-  };
-
-  const handleDragStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    isDragging.current = true;
-    if ('clientX' in e) {
-      startX.current = e.clientX;
-    } else {
-      startX.current = e.touches[0].clientX;
-    }
-  };
-
-  const handleDragMove = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    if (!isDragging.current) return;
-
-    let currentX: number;
-    if ('clientX' in e) {
-      currentX = e.clientX;
-    } else {
-      currentX = e.touches[0].clientX;
-    }
-
-    const diffX = currentX - startX.current;
-
-    if (diffX > 50) {
-      prevSlide();
-      isDragging.current = false;
-    } else if (diffX < -50) {
-      nextSlide();
-      isDragging.current = false;
-    }
-  };
-
-  const handleDragEnd = () => {
-    isDragging.current = false;
-  };
-
-  const sliderVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 1000 : -1000,
-      rotateY: direction > 0 ? 45 : -45,
-      opacity: 0,
-      scale: 0.7,
-      z: -500,
-    }),
-    center: {
-      x: 0,
-      rotateY: 0,
-      opacity: 1,
-      scale: 1,
-      z: 0,
-      transition: {
-        duration: 0.8,
-        type: "spring",
-        stiffness: 300,
-        damping: 30
-      }
-    },
-    exit: (direction: number) => ({
-      x: direction < 0 ? 1000 : -1000,
-      rotateY: direction < 0 ? 45 : -45,
-      opacity: 0,
-      scale: 0.7,
-      z: -500,
-      transition: {
-        duration: 0.5
-      }
-    })
-  };
-
-  const { prev, current, next } = {
-    prev: images[(currentIndex - 1 + images.length) % images.length],
-    current: images[currentIndex],
-    next: images[(currentIndex + 1) % images.length]
-  };
-
-  const handleDotClick = (index: number) => {
-    setDirection(index > currentIndex ? 1 : -1);
-    setCurrentIndex(index);
-  };
 
   return (
     <div 
-      className="relative overflow-hidden h-[500px] w-full perspective"
+      className="relative overflow-hidden h-[500px] w-full perspective rounded-3xl shadow-2xl"
       ref={sliderRef}
-      onMouseDown={handleDragStart}
-      onMouseMove={handleDragMove}
-      onMouseUp={handleDragEnd}
-      onMouseLeave={handleDragEnd}
-      onTouchStart={handleDragStart}
-      onTouchMove={handleDragMove}
-      onTouchEnd={handleDragEnd}
     >
-      <ParallaxLayers sliderRef={sliderRef} />
-
+      {/* Background gradient */}
       <motion.div 
         className="absolute inset-0 bg-gradient-to-r from-purple-900/30 via-indigo-900/20 to-blue-900/30 rounded-3xl"
         animate={{ 
           background: [
-            'radial-gradient(circle at 30% 30%, rgba(79, 70, 229, 0.2) 0%, transparent 70%)',
-            'radial-gradient(circle at 70% 70%, rgba(124, 58, 237, 0.2) 0%, transparent 70%)',
-            'radial-gradient(circle at 30% 70%, rgba(56, 189, 248, 0.2) 0%, transparent 70%)',
-            'radial-gradient(circle at 70% 30%, rgba(79, 70, 229, 0.2) 0%, transparent 70%)'
+            'radial-gradient(circle at 30% 30%, rgba(79, 70, 229, 0.3) 0%, rgba(28, 25, 83, 0.7) 70%)',
+            'radial-gradient(circle at 70% 70%, rgba(124, 58, 237, 0.3) 0%, rgba(44, 21, 87, 0.7) 70%)',
+            'radial-gradient(circle at 30% 70%, rgba(56, 189, 248, 0.3) 0%, rgba(23, 78, 103, 0.7) 70%)',
+            'radial-gradient(circle at 70% 30%, rgba(79, 70, 229, 0.3) 0%, rgba(28, 25, 83, 0.7) 70%)'
           ] 
         }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       />
 
-      <AnimatePresence initial={false} custom={direction} mode="wait">
-        <motion.div
-          key={currentIndex}
-          custom={direction}
-          variants={sliderVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          className="absolute inset-0 flex items-center justify-center"
-          style={{ perspective: 1500, transformStyle: "preserve-3d" }}
-        >
-          <div className="relative w-full max-w-4xl mx-auto h-4/5 rounded-2xl overflow-hidden transform-style">
-            <img 
-              src={current} 
-              alt="slider image" 
-              className="w-full h-full object-cover rounded-2xl shadow-glow-intense"
-            />
-            <div className="absolute inset-0 backdrop-blur-sm bg-gradient-to-b from-transparent via-purple-900/20 to-purple-900/40 rounded-2xl flex items-center justify-center">
-              <motion.div 
-                className="text-3xl font-bold text-white text-shadow"
-                animate={{ 
-                  textShadow: [
-                    "0 0 8px rgba(139, 92, 246, 0.7)",
-                    "0 0 16px rgba(139, 92, 246, 0.9)",
-                    "0 0 8px rgba(139, 92, 246, 0.7)"
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                Limbus Experience
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+      {/* Parallax layers */}
+      <ParallaxLayers sliderRef={sliderRef} />
 
-      <NavigationButtons onPrev={prevSlide} onNext={nextSlide} />
-      <SliderDots images={images} currentIndex={currentIndex} onDotClick={handleDotClick} />
-      <FloatingImages images={images} />
+      {/* Main content */}
+      <div className="absolute inset-0 flex items-center justify-center z-10">
+        <div className="relative w-full max-w-5xl mx-auto h-[90%] rounded-2xl overflow-hidden">
+          {/* Main image */}
+          <div className="absolute inset-0 w-full h-full">
+            <img 
+              src={image} 
+              alt="Limbus Experience" 
+              className="w-full h-full object-cover rounded-2xl"
+            />
+          </div>
+          
+          {/* Content overlay */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
+            <motion.h2 
+              className="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+              animate={{ 
+                textShadow: [
+                  "0 0 8px rgba(139, 92, 246, 0.7)",
+                  "0 0 16px rgba(139, 92, 246, 0.9)",
+                  "0 0 8px rgba(139, 92, 246, 0.7)"
+                ]
+              }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              Limbus Experience
+            </motion.h2>
+            
+            <motion.p 
+              className="text-xl text-white max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              Un viaggio nel limbo digitale dove i pensieri si librano nell'aria come sussurri
+            </motion.p>
+            
+            <motion.button
+              className="mt-8 px-8 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Esplora
+            </motion.button>
+          </div>
+          
+          {/* Decorative elements */}
+          <motion.div 
+            className="absolute top-10 right-10 w-16 h-16 rounded-full bg-purple-500/30 backdrop-blur-sm"
+            animate={{ 
+              y: [0, -10, 0],
+              opacity: [0.6, 0.8, 0.6]
+            }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div 
+            className="absolute bottom-20 left-10 w-12 h-12 rounded-full bg-blue-500/30 backdrop-blur-sm"
+            animate={{ 
+              y: [0, 10, 0],
+              opacity: [0.5, 0.7, 0.5]
+            }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          />
+        </div>
+      </div>
     </div>
   );
 };

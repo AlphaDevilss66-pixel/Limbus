@@ -18,9 +18,9 @@ export const ParallaxLayers = ({ sliderRef }: ParallaxLayersProps) => {
       const y = (e.clientY - rect.top) / rect.height - 0.5;
       
       parallaxLayers.current.forEach((layer, index) => {
-        const factor = (index + 1) * 20;
+        const factor = (index + 1) * 15;
         if (layer) {
-          layer.style.transform = `translate3d(${x * factor}px, ${y * factor}px, 0) rotateX(${y * 10}deg) rotateY(${-x * 10}deg)`;
+          layer.style.transform = `translate3d(${x * factor}px, ${y * factor}px, 0)`;
         }
       });
     };
@@ -29,18 +29,43 @@ export const ParallaxLayers = ({ sliderRef }: ParallaxLayersProps) => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [sliderRef]);
 
-  return Array.from({ length: 3 }).map((_, index) => (
-    <div 
-      key={`layer-${index}`}
-      ref={el => {
-        if (el) parallaxLayers.current[index] = el;
-      }}
-      className="absolute inset-0 transition-transform duration-300 ease-out"
-      style={{ zIndex: 3 - index }}
-    >
+  return (
+    <>
+      {/* Background layer */}
       <div 
-        className={`absolute ${index === 0 ? 'w-7/8 h-7/8' : index === 1 ? 'w-3/4 h-3/4' : 'w-1/2 h-1/2'} left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ${index === 0 ? 'bg-gradient-to-r from-purple-500/10 to-blue-500/10' : index === 1 ? 'bg-gradient-to-br from-indigo-500/5 to-transparent' : 'bg-white/5'} rounded-full blur-xl`}
-      ></div>
-    </div>
-  ));
+        ref={el => {
+          if (el) parallaxLayers.current[0] = el;
+        }}
+        className="absolute inset-0 transition-transform duration-300 ease-out"
+        style={{ zIndex: 1 }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-indigo-900/30 to-blue-900/40 rounded-3xl"></div>
+      </div>
+      
+      {/* Middle layer */}
+      <div 
+        ref={el => {
+          if (el) parallaxLayers.current[1] = el;
+        }}
+        className="absolute inset-0 transition-transform duration-300 ease-out"
+        style={{ zIndex: 2 }}
+      >
+        <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
+          <div className="absolute w-3/4 h-3/4 bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-full blur-xl"></div>
+        </div>
+      </div>
+      
+      {/* Foreground layer */}
+      <div 
+        ref={el => {
+          if (el) parallaxLayers.current[2] = el;
+        }}
+        className="absolute inset-0 transition-transform duration-300 ease-out"
+        style={{ zIndex: 3 }}
+      >
+        <div className="absolute top-[20%] left-[10%] w-1/3 h-1/3 bg-blue-300/10 backdrop-blur-sm rounded-full"></div>
+        <div className="absolute bottom-[20%] right-[10%] w-1/4 h-1/4 bg-purple-300/10 backdrop-blur-sm rounded-full"></div>
+      </div>
+    </>
+  );
 };
