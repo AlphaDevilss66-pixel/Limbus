@@ -1,7 +1,7 @@
 
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ParallaxLayers } from './slider/ParallaxLayers';
+import { MessageCircle, Heart, Star } from 'lucide-react';
 
 interface ImageSlider3DProps {
   image?: string;
@@ -12,85 +12,158 @@ export const ImageSlider3D = ({ image }: ImageSlider3DProps) => {
 
   return (
     <div 
-      className="relative overflow-hidden h-[500px] w-full perspective rounded-3xl shadow-2xl bg-black"
+      className="relative overflow-hidden h-[500px] w-full rounded-3xl shadow-2xl bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-900 via-purple-900 to-slate-900"
       ref={sliderRef}
     >
-      {/* Dark background gradient with longer animation timing */}
+      {/* Dynamic background gradient */}
       <motion.div 
         className="absolute inset-0 rounded-3xl opacity-90"
         animate={{ 
           background: [
-            'radial-gradient(circle at 30% 30%, rgba(79, 70, 229, 0.7) 0%, rgba(20, 17, 60, 0.95) 70%)',
-            'radial-gradient(circle at 70% 70%, rgba(124, 58, 237, 0.7) 0%, rgba(35, 15, 70, 0.95) 70%)',
-            'radial-gradient(circle at 30% 70%, rgba(56, 189, 248, 0.7) 0%, rgba(18, 60, 80, 0.95) 70%)',
-            'radial-gradient(circle at 70% 30%, rgba(79, 70, 229, 0.7) 0%, rgba(20, 17, 60, 0.95) 70%)'
+            'radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.8) 0%, rgba(35, 15, 70, 0.95) 70%)',
+            'radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.8) 0%, rgba(45, 15, 80, 0.95) 70%)',
+            'radial-gradient(circle at 30% 70%, rgba(56, 189, 248, 0.8) 0%, rgba(18, 60, 80, 0.95) 70%)',
+            'radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.8) 0%, rgba(30, 17, 80, 0.95) 70%)'
           ] 
         }}
-        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
       />
 
-      {/* Parallax layers with extended visibility */}
-      <ParallaxLayers sliderRef={sliderRef} />
+      {/* Decorative elements */}
+      <div className="absolute inset-0 z-[1]">
+        {/* Large colorful shapes */}
+        <motion.div 
+          className="absolute top-[15%] left-[20%] w-64 h-64 rounded-full bg-gradient-to-br from-purple-600/40 to-blue-600/40 blur-[15px]"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.4, 0.7, 0.4]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div 
+          className="absolute bottom-[20%] right-[10%] w-72 h-72 rounded-full bg-gradient-to-tr from-violet-600/40 to-fuchsia-600/40 blur-[15px]"
+          animate={{ 
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0.6, 0.3]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+        <motion.div 
+          className="absolute top-[40%] right-[25%] w-48 h-48 rounded-full bg-gradient-to-tr from-cyan-600/40 to-blue-600/40 blur-[15px]"
+          animate={{ 
+            scale: [1, 1.15, 1],
+            opacity: [0.4, 0.6, 0.4]
+          }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Enhanced floating particles */}
+        {[...Array(40)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-white/70 blur-[0.5px]"
+            style={{
+              width: `${Math.random() * 3 + 1}px`,
+              height: `${Math.random() * 3 + 1}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              y: [0, Math.random() * -50],
+              x: [0, Math.random() * 30 - 15],
+              opacity: [0.4, 0.9, 0.4],
+              scale: [0.8, 1.6, 0.8]
+            }}
+            transition={{
+              duration: 4 + Math.random() * 7,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 3
+            }}
+          />
+        ))}
+      </div>
 
       {/* Main content */}
       <div className="absolute inset-0 flex items-center justify-center z-10">
-        <div className="relative w-full max-w-5xl mx-auto h-[90%] rounded-2xl overflow-hidden">
-          {/* Darker geometric background */}
-          <div className="absolute inset-0 w-full h-full">
-            <div className="w-full h-full bg-gradient-to-br from-slate-900 to-purple-900/90 rounded-2xl"></div>
-          </div>
-          
-          {/* Content overlay with increased contrast */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8 bg-black/60 backdrop-blur-sm">
-            <motion.h2 
-              className="text-4xl md:text-6xl font-bold mb-6 text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
-              animate={{ 
-                textShadow: [
-                  "0 0 8px rgba(139, 92, 246, 0.9)",
-                  "0 0 16px rgba(139, 92, 246, 1)",
-                  "0 0 8px rgba(139, 92, 246, 0.9)"
-                ]
-              }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              Limbus Experience
-            </motion.h2>
-            
-            <motion.p 
-              className="text-xl text-white/90 max-w-2xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              Un viaggio nel limbo digitale dove i pensieri si librano nell'aria come sussurri
-            </motion.p>
-            
-            <motion.button
-              className="mt-8 px-8 py-3 bg-gradient-to-r from-purple-700 to-blue-700 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              Esplora
-            </motion.button>
-          </div>
-          
-          {/* Enhanced decorative elements */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mx-auto px-6">
+          {/* Card 1 - Condividi un Sussurro */}
           <motion.div 
-            className="absolute top-10 right-10 w-16 h-16 rounded-full bg-purple-600/70 backdrop-blur-sm"
-            animate={{ 
-              y: [0, -10, 0],
-              opacity: [0.6, 0.9, 0.6]
-            }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          />
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}
+            className="bg-white/10 backdrop-blur-md p-8 rounded-2xl text-center transition-all duration-300 border border-purple-500/20 hover:border-purple-500/30 shadow-lg"
+          >
+            <motion.div 
+              whileHover={{ rotate: 360, scale: 1.1 }}
+              transition={{ duration: 0.8 }}
+              className="bg-indigo-900/50 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6 shadow-inner border border-indigo-500/30"
+            >
+              <MessageCircle className="h-8 w-8 text-indigo-300" />
+            </motion.div>
+            <h3 className="text-xl font-semibold text-white mb-4">Condividi un Sussurro</h3>
+            <p className="text-indigo-200">
+              Scrivi i tuoi pensieri, scegli un'emozione e un tema, e lascia che il tuo messaggio si libri nel limbo.
+            </p>
+          </motion.div>
+          
+          {/* Card 2 - Risuona con gli Altri */}
           <motion.div 
-            className="absolute bottom-20 left-10 w-12 h-12 rounded-full bg-blue-600/70 backdrop-blur-sm"
-            animate={{ 
-              y: [0, 10, 0],
-              opacity: [0.5, 0.8, 0.5]
-            }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          />
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}
+            className="bg-white/10 backdrop-blur-md p-8 rounded-2xl text-center transition-all duration-300 border border-pink-500/20 hover:border-pink-500/30 shadow-lg"
+          >
+            <motion.div 
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              className="bg-purple-900/50 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6 shadow-inner border border-purple-500/30"
+            >
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  color: ["#d8b4fe", "#f0abfc", "#d8b4fe"]
+                }}
+                transition={{ repeat: Infinity, duration: 2 }}
+              >
+                <Heart className="h-8 w-8 text-pink-300" />
+              </motion.div>
+            </motion.div>
+            <h3 className="text-xl font-semibold text-white mb-4">Risuona con gli Altri</h3>
+            <p className="text-purple-200">
+              Leggi i sussurri degli altri e lascia una risonanza quando un messaggio tocca le tue corde emotive.
+            </p>
+          </motion.div>
+          
+          {/* Card 3 - Visualizzazioni Uniche */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.2)" }}
+            className="bg-white/10 backdrop-blur-md p-8 rounded-2xl text-center transition-all duration-300 border border-blue-500/20 hover:border-blue-500/30 shadow-lg"
+          >
+            <motion.div 
+              whileHover={{ rotateY: 180 }}
+              transition={{ duration: 0.8 }}
+              className="bg-blue-900/50 w-16 h-16 mx-auto rounded-full flex items-center justify-center mb-6 shadow-inner border border-blue-500/30"
+            >
+              <motion.div
+                animate={{ 
+                  rotate: [0, 15, -15, 0],
+                }}
+                transition={{ repeat: Infinity, duration: 3 }}
+              >
+                <Star className="h-8 w-8 text-blue-300" />
+              </motion.div>
+            </motion.div>
+            <h3 className="text-xl font-semibold text-white mb-4">Visualizzazioni Uniche</h3>
+            <p className="text-blue-200">
+              Scegli come visualizzare i sussurri: come foglie che ondeggiano, gocce che cadono o nebbia che avvolge.
+            </p>
+          </motion.div>
         </div>
       </div>
     </div>
