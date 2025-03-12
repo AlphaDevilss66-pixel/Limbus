@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Emotion, Theme, Whisper, WhisperMode } from "@/types";
-import { fetchWhispers } from "@/services/whisperService";
+import { getWhispers } from "@/services/whisperService";
 
 export const useWhispers = (filters: {
   emotion?: Emotion;
@@ -16,24 +16,9 @@ export const useWhispers = (filters: {
     const loadWhispers = async () => {
       try {
         setLoading(true);
-        const data = await fetchWhispers();
+        const data = await getWhispers(filters);
         
-        // Apply filters
-        let filteredData = [...data];
-        
-        if (filters.emotion) {
-          filteredData = filteredData.filter((whisper) => whisper.emotion === filters.emotion);
-        }
-        
-        if (filters.theme) {
-          filteredData = filteredData.filter((whisper) => whisper.theme === filters.theme);
-        }
-        
-        if (filters.mode) {
-          filteredData = filteredData.filter((whisper) => whisper.mode === filters.mode);
-        }
-        
-        setWhispers(filteredData);
+        setWhispers(data);
       } catch (err) {
         setError(err as Error);
         console.error("Failed to fetch whispers:", err);

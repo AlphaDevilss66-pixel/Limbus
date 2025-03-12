@@ -111,7 +111,7 @@ export const WhisperForm = ({ onWhisperCreated }: WhisperFormProps) => {
         uploadedAudioUrl = await uploadAudio(blob);
       }
       
-      // Create whisper
+      // Create whisper with the new interface
       await createWhisper({
         content,
         emotion: emotion || undefined,
