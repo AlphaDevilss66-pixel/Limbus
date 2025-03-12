@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Heart, MessageCircle, Wind, Flame, Send } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -108,19 +107,11 @@ export const WhisperCard = ({
   };
 
   const handleEmotionClick = (emotion: Emotion) => {
-    if (emotion && onEmotionClick) {
-      onEmotionClick(emotion);
-    } else if (emotion) {
-      navigate(`/filtered/${emotion}`);
-    }
+    navigate(`/filtered/${emotion}`);
   };
 
   const handleThemeClick = (theme: Theme) => {
-    if (theme && onThemeClick) {
-      onThemeClick(theme);
-    } else if (theme) {
-      navigate(`/filtered/${theme}`);
-    }
+    navigate(`/filtered/${theme}`);
   };
 
   return (

@@ -7,7 +7,7 @@ import { WhisperFilter } from "@/components/WhisperFilter";
 import { Emotion, Theme, VisualMode, WhisperMode } from "@/types";
 import { cn } from "@/lib/utils";
 import { useWhispers } from "@/hooks/useWhispers";
-import { Loader2, LogOut, Home, Sparkles, Wind, Flame, X, Feather, Stars, Rocket, Globe, Moon, Sun, Orbit } from "lucide-react";
+import { Loader2, LogOut, Home, Sparkles, Wind, Flame, X, Feather, Stars, Globe, Moon, Sun, Orbit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Badge } from "@/components/ui/badge";
@@ -116,13 +116,13 @@ const Index = () => {
   };
 
   const handleEmotionClick = (emotion: Emotion) => {
-    setFilters(prev => ({ ...prev, emotion }));
-    navigate(`/?emotion=${emotion}${filters.theme ? `&theme=${filters.theme}` : ''}`);
+    // Modificato: ora naviga alla pagina filtrata dedicata
+    navigate(`/filtered/${emotion}`);
   };
 
   const handleThemeClick = (theme: Theme) => {
-    setFilters(prev => ({ ...prev, theme }));
-    navigate(`/?theme=${theme}${filters.emotion ? `&emotion=${filters.emotion}` : ''}`);
+    // Modificato: ora naviga alla pagina filtrata dedicata
+    navigate(`/filtered/${theme}`);
   };
 
   const clearFilters = () => {
@@ -232,13 +232,13 @@ const Index = () => {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-12 relative z-10">
+      <div className="container mx-auto px-4 py-6 relative z-10">
         <div className="max-w-2xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="mb-12 text-center"
+            className="mb-8 text-center"
           >
             <motion.h1 
               className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-purple-300 text-transparent bg-clip-text mb-3"
@@ -265,39 +265,48 @@ const Index = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.5 }}
             >
-              Condividi i tuoi pensieri nell'infinito universo e scopri quelli degli altri. Un luogo dove le parole attraversano lo spazio-tempo.
+              Condividi i tuoi pensieri nell'infinito universo e scopri quelli degli altri.
             </motion.p>
-            <div className="flex justify-center gap-6 text-purple-300 opacity-80">
-              <motion.div
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Wind className="h-7 w-7 text-blue-400" />
-              </motion.div>
-              <motion.div
-                animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Flame className="h-7 w-7 text-orange-400" />
-              </motion.div>
-              <motion.div
-                animate={{ rotate: [0, 10, 0, -10, 0], scale: [1, 1.1, 1] }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Stars className="h-7 w-7 text-yellow-400" />
-              </motion.div>
-              <motion.div
-                animate={{ y: [0, -6, 0], x: [0, 4, 0, -4, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-              >
-                <Feather className="h-7 w-7 text-purple-400" />
-              </motion.div>
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              >
-                <Orbit className="h-7 w-7 text-blue-300" />
-              </motion.div>
+            
+            <div className="flex justify-center gap-2 flex-wrap mb-4">
+              <Link to="/biblioteca">
+                <Button variant="outline" className="bg-purple-900/30 border-purple-500/30 text-purple-200 hover:bg-purple-700/40 hover:text-white transition-all">
+                  <motion.span
+                    animate={{ 
+                      rotate: [0, 3, 0, -3, 0],
+                      scale: [1, 1.05, 1]
+                    }}
+                    transition={{ 
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="mr-2"
+                  >
+                    📚
+                  </motion.span>
+                  Biblioteca Invisibile
+                </Button>
+              </Link>
+              <Link to="/passato">
+                <Button variant="outline" className="bg-blue-900/30 border-blue-500/30 text-blue-200 hover:bg-blue-700/40 hover:text-white transition-all">
+                  <motion.span
+                    animate={{ 
+                      rotate: [0, -3, 0, 3, 0],
+                      scale: [1, 1.05, 1]
+                    }}
+                    transition={{ 
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut"
+                    }}
+                    className="mr-2"
+                  >
+                    🕰️
+                  </motion.span>
+                  Voci dal Passato
+                </Button>
+              </Link>
             </div>
           </motion.div>
           
@@ -369,7 +378,7 @@ const Index = () => {
             <WhisperForm onWhisperCreated={handleRefresh} />
           </motion.div>
           
-          <div className="mt-12">
+          <div className="mt-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -380,12 +389,12 @@ const Index = () => {
             </motion.div>
             
             {loading ? (
-              <div className="flex justify-center py-20">
+              <div className="flex justify-center py-12">
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1, rotate: [0, 5, 0, -5, 0] }}
                   transition={{ duration: 0.5, rotate: { duration: 5, repeat: Infinity, ease: "easeInOut" } }}
-                  className="p-8 glass-card rounded-xl text-center shadow-glow bg-purple-900/20 backdrop-blur-xl border border-purple-500/30"
+                  className="p-8 rounded-xl text-center shadow-glow bg-purple-900/20 backdrop-blur-xl border border-purple-500/30"
                 >
                   <motion.div
                     animate={{ rotate: 360 }}
@@ -406,7 +415,7 @@ const Index = () => {
               </div>
             ) : (
               <div className={cn(
-                "space-y-6 pt-6",
+                "space-y-6 pt-4",
                 filters.visualMode === "foglie" && "relative",
               )}>
                 {whispers.map((whisper, index) => (

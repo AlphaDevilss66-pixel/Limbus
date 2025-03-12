@@ -6,9 +6,10 @@ import { WhisperFilter } from "@/components/WhisperFilter";
 import { Emotion, Theme, VisualMode, WhisperMode } from "@/types";
 import { cn } from "@/lib/utils";
 import { useWhispers } from "@/hooks/useWhispers";
-import { Loader2, ArrowLeft, Sparkles } from "lucide-react";
+import { Loader2, ArrowLeft, Sparkles, SearchX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 const FilteredWhispers = () => {
   const { filter } = useParams<{ filter: string }>();
@@ -65,7 +66,7 @@ const FilteredWhispers = () => {
       case "nebbia":
         return "bg-gradient-to-br from-gray-100 via-purple-100 to-blue-100 bg-fixed";
       default:
-        return "bg-gradient-to-br from-limbus-100 via-purple-100 to-blue-200 bg-fixed";
+        return "bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900 via-purple-900 to-slate-900 bg-fixed";
     }
   };
 
@@ -78,45 +79,60 @@ const FilteredWhispers = () => {
       case "nebbia":
         return "backdrop-blur-md bg-white/20 shadow-glow";
       default:
-        return "shadow-glow border-limbus-200";
+        return "shadow-glow-intense bg-white/10 backdrop-blur-xl border-purple-500/30 hover:border-purple-400/50 text-white";
     }
   };
 
   return (
     <div className={cn("min-h-screen transition-colors duration-500 relative overflow-hidden", getContainerClass())}>
       {/* Elementi decorativi di sfondo */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full bg-purple-300/20 blur-3xl"></div>
-        <div className="absolute top-1/3 -left-20 w-80 h-80 rounded-full bg-limbus-300/20 blur-3xl"></div>
-        <div className="absolute bottom-0 right-1/4 w-60 h-60 rounded-full bg-blue-300/20 blur-3xl"></div>
-        
-        {filters.visualMode === "standard" && (
-          <>
-            <div className="absolute top-10 left-10 w-4 h-4 rounded-full bg-limbus-400/60 animate-pulse-slow"></div>
-            <div className="absolute top-32 right-24 w-3 h-3 rounded-full bg-purple-400/60 animate-pulse-slow"></div>
-            <div className="absolute bottom-20 left-1/3 w-5 h-5 rounded-full bg-blue-400/60 animate-pulse-slow"></div>
-            <div className="absolute bottom-40 right-40 w-2 h-2 rounded-full bg-limbus-400/60 animate-pulse-slow"></div>
-          </>
-        )}
+      <div className="fixed inset-0 pointer-events-none">
+        {Array.from({ length: 150 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: `${Math.random() * 3 + 1}px`,
+              height: `${Math.random() * 3 + 1}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              opacity: Math.random() * 0.7 + 0.3,
+            }}
+            animate={{
+              opacity: [0.3, 0.8, 0.3],
+              scale: [1, 1.5, 1],
+            }}
+            transition={{
+              duration: Math.random() * 5 + 3,
+              repeat: Infinity,
+              ease: "easeInOut",
+              delay: Math.random() * 2,
+            }}
+          />
+        ))}
       </div>
 
       {/* Header/Navbar */}
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-limbus-100/80 via-purple-100/80 to-blue-100/80 backdrop-blur-md shadow-md border-b border-limbus-200">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-purple-900/90 via-slate-800/90 to-purple-800/90 backdrop-blur-lg shadow-md border-b border-purple-500/20">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={() => navigate("/whispers")}
-            className="flex items-center gap-2 text-limbus-900 hover:text-limbus-600 transition-colors"
+            className="flex items-center gap-2 text-purple-300 hover:text-purple-200 transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
             <span className="font-medium">Torna indietro</span>
           </Button>
           
-          <div className="text-center font-bold text-2xl bg-gradient-to-r from-limbus-600 to-purple-600 text-transparent bg-clip-text animate-glow-pulse shadow-glow-intense">
-            <Sparkles className="h-5 w-5 inline-block mr-2 text-limbus-400" />
+          <motion.div 
+            className="text-center font-bold text-2xl bg-gradient-to-r from-purple-400 to-blue-400 text-transparent bg-clip-text flex items-center"
+            animate={{ textShadow: ['0 0 5px rgba(139, 92, 246, 0.5)', '0 0 20px rgba(139, 92, 246, 0.8)', '0 0 5px rgba(139, 92, 246, 0.5)'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Sparkles className="h-5 w-5 mr-2 text-purple-400" />
             Sussurri filtrati
-          </div>
+          </motion.div>
           
           <div className="w-28"></div> {/* Spazio vuoto per bilanciare l'header */}
         </div>
@@ -124,21 +140,51 @@ const FilteredWhispers = () => {
 
       <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-2xl mx-auto">
-          <div className="mb-8 text-center">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-limbus-700 via-purple-600 to-blue-600 text-transparent bg-clip-text animate-glow-pulse mb-2">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="mb-8 text-center"
+          >
+            <motion.h1 
+              className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-purple-300 text-transparent bg-clip-text mb-3"
+              animate={{ 
+                backgroundPosition: ['0% center', '100% center', '0% center'],
+                textShadow: ['0 0 10px rgba(139, 92, 246, 0.3)', '0 0 20px rgba(139, 92, 246, 0.5)', '0 0 10px rgba(139, 92, 246, 0.3)'] 
+              }}
+              transition={{ 
+                duration: 8, 
+                repeat: Infinity, 
+                ease: "linear" 
+              }}
+            >
               {isEmotion ? `Emozione: ${filter}` : isTheme ? `Tema: ${filter}` : 'Sussurri filtrati'}
-            </h1>
-            <div className="w-24 h-1 mx-auto bg-gradient-to-r from-limbus-500 to-purple-500 rounded-full mb-4"></div>
-            <p className="text-center text-gray-600 mb-4 max-w-md mx-auto animate-fade-in">
+            </motion.h1>
+            <motion.div 
+              className="w-32 h-1 mx-auto bg-gradient-to-r from-purple-500 to-blue-500 rounded-full mb-5"
+              animate={{ width: ['8rem', '10rem', '8rem'] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            ></motion.div>
+            <motion.p 
+              className="text-center text-purple-200 mb-5 max-w-md mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+            >
               {isEmotion ? 'Sussurri che condividono la stessa emozione' : isTheme ? 'Sussurri che condividono lo stesso tema' : 'Sussurri filtrati in base ai tuoi criteri'}
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
           
           {/* Filtro attivo display */}
-          <div className="mb-4 flex flex-wrap gap-2 justify-center items-center animate-fade-in">
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mb-6 flex flex-wrap gap-2 justify-center items-center"
+          >
             {isEmotion && (
               <Badge 
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white flex items-center gap-1 px-3 py-1"
+                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white flex items-center gap-1 px-3 py-1 shadow-glow-purple"
                 variant="default"
               >
                 Emozione: {filter}
@@ -146,58 +192,118 @@ const FilteredWhispers = () => {
             )}
             {isTheme && (
               <Badge 
-                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white flex items-center gap-1 px-3 py-1"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white flex items-center gap-1 px-3 py-1 shadow-glow-blue"
                 variant="default"
               >
                 Tema: {filter}
               </Badge>
             )}
-          </div>
+          </motion.div>
           
-          <div className="mt-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="bg-purple-900/20 backdrop-blur-xl p-5 rounded-xl border border-purple-500/30 shadow-glow-purple mb-8"
+          >
             <WhisperFilter onFilterChange={handleFilterChange} />
+          </motion.div>
             
-            {loading ? (
-              <div className="flex justify-center py-20">
-                <div className="p-6 glass-card rounded-xl text-center">
-                  <Loader2 className="h-8 w-8 animate-spin text-limbus-600 mx-auto mb-2" />
-                  <p className="text-limbus-600">Caricamento dei sussurri...</p>
-                </div>
+          {loading ? (
+            <div className="flex justify-center py-20">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1, rotate: [0, 5, 0, -5, 0] }}
+                transition={{ duration: 0.5, rotate: { duration: 5, repeat: Infinity, ease: "easeInOut" } }}
+                className="p-8 rounded-xl text-center shadow-glow bg-purple-900/20 backdrop-blur-xl border border-purple-500/30"
+              >
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                >
+                  <Loader2 className="h-12 w-12 text-purple-400 mx-auto mb-3" />
+                </motion.div>
+                <p className="text-purple-300 font-medium">Viaggio nel cosmo dei sussurri...</p>
+              </motion.div>
+            </div>
+          ) : error ? (
+            <div className="text-center py-10 bg-red-900/20 backdrop-blur-xl rounded-xl border border-red-500/40 shadow-md">
+              <div className="p-6">
+                <span className="text-red-400 text-4xl mb-4 block">😢</span>
+                <h3 className="text-red-300 font-medium mb-2">Anomalia nel sistema</h3>
+                <p className="text-red-300/80">Si è verificato un errore nel caricare i sussurri. Riprova più tardi.</p>
               </div>
-            ) : error ? (
-              <div className="text-center py-10 bg-red-50 bg-opacity-70 rounded-xl border border-red-200 shadow-md">
-                <div className="p-6">
-                  <span className="text-red-500 text-4xl mb-4 block">😢</span>
-                  <h3 className="text-red-600 font-medium mb-2">Impossibile caricare i sussurri</h3>
-                  <p className="text-red-500">Si è verificato un errore nel caricare i sussurri. Riprova più tardi.</p>
-                </div>
-              </div>
-            ) : (
-              <div className={cn(
-                "space-y-6 pt-4",
-                filters.visualMode === "foglie" && "relative",
-              )}>
-                {whispers.map((whisper) => (
-                  <WhisperCard
+            </div>
+          ) : (
+            <div className={cn(
+              "space-y-6 pt-4",
+              filters.visualMode === "foglie" && "relative",
+            )}>
+              {whispers.length > 0 ? (
+                whispers.map((whisper) => (
+                  <motion.div
                     key={whisper.id}
-                    whisper={whisper}
-                    className={getCardClass()}
-                    onUpdate={handleRefresh}
-                    onEmotionClick={handleEmotionClick}
-                    onThemeClick={handleThemeClick}
-                  />
-                ))}
-                
-                {whispers.length === 0 && (
-                  <div className="text-center py-10 animate-fade-in rounded-lg p-8 glass-card">
-                    <span className="text-4xl mb-4 block">🔍</span>
-                    <h3 className="text-gray-700 font-medium mb-2">Nessun sussurro trovato</h3>
-                    <p className="text-gray-500">Prova a modificare i filtri o a tornare alla pagina principale.</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ 
+                      duration: 0.6, 
+                      delay: 0.1,
+                      type: "spring", 
+                      stiffness: 100, 
+                      damping: 10
+                    }}
+                  >
+                    <WhisperCard
+                      whisper={whisper}
+                      className={getCardClass()}
+                      onUpdate={handleRefresh}
+                      onEmotionClick={handleEmotionClick}
+                      onThemeClick={handleThemeClick}
+                    />
+                  </motion.div>
+                ))
+              ) : (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1, y: [0, -5, 0] }}
+                  transition={{ 
+                    duration: 0.5, 
+                    y: { 
+                      duration: 3, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    } 
+                  }}
+                  className="text-center py-10 rounded-lg p-8 bg-purple-900/20 backdrop-blur-xl border border-purple-500/30 shadow-glow-purple"
+                >
+                  <motion.div
+                    animate={{ 
+                      rotate: [0, 10, -10, 0],
+                      scale: [1, 1.2, 1]
+                    }}
+                    transition={{ 
+                      duration: 5, 
+                      repeat: Infinity, 
+                      ease: "easeInOut" 
+                    }}
+                    className="text-5xl mb-4 block mx-auto w-16 h-16 flex items-center justify-center"
+                  >
+                    <SearchX className="text-purple-300 w-16 h-16" />
+                  </motion.div>
+                  <h3 className="text-purple-200 font-medium text-2xl mb-2">Nessun sussurro trovato</h3>
+                  <p className="text-purple-300/80 mb-6">Non sono ancora stati creati sussurri con {isEmotion ? `l'emozione "${filter}"` : isTheme ? `il tema "${filter}"` : 'questi criteri'}.</p>
+                  
+                  <Button 
+                    variant="outline" 
+                    onClick={() => navigate("/whispers")}
+                    className="bg-purple-500/20 border-purple-400/30 text-purple-200 hover:bg-purple-500/40 hover:text-white transition-all shadow-glow"
+                  >
+                    Torna alla pagina principale
+                  </Button>
+                </motion.div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
