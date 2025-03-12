@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -31,7 +32,7 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-purple-100 via-limbus-50 to-blue-100 text-foreground antialiased min-h-screen;
+    @apply bg-gradient-to-br from-purple-200 via-limbus-100 to-blue-200 text-foreground antialiased min-h-screen;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
     background-attachment: fixed;
   }
@@ -82,11 +83,52 @@
   .whisper-main-card {
     @apply glass-card border-limbus-200/50 hover:border-limbus-300/60 hover:shadow-glow transition-all duration-300;
   }
+  
+  /* Auth page background */
+  .auth-page {
+    @apply bg-gradient-to-br from-limbus-800/90 via-purple-800/80 to-blue-800/90;
+  }
+  
+  /* Whispers page background */
+  .whispers-page {
+    @apply bg-gradient-to-br from-purple-200/80 via-limbus-100/80 to-blue-200/80;
+    background-attachment: fixed;
+  }
+  
+  /* Particle animation for intro */
+  .particle {
+    animation: float-around 20s ease-in-out infinite, pulse-opacity 10s ease-in-out infinite;
+  }
 }
 
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }
+}
+
+@keyframes float-around {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5%, 5%) rotate(5deg); }
+  50% { transform: translate(0, 10%) rotate(0deg); }
+  75% { transform: translate(-5%, 5%) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes text-gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 @keyframes pulse-slow {
@@ -162,6 +204,16 @@
   animation: shimmer 8s linear infinite;
 }
 
+.animate-gradient-shift {
+  animation: gradient-shift 15s ease infinite;
+  background-size: 200% 200%;
+}
+
+.animate-text-gradient-shift {
+  animation: text-gradient-shift 8s ease infinite;
+  background-size: 200% auto;
+}
+
 /* Visualization modes */
 .visual-foglie .whisper-card {
   @apply animate-foglia relative;
@@ -180,4 +232,25 @@
   .whisper-card {
     @apply p-4;
   }
+}
+
+/* Background gradients */
+.bg-magical {
+  @apply bg-gradient-to-br from-purple-200/80 via-limbus-100/70 to-blue-200/80 animate-gradient-shift;
+  background-size: 300% 300%;
+}
+
+.bg-auth {
+  @apply bg-gradient-to-br from-limbus-900/90 via-purple-800/70 to-blue-900/80 animate-gradient-shift;
+  background-size: 200% 200%;
+}
+
+/* Added animation for particles */
+.animate-sparkle {
+  animation: sparkle 3s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.2); }
 }

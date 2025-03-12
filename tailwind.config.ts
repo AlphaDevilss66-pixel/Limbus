@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -23,6 +24,7 @@ export default {
           700: "#4447ad",
           800: "#3a3c8d",
           900: "#33366d",
+          950: "#20213f",
         },
         purple: {
           50: "#faf5ff",
@@ -122,6 +124,31 @@ export default {
             opacity: "1"
           }
         },
+        "float-around": {
+          "0%": { transform: "translate(0, 0) rotate(0deg)" },
+          "25%": { transform: "translate(5%, 5%) rotate(5deg)" },
+          "50%": { transform: "translate(0, 10%) rotate(0deg)" },
+          "75%": { transform: "translate(-5%, 5%) rotate(-5deg)" },
+          "100%": { transform: "translate(0, 0) rotate(0deg)" },
+        },
+        "pulse-opacity": {
+          "0%, 100%": { opacity: "0.3" },
+          "50%": { opacity: "0.7" },
+        },
+        "gradient-shift": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        "text-gradient-shift": {
+          "0%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+          "100%": { backgroundPosition: "0% 50%" },
+        },
+        breathe: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.03)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 0.5s ease-out",
@@ -136,6 +163,11 @@ export default {
         sparkle: "sparkle 2s ease-in-out infinite",
         glow: 'glow 3s ease-in-out infinite',
         'float-slow': 'float 6s ease-in-out infinite',
+        'float-around': 'float-around 20s ease-in-out infinite',
+        'pulse-opacity': 'pulse-opacity 10s ease-in-out infinite',
+        'gradient-shift': 'gradient-shift 15s ease infinite',
+        'text-gradient-shift': 'text-gradient-shift 8s ease infinite',
+        'breathe': 'breathe 4s ease-in-out infinite',
       },
       boxShadow: {
         glow: "0 0 15px rgba(102, 112, 204, 0.2), 0 0 30px rgba(102, 112, 204, 0.1)",
