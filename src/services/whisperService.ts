@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Emotion, ResonanceType, Theme, Whisper, WhisperMode } from "@/types";
 import { getResonancesForWhispers } from "./resonanceService";
@@ -41,37 +40,28 @@ export const getWhispers = async (filters?: {
       return [];
     }
 
-    // Ottieni i conteggi delle risonanze e delle risposte per tutti i whisper
     const whisperIds = data.map(whisper => whisper.id);
-    
     const resonancesByWhisper = await getResonancesForWhispers(whisperIds);
     const responsesByWhisper = await getResponsesForWhispers(whisperIds);
 
-    return data.map(whisper => {
-      const whisperResonances = resonancesByWhisper[whisper.id] || {};
-      
-      // Crea un array di risonanze con i conteggi
-      const resonanceArray = Object.entries(whisperResonances).map(
+    return data.map(whisper => ({
+      id: whisper.id,
+      content: whisper.content,
+      emotion: whisper.emotion as Emotion,
+      theme: whisper.theme as Theme,
+      createdAt: new Date(whisper.created_at),
+      audioUrl: whisper.audio_url || "",
+      resonanceCount: whisper.resonance_count || 0,
+      resonances: Object.entries(resonancesByWhisper[whisper.id] || {}).map(
         ([type, count]) => ({
           type: type as ResonanceType,
           count: count as number
         })
-      );
-
-      return {
-        id: whisper.id,
-        content: whisper.content,
-        emotion: whisper.emotion as Emotion,
-        theme: whisper.theme as Theme,
-        createdAt: new Date(whisper.created_at),
-        audioUrl: whisper.audio_url || "",
-        resonanceCount: whisper.resonance_count || 0,
-        resonances: resonanceArray,
-        mode: (whisper.mode || "standard") as WhisperMode,
-        isWhisperOfDay: whisper.is_whisper_of_day || false,
-        responses: responsesByWhisper[whisper.id] || []
-      };
-    });
+      ),
+      mode: (whisper.mode || "standard") as WhisperMode,
+      isWhisperOfDay: whisper.is_whisper_of_day || false,
+      responses: responsesByWhisper[whisper.id] || []
+    }));
   } catch (error) {
     console.error("Error in getWhispers:", error);
     throw error;

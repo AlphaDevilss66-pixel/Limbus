@@ -20,8 +20,8 @@ export const useWhispers = (filters: {
       const data = await getWhispers(filters);
       setWhispers(data);
       
-      // Notify only on refresh, not initial load
-      if (!loading) {
+      // Notify only when explicitly refreshing, not on filters change or initial load
+      if (!loading && !filters.emotion && !filters.theme && !filters.mode) {
         toast.success("Sussurri aggiornati", {
           description: "Gli ultimi sussurri sono stati caricati",
           position: "bottom-center",
