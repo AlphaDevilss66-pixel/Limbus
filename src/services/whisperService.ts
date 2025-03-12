@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Emotion, ResonanceType, Theme, Whisper, WhisperMode } from "@/types";
 
@@ -110,7 +109,6 @@ export const getWhispers = async (filters?: {
   }
 };
 
-// Create an audio file upload function
 export const uploadAudio = async (audioBlob: Blob): Promise<string | null> => {
   try {
     const fileName = `audio-${Date.now()}.webm`;
@@ -154,10 +152,10 @@ export const createWhisper = async (whisperData: {
       .from("whispers")
       .insert({
         content,
-        emotion: emotion as string | null,
-        theme: theme as string | null,
+        emotion: emotion || null,
+        theme: theme || null,
         audio_url: audioUrl,
-        mode: mode as string,
+        mode: mode,
         resonance_count: 0
       })
       .select()
