@@ -64,6 +64,15 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
       visualMode,
     });
     setIsOpen(false);
+    
+    // Navigate to the filtered page when filter is applied
+    if (emotion) {
+      navigate(`/filtered/${emotion}`);
+    } else if (theme) {
+      navigate(`/filtered/${theme}`);
+    } else {
+      navigate("/filtered/all");
+    }
   };
 
   const clearFilters = () => {
@@ -113,20 +122,26 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 bg-white/95 backdrop-blur-sm border-limbus-200/50 p-4 rounded-xl shadow-glow">
-              <div className="space-y-4">
-                <h3 className="font-medium text-sm text-limbus-700">Filtra i sussurri</h3>
+            <PopoverContent className="w-80 bg-gradient-to-br from-purple-50 to-indigo-50 backdrop-blur-lg border-purple-200/50 p-6 rounded-xl shadow-[0_0_25px_rgba(139,92,246,0.3)] animate-in zoom-in-95 duration-200">
+              <div className="space-y-5">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-lg text-purple-800">Filtro Sussurri</h3>
+                  <div className="h-1 w-10 bg-gradient-to-r from-purple-400 to-indigo-400 rounded-full"></div>
+                </div>
                 
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-limbus-600">Emozione</label>
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-purple-700 flex items-center gap-2">
+                    <span className="size-2 bg-pink-400 rounded-full"></span>
+                    Emozione
+                  </label>
                   <Select value={emotion} onValueChange={(val) => setEmotion(val as Emotion)}>
-                    <SelectTrigger className="w-full bg-white/80 border-limbus-200">
+                    <SelectTrigger className="w-full bg-white/80 border-purple-200 hover:border-purple-300 transition-colors rounded-lg shadow-sm">
                       <SelectValue placeholder="Qualsiasi emozione" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Qualsiasi emozione</SelectItem>
+                    <SelectContent className="bg-white/95 border-purple-200 backdrop-blur-md">
+                      <SelectItem value="all" className="focus:bg-pink-50">Qualsiasi emozione</SelectItem>
                       {emotions.map((item) => (
-                        <SelectItem key={item} value={item}>
+                        <SelectItem key={item} value={item} className="focus:bg-pink-50">
                           {item}
                         </SelectItem>
                       ))}
@@ -134,16 +149,19 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                   </Select>
                 </div>
                 
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-limbus-600">Tema</label>
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-purple-700 flex items-center gap-2">
+                    <span className="size-2 bg-blue-400 rounded-full"></span>
+                    Tema
+                  </label>
                   <Select value={theme} onValueChange={(val) => setTheme(val as Theme)}>
-                    <SelectTrigger className="w-full bg-white/80 border-limbus-200">
+                    <SelectTrigger className="w-full bg-white/80 border-purple-200 hover:border-purple-300 transition-colors rounded-lg shadow-sm">
                       <SelectValue placeholder="Qualsiasi tema" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Qualsiasi tema</SelectItem>
+                    <SelectContent className="bg-white/95 border-purple-200 backdrop-blur-md">
+                      <SelectItem value="all" className="focus:bg-blue-50">Qualsiasi tema</SelectItem>
                       {themes.map((item) => (
-                        <SelectItem key={item} value={item}>
+                        <SelectItem key={item} value={item} className="focus:bg-blue-50">
                           {item}
                         </SelectItem>
                       ))}
@@ -151,33 +169,38 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
                   </Select>
                 </div>
                 
-                <div className="space-y-2">
-                  <label className="text-xs font-medium text-limbus-600">Modalità</label>
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-purple-700 flex items-center gap-2">
+                    <span className="size-2 bg-amber-400 rounded-full"></span>
+                    Modalità
+                  </label>
                   <Select value={mode} onValueChange={(val) => setMode(val as WhisperMode)}>
-                    <SelectTrigger className="w-full bg-white/80 border-limbus-200">
+                    <SelectTrigger className="w-full bg-white/80 border-purple-200 hover:border-purple-300 transition-colors rounded-lg shadow-sm">
                       <SelectValue placeholder="Qualsiasi modalità" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Qualsiasi modalità</SelectItem>
-                      <SelectItem value="vento">Vento</SelectItem>
-                      <SelectItem value="fuoco">Fuoco</SelectItem>
+                    <SelectContent className="bg-white/95 border-purple-200 backdrop-blur-md">
+                      <SelectItem value="all" className="focus:bg-amber-50">Qualsiasi modalità</SelectItem>
+                      <SelectItem value="vento" className="focus:bg-amber-50">Vento</SelectItem>
+                      <SelectItem value="fuoco" className="focus:bg-amber-50">Fuoco</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+                
+                <div className="h-px w-full bg-gradient-to-r from-transparent via-purple-200 to-transparent my-2"></div>
                 
                 <div className="pt-2 flex items-center justify-between">
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={clearFilters}
-                    className="text-xs text-gray-500 hover:text-gray-700"
+                    className="text-xs text-purple-600 hover:text-purple-800 hover:bg-purple-100/50"
                   >
                     <X size={12} className="mr-1" />
                     Cancella filtri
                   </Button>
                   <Button 
                     size="sm" 
-                    className="bg-gradient-to-r from-limbus-600 to-purple-600 hover:from-limbus-700 hover:to-purple-700 text-white shadow-glow-purple"
+                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-[0_4px_12px_rgba(139,92,246,0.3)] hover:shadow-[0_6px_16px_rgba(139,92,246,0.4)] transition-all"
                     onClick={handleFilterChange}
                   >
                     Applica
