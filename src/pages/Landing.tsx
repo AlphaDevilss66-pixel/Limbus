@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -90,7 +91,7 @@ const Landing = () => {
             ease: "linear"
           }}
           className="absolute inset-0"
-        ></motion.div>
+        />
         <div className="absolute inset-0">
           {Array.from({ length: 30 }).map((_, i) => (
             <motion.div 
@@ -652,4 +653,55 @@ const Landing = () => {
                 <Star className="h-4 w-4" />
               </motion.div>
               <span className="text-sm font-medium">Unisciti alla community</span>
-            </
+            </motion.div>
+            
+            <h2 className="text-3xl md:text-4xl font-bold text-limbus-900 mb-6">
+              Pronti a lasciare il vostro segno nel limbo?
+            </h2>
+            
+            <p className="text-lg text-limbus-700 mb-10 max-w-2xl mx-auto">
+              Unisciti alla nostra community di sognatori, pensatori e narratori. Condividi i tuoi pensieri e scopri 
+              quelli degli altri in un'esperienza unica e coinvolgente.
+            </p>
+            
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button 
+                asChild
+                size="lg" 
+                className="rounded-full px-10 py-6 text-lg bg-gradient-to-r from-limbus-600 to-limbus-800 hover:from-limbus-700 hover:to-limbus-900 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                <Link to="/auth">
+                  Inizia il tuo viaggio
+                </Link>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </div>
+      </motion.section>
+      
+      {/* Footer */}
+      <footer className="py-10 px-4 bg-gradient-to-b from-limbus-50 to-limbus-100/60">
+        <div className="container mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-6 md:mb-0">
+              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.6 }}>
+                <MessageCircle className="h-6 w-6 text-limbus-700 mr-2" />
+              </motion.div>
+              <h3 className="text-xl font-bold text-limbus-800">Limbus</h3>
+            </div>
+            
+            <div className="text-center md:text-right text-limbus-700 text-sm">
+              <p>© {new Date().getFullYear()} Limbus. Tutti i diritti riservati.</p>
+              <p>Un luogo dove i pensieri vivono in libertà.</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Landing;
