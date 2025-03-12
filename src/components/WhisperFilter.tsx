@@ -38,13 +38,6 @@ const themes: Theme[] = [
   "Fallimenti",
 ];
 
-const visualModes: { value: VisualMode; label: string }[] = [
-  { value: "standard", label: "Standard" },
-  { value: "foglie", label: "Foglie nel vento" },
-  { value: "gocce", label: "Gocce su specchio" },
-  { value: "nebbia", label: "Nebbia" },
-];
-
 interface WhisperFilterProps {
   onFilterChange: (filters: {
     emotion?: Emotion;
@@ -214,26 +207,28 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
           )}
         </div>
         
-        <Select value={visualMode} onValueChange={(val) => {
-          setVisualMode(val as VisualMode);
-          onFilterChange({
-            emotion: emotion || undefined,
-            theme: theme || undefined,
-            mode: (mode as WhisperMode) || undefined,
-            visualMode: val as VisualMode,
-          });
-        }}>
-          <SelectTrigger className="w-auto text-xs bg-gray-100 border-gray-200">
-            <SelectValue placeholder="Visualizzazione" />
-          </SelectTrigger>
-          <SelectContent>
-            {visualModes.map((mode) => (
-              <SelectItem key={mode.value} value={mode.value}>
-                {mode.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Button 
+          size="sm" 
+          variant="outline" 
+          className="text-xs bg-gray-100 border-gray-200"
+          onClick={() => {
+            // Toggle through visual modes when clicked
+            const nextMode: VisualMode = 
+              visualMode === "standard" ? "foglie" : 
+              visualMode === "foglie" ? "gocce" : 
+              visualMode === "gocce" ? "nebbia" : "standard";
+            
+            setVisualMode(nextMode);
+            onFilterChange({
+              emotion: emotion || undefined,
+              theme: theme || undefined,
+              mode: (mode as WhisperMode) || undefined,
+              visualMode: nextMode,
+            });
+          }}
+        >
+          Standard
+        </Button>
       </div>
     </div>
   );
