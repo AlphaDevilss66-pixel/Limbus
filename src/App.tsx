@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
+import FilteredWhispers from "./pages/FilteredWhispers";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AnimatePresence } from "framer-motion";
@@ -22,6 +23,7 @@ const AppRoutes = () => {
     if (location.pathname === '/') return '';
     if (location.pathname === '/auth') return 'bg-auth';
     if (location.pathname === '/whispers') return 'whispers-page';
+    if (location.pathname.startsWith('/filtered')) return 'filtered-page';
     return 'bg-magical';
   };
   
@@ -36,6 +38,14 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <Index />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/filtered/:filter"
+            element={
+              <ProtectedRoute>
+                <FilteredWhispers />
               </ProtectedRoute>
             }
           />
