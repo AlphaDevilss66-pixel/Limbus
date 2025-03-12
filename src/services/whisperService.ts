@@ -1,191 +1,210 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Emotion, ResonanceType, Theme, Whisper, WhisperMode, WhisperResponse } from "@/types";
+import { Emotion, ResonanceType, Theme, Whisper, WhisperMode } from "@/types";
 
-export const fetchWhispers = async (): Promise<Whisper[]> => {
-  const { data: whispers, error } = await supabase
-    .from("whispers")
-    .select("*")
-    .order("created_at", { ascending: false });
+export const getWhispers = async (filters?: {
+  emotion?: Emotion;
+  theme?: Theme;
+  mode?: WhisperMode;
+}): Promise<Whisper[]> => {
+  try {
+    let query = supabase
+      .from("whispers")
+      .select("*");
 
-  if (error) {
-    console.error("Error fetching whispers:", error);
-    throw error;
-  }
+    if (filters?.emotion) {
+      query = query.eq("emotion", filters.emotion);
+    }
 
-  // Fetch resonances for each whisper
-  const whispersWithResonances = await Promise.all(
-    whispers.map(async (whisper) => {
-      const { data: resonances, error: resonancesError } = await supabase
-        .from("resonances")
-        .select("type")
-        .eq("whisper_id", whisper.id);
+    if (filters?.theme) {
+      query = query.eq("theme", filters.theme);
+    }
 
-      if (resonancesError) {
-        console.error("Error fetching resonances:", resonancesError);
+    if (filters?.mode) {
+      query = query.eq("mode", filters.mode);
+    }
+
+    const { data, error } = await query.order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching whispers:", error);
+      throw error;
+    }
+
+    // Ottieni i conteggi delle risonanze per ogni tipo
+    const whisperIds = data.map(whisper => whisper.id);
+    const { data: resonances, error: resonancesError } = await supabase
+      .from("resonances")
+      .select("whisper_id, type")
+      .in("whisper_id", whisperIds);
+
+    if (resonancesError) {
+      console.error("Error fetching resonances:", resonancesError);
+      throw resonancesError;
+    }
+
+    // Ottieni tutte le risposte per i whisper
+    const { data: responses, error: responsesError } = await supabase
+      .from("responses")
+      .select("*")
+      .in("whisper_id", whisperIds);
+
+    if (responsesError) {
+      console.error("Error fetching responses:", responsesError);
+      throw responsesError;
+    }
+
+    // Raggruppa risonanze per whisper_id e tipo
+    const resonancesByWhisper: Record<number, Record<string, number>> = {};
+    resonances.forEach(r => {
+      if (!resonancesByWhisper[r.whisper_id]) {
+        resonancesByWhisper[r.whisper_id] = {};
       }
-
-      // Count resonances by type
-      const resonancesByType = resonances?.reduce((acc, r) => {
-        acc[r.type as ResonanceType] = (acc[r.type as ResonanceType] || 0) + 1;
-        return acc;
-      }, {} as Record<ResonanceType, number>) || {};
-
-      // Format resonances for the Whisper type
-      const formattedResonances = Object.entries(resonancesByType).map(([type, count]) => ({
-        type: type as ResonanceType,
-        count,
-      }));
-
-      // Fetch responses for the whisper
-      const { data: responses, error: responsesError } = await supabase
-        .from("responses")
-        .select("*")
-        .eq("whisper_id", whisper.id)
-        .order("created_at", { ascending: true });
-
-      if (responsesError) {
-        console.error("Error fetching responses:", responsesError);
+      if (!resonancesByWhisper[r.whisper_id][r.type]) {
+        resonancesByWhisper[r.whisper_id][r.type] = 0;
       }
+      resonancesByWhisper[r.whisper_id][r.type]++;
+    });
 
-      // Format responses for the Whisper type
-      const formattedResponses = responses?.map((response) => ({
-        id: response.id,
-        content: response.content,
-        createdAt: new Date(response.created_at),
-        parentId: whisper.id,
-      })) || [];
+    // Raggruppa risposte per whisper_id
+    const responsesByWhisper: Record<number, any[]> = {};
+    responses.forEach(r => {
+      if (!responsesByWhisper[r.whisper_id]) {
+        responsesByWhisper[r.whisper_id] = [];
+      }
+      responsesByWhisper[r.whisper_id].push({
+        id: r.id,
+        content: r.content,
+        createdAt: new Date(r.created_at)
+      });
+    });
+
+    return data.map(whisper => {
+      const whisperResonances = resonancesByWhisper[whisper.id] || {};
+      
+      // Crea un array di risonanze con i conteggi
+      const resonanceArray = Object.entries(whisperResonances).map(
+        ([type, count]) => ({
+          type: type as ResonanceType,
+          count: count as number
+        })
+      );
 
       return {
         id: whisper.id,
-        content: whisper.content || "",
+        content: whisper.content,
         emotion: whisper.emotion as Emotion,
         theme: whisper.theme as Theme,
         createdAt: new Date(whisper.created_at),
-        audioUrl: whisper.audio_url,
-        resonanceCount: whisper.resonance_count,
-        resonances: formattedResonances,
-        mode: whisper.mode as WhisperMode,
-        isWhisperOfDay: whisper.is_whisper_of_day,
-        responses: formattedResponses,
+        audioUrl: whisper.audio_url || "",
+        resonanceCount: whisper.resonance_count || 0,
+        resonances: resonanceArray,
+        mode: (whisper.mode || "standard") as WhisperMode,
+        isWhisperOfDay: whisper.is_whisper_of_day || false,
+        responses: responsesByWhisper[whisper.id] || []
       };
-    })
-  );
-
-  return whispersWithResonances;
-};
-
-export const createWhisper = async (whisper: {
-  content: string;
-  emotion?: Emotion;
-  theme?: Theme;
-  audioUrl?: string;
-  mode: WhisperMode;
-}): Promise<number> => {
-  const { data, error } = await supabase
-    .from("whispers")
-    .insert({
-      content: whisper.content,
-      emotion: whisper.emotion,
-      theme: whisper.theme,
-      audio_url: whisper.audioUrl,
-      mode: whisper.mode,
-      resonance_count: 0,
-    })
-    .select("id")
-    .single();
-
-  if (error) {
-    console.error("Error creating whisper:", error);
+    });
+  } catch (error) {
+    console.error("Error in getWhispers:", error);
     throw error;
   }
-
-  return data.id;
 };
 
-export const uploadAudio = async (audioBlob: Blob): Promise<string> => {
-  const fileName = `${Date.now()}.wav`;
-  const { data, error } = await supabase.storage
-    .from("audio")
-    .upload(fileName, audioBlob);
+export const createWhisper = async (
+  content: string,
+  emotion: Emotion,
+  theme: Theme,
+  audioUrl?: string,
+  mode: WhisperMode = "standard"
+): Promise<Whisper> => {
+  try {
+    const { data, error } = await supabase
+      .from("whispers")
+      .insert({
+        content,
+        emotion,
+        theme,
+        audio_url: audioUrl,
+        mode
+      })
+      .select()
+      .single();
 
-  if (error) {
-    console.error("Error uploading audio:", error);
+    if (error) {
+      console.error("Error creating whisper:", error);
+      throw error;
+    }
+
+    return {
+      id: data.id,
+      content: data.content,
+      emotion: data.emotion as Emotion,
+      theme: data.theme as Theme,
+      createdAt: new Date(data.created_at),
+      audioUrl: data.audio_url || "",
+      resonanceCount: 0,
+      resonances: [],
+      mode: (data.mode || "standard") as WhisperMode,
+      isWhisperOfDay: data.is_whisper_of_day || false,
+      responses: []
+    };
+  } catch (error) {
+    console.error("Error in createWhisper:", error);
     throw error;
   }
-
-  const { data: publicUrl } = supabase.storage.from("audio").getPublicUrl(fileName);
-  return publicUrl.publicUrl;
 };
 
-export const addResonance = async (whisperId: number, type: ResonanceType): Promise<void> => {
-  const { error } = await supabase.from("resonances").insert({
-    whisper_id: whisperId,
-    type,
-  });
+export const addResonance = async (
+  whisperId: number,
+  type: ResonanceType
+): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from("resonances")
+      .insert({
+        whisper_id: whisperId,
+        type
+      });
 
-  if (error) {
-    console.error("Error adding resonance:", error);
+    if (error) {
+      console.error("Error adding resonance:", error);
+      throw error;
+    }
+
+    // Aggiorna il conteggio delle risonanze nel whisper
+    const { error: updateError } = await supabase.rpc(
+      "increment_resonance_count",
+      { whisper_id: whisperId }
+    );
+
+    if (updateError) {
+      console.error("Error updating resonance count:", updateError);
+      throw updateError;
+    }
+  } catch (error) {
+    console.error("Error in addResonance:", error);
     throw error;
-  }
-
-  // Update the resonance count in the whispers table
-  const { error: updateError } = await supabase.rpc("increment_resonance_count", {
-    whisper_id: whisperId,
-  });
-
-  if (updateError) {
-    console.error("Error updating resonance count:", updateError);
-    // Continue even if the count update fails
   }
 };
 
 export const addResponse = async (
   whisperId: number,
   content: string
-): Promise<WhisperResponse> => {
-  const { data, error } = await supabase
-    .from("responses")
-    .insert({
-      whisper_id: whisperId,
-      content,
-    })
-    .select("*")
-    .single();
+): Promise<void> => {
+  try {
+    const { error } = await supabase
+      .from("responses")
+      .insert({
+        whisper_id: whisperId,
+        content
+      });
 
-  if (error) {
-    console.error("Error adding response:", error);
-    throw error;
-  }
-
-  return {
-    id: data.id,
-    content: data.content,
-    createdAt: new Date(data.created_at),
-    parentId: data.whisper_id,
-  };
-};
-
-export const setWhisperOfDay = async (whisperId: number): Promise<void> => {
-  // First reset existing whisper of the day
-  const { error: resetError } = await supabase
-    .from("whispers")
-    .update({ is_whisper_of_day: false })
-    .eq("is_whisper_of_day", true);
-
-  if (resetError) {
-    console.error("Error resetting whisper of the day:", resetError);
-    // Continue even if reset fails
-  }
-
-  // Set new whisper of the day
-  const { error } = await supabase
-    .from("whispers")
-    .update({ is_whisper_of_day: true })
-    .eq("id", whisperId);
-
-  if (error) {
-    console.error("Error setting whisper of the day:", error);
+    if (error) {
+      console.error("Error adding response:", error);
+      throw error;
+    }
+  } catch (error) {
+    console.error("Error in addResponse:", error);
     throw error;
   }
 };
