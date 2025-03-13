@@ -11,6 +11,7 @@ import { HeroSection } from "@/components/landing/HeroSection";
 import { DemoWhisperSection } from "@/components/landing/DemoWhisperSection";
 import { FeaturesSection } from "@/components/landing/FeaturesSection";
 import { FooterSection } from "@/components/landing/FooterSection";
+import { TimelineSection } from "@/components/landing/TimelineSection";
 
 const Landing = () => {
   const [introCompleted, setIntroCompleted] = useState(false);
@@ -49,7 +50,7 @@ const Landing = () => {
     {
       icon: <History className="h-8 w-8 text-white" />,
       title: "Voci dal Passato",
-      description: "Riscopri pensieri dimenticati che tornano alla luce per risuonare con nuove anime.",
+      description: "Riscopri pensieri dimenticati che tornano alla luce per risuonare con nuove persone.",
       color: "from-amber-600 to-orange-700",
       bgColor: "bg-gradient-to-br from-amber-600/20 to-orange-700/20"
     }
@@ -100,6 +101,9 @@ const Landing = () => {
           <div className="container mx-auto px-4 relative z-10">
             {/* Hero section */}
             <HeroSection features={features} />
+
+            {/* Timeline explaining how Limbus works */}
+            <TimelineSection />
 
             {/* Demo whisper input */}
             <DemoWhisperSection />
