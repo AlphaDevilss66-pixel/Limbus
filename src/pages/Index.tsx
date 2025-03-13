@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { WhisperCard } from "@/components/WhisperCard";
@@ -722,3 +723,68 @@ const Index = () => {
                   }}
                 />
               </div>
+              
+              <WhisperFilter 
+                filters={filters}
+                onFilterChange={handleFilterChange}
+              />
+            </motion.div>
+            
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20">
+                <Loader2 className="w-10 h-10 text-purple-500 animate-spin mb-4" />
+                <p className="text-purple-300 animate-pulse">Caricamento dei sussurri cosmici...</p>
+              </div>
+            ) : error ? (
+              <div className="bg-red-900/20 border border-red-500/30 rounded-xl p-6 text-center">
+                <Flame className="w-10 h-10 text-red-400 mx-auto mb-3" />
+                <p className="text-red-300">Si è verificato un errore nel recupero dei sussurri.</p>
+                <Button 
+                  onClick={handleRefresh} 
+                  variant="outline" 
+                  className="mt-4 border-red-500/30 text-red-300 hover:bg-red-900/30"
+                >
+                  <span className="mr-2">↺</span> Riprova
+                </Button>
+              </div>
+            ) : whispers.length === 0 ? (
+              <div className="bg-purple-900/20 backdrop-blur-md border border-purple-500/30 rounded-xl p-8 text-center mt-8">
+                <Wind className="w-12 h-12 text-purple-400 mx-auto mb-4 opacity-70" />
+                <h3 className="text-xl text-purple-200 mb-2">Nessun sussurro trovato</h3>
+                <p className="text-purple-300 mb-6">Sembra che il cosmo sia silenzioso. Sii il primo a condividere un pensiero.</p>
+                <Button 
+                  onClick={scrollToNewWhisper}
+                  className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                >
+                  <Feather className="mr-2 h-4 w-4" />
+                  Crea un sussurro
+                </Button>
+              </div>
+            ) : (
+              <div className="grid gap-6">
+                {whispers.map(whisper => (
+                  <motion.div
+                    key={whisper.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="transform transition-all duration-300 hover:translate-y-[-5px]"
+                  >
+                    <WhisperCard 
+                      whisper={whisper} 
+                      className={getCardClass()}
+                      onEmotionClick={handleEmotionClick}
+                      onThemeClick={handleThemeClick}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Index;
