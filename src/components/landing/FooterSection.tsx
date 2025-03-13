@@ -28,7 +28,7 @@ export const FooterSection = () => {
             Pronto a iniziare il tuo viaggio?
           </h2>
           <p className="text-indigo-100 mb-10">
-            Unisciti alla comunità di anime che sussurrano i loro pensieri più profondi e scoprono connessioni inaspettate.
+            Unisciti alla comunità di persone che condividono i loro pensieri più profondi e scoprono connessioni inaspettate.
           </p>
           <Button
             asChild
@@ -67,8 +67,9 @@ export const FooterSection = () => {
         transition={{ duration: 0.8, delay: 0.5 }}
         viewport={{ once: true }}
       >
-        <p>© {new Date().getFullYear()} Sussurri nell'Etere • Un'esperienza immersiva di condivisione</p>
+        <p>© {new Date().getFullYear()} Sussurri nell'Infinito • Un'esperienza immersiva di condivisione</p>
       </motion.footer>
     </motion.section>
   );
 };
+

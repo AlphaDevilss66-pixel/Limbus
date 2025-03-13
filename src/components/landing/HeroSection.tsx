@@ -92,7 +92,7 @@ export const HeroSection = ({ features }: HeroSectionProps) => {
           }}
           transition={{ duration: 3, delay: 0.5, repeat: Infinity, ease: "easeInOut" }}
         >
-          nell'Etere
+          nell'Infinito
         </motion.span>
       </motion.h1>
 
@@ -102,8 +102,8 @@ export const HeroSection = ({ features }: HeroSectionProps) => {
         transition={{ delay: 0.8, duration: 0.8 }}
         className="text-xl text-indigo-100 max-w-2xl mb-12"
       >
-        Un luogo dove i pensieri, come sussurri, vagano liberi nell'etere 
-        in attesa di risuonare con anime affini.
+        Un luogo dove i pensieri, come sussurri, vagano liberi nell'infinito 
+        in attesa di connettersi con persone affini.
       </motion.p>
 
       <motion.div
@@ -164,3 +164,4 @@ export const HeroSection = ({ features }: HeroSectionProps) => {
     </motion.section>
   );
 };
+
