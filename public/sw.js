@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'echoes-of-anonymity-v1';
+const CACHE_NAME = 'limbus-v1';
 const urlsToCache = [
   '/',
   '/index.html',
