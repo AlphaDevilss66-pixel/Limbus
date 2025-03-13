@@ -36,7 +36,7 @@ export const FooterSection = () => {
             className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 rounded-full px-8 py-7 text-lg shadow-[0_0_15px_rgba(139,92,246,0.3)] relative overflow-hidden group"
           >
             <Link to="/auth" className="flex items-center">
-              <span className="relative z-10">Crea il tuo primo sussurro</span> 
+              <span className="relative z-10">Crea il tuo primo pensiero</span> 
               <motion.span
                 className="relative z-10 ml-2"
                 animate={{ x: [0, 5, 0] }}
@@ -72,4 +72,3 @@ export const FooterSection = () => {
     </motion.section>
   );
 };
-
