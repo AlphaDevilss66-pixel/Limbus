@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Filter, BookLock, History, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,15 +45,30 @@ interface WhisperFilterProps {
     mode?: WhisperMode;
     visualMode: VisualMode;
   }) => void;
+  filters?: {
+    emotion?: Emotion;
+    theme?: Theme;
+    mode?: WhisperMode;
+    visualMode: VisualMode;
+  };
 }
 
-export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
-  const [emotion, setEmotion] = useState<Emotion>("");
-  const [theme, setTheme] = useState<Theme>("");
-  const [mode, setMode] = useState<WhisperMode | "">("");
-  const [visualMode, setVisualMode] = useState<VisualMode>("standard");
+export const WhisperFilter = ({ onFilterChange, filters = {} }: WhisperFilterProps) => {
+  const [emotion, setEmotion] = useState<Emotion>(filters.emotion || "");
+  const [theme, setTheme] = useState<Theme>(filters.theme || "");
+  const [mode, setMode] = useState<WhisperMode | "">(filters.mode || "");
+  const [visualMode, setVisualMode] = useState<VisualMode>(filters.visualMode || "standard");
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (filters) {
+      setEmotion(filters.emotion || "");
+      setTheme(filters.theme || "");
+      setMode(filters.mode || "");
+      setVisualMode(filters.visualMode || "standard");
+    }
+  }, [filters]);
 
   const handleFilterChange = () => {
     onFilterChange({
@@ -65,7 +79,6 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
     });
     setIsOpen(false);
     
-    // Navigate to the filtered page when filter is applied
     if (emotion) {
       navigate(`/filtered/${emotion}`);
     } else if (theme) {
@@ -85,7 +98,6 @@ export const WhisperFilter = ({ onFilterChange }: WhisperFilterProps) => {
 
   const hasActiveFilters = emotion || theme || mode;
 
-  // Function to cycle through visual modes
   const cycleVisualMode = () => {
     const nextMode: VisualMode = 
       visualMode === "standard" ? "foglie" : 
