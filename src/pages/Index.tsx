@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { WhisperCard } from "@/components/WhisperCard";
@@ -9,8 +8,8 @@ import { cn } from "@/lib/utils";
 import { useWhispers } from "@/hooks/useWhispers";
 import { 
   Loader2, LogOut, Home, Sparkles, Wind, Flame, X, 
-  Feather, Stars, Globe, Moon, Sun, Orbit, Magic, 
-  Zap, Heart, Galaxy, BookOpenCheck, Atom
+  Feather, Stars, Globe, Moon, Sun, Orbit, Mic, 
+  Zap, Heart, BookOpenCheck, Atom
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
@@ -548,7 +547,7 @@ const Index = () => {
                     }}
                     className="mr-2"
                   >
-                    <Magic size={16} className="text-blue-300" />
+                    <Mic size={16} className="text-blue-300" />
                   </motion.span>
                   <span className="relative">
                     Voci dal Passato
@@ -723,179 +722,3 @@ const Index = () => {
                   }}
                 />
               </div>
-              
-              <WhisperFilter onFilterChange={handleFilterChange} />
-            </motion.div>
-            
-            {loading ? (
-              <div className="flex justify-center py-12">
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ 
-                    opacity: 1, 
-                    scale: [0.98, 1.02, 0.98],
-                    rotate: [0, 2, 0, -2, 0],
-                  }}
-                  transition={{ 
-                    duration: 4,
-                    rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-                    scale: { duration: 4, repeat: Infinity, ease: "easeInOut" }
-                  }}
-                  className="p-8 rounded-xl text-center shadow-glow bg-purple-900/20 backdrop-blur-xl border border-purple-500/30 relative overflow-hidden"
-                >
-                  {/* Loading shimmer effect */}
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent shimmer-bg" />
-                  
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                  >
-                    <Loader2 className="h-12 w-12 text-purple-400 mx-auto mb-3" />
-                  </motion.div>
-                  <p className="text-purple-300 font-medium">Viaggio nel cosmo dei sussurri...</p>
-                  <motion.p
-                    animate={{ opacity: [0.5, 0.8, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="text-purple-400/70 text-sm mt-2"
-                  >
-                    Esplorando l'infinito...
-                  </motion.p>
-                </motion.div>
-              </div>
-            ) : error ? (
-              <div className="text-center py-10 bg-red-900/20 backdrop-blur-xl rounded-xl border border-red-500/40 shadow-md relative overflow-hidden">
-                {/* Error pulse effect */}
-                <motion.div
-                  className="absolute inset-0 bg-red-500/10"
-                  animate={{ opacity: [0.1, 0.2, 0.1] }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                />
-                
-                <div className="p-6 relative z-10">
-                  <motion.span 
-                    className="text-red-400 text-4xl mb-4 block"
-                    animate={{ 
-                      rotate: [0, 5, 0, -5, 0],
-                      scale: [1, 1.1, 1, 1.1, 1]
-                    }}
-                    transition={{ 
-                      duration: 5, 
-                      repeat: Infinity, 
-                      ease: "easeInOut" 
-                    }}
-                  >
-                    😢
-                  </motion.span>
-                  <h3 className="text-red-300 font-medium mb-2">Anomalia nel sistema</h3>
-                  <p className="text-red-300/80">Si è verificato un errore nel caricare i sussurri. Riprova più tardi.</p>
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleRefresh}
-                    className="mt-4 px-4 py-2 bg-red-900/30 hover:bg-red-800/40 text-red-300 rounded-lg border border-red-500/30 text-sm transition-colors"
-                  >
-                    Riprova
-                  </motion.button>
-                </div>
-              </div>
-            ) : (
-              <div className={cn(
-                "space-y-6 pt-4",
-                filters.visualMode === "foglie" && "relative",
-              )}>
-                {whispers.map((whisper, index) => (
-                  <motion.div
-                    key={whisper.id}
-                    initial={{ opacity: 0, y: 50, x: index % 2 === 0 ? -20 : 20 }}
-                    animate={{ opacity: 1, y: 0, x: 0 }}
-                    transition={{ 
-                      duration: 0.6, 
-                      delay: index * 0.1,
-                      type: "spring", 
-                      stiffness: 100, 
-                      damping: 10
-                    }}
-                    whileHover={{ 
-                      scale: 1.02, 
-                      rotate: index % 2 === 0 ? 1 : -1,
-                      transition: { duration: 0.3 }
-                    }}
-                  >
-                    <WhisperCard
-                      whisper={whisper}
-                      className={getCardClass()}
-                      onUpdate={handleRefresh}
-                      onEmotionClick={handleEmotionClick}
-                      onThemeClick={handleThemeClick}
-                    />
-                  </motion.div>
-                ))}
-                
-                {whispers.length === 0 && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ 
-                      opacity: 1, 
-                      scale: [0.98, 1.02, 0.98],
-                      rotate: [0, 1, 0, -1, 0] 
-                    }}
-                    transition={{ 
-                      duration: 0.5, 
-                      scale: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-                      rotate: { duration: 8, repeat: Infinity, ease: "easeInOut" } 
-                    }}
-                    className="text-center py-10 rounded-lg p-8 bg-purple-900/20 backdrop-blur-xl border border-purple-500/30 shadow-glow-purple relative overflow-hidden"
-                  >
-                    {/* Empty state background effect */}
-                    <div className="absolute inset-0 overflow-hidden">
-                      <motion.div
-                        className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-indigo-500/5"
-                        animate={{
-                          x: ['-100%', '100%'],
-                        }}
-                        transition={{
-                          duration: 15,
-                          repeat: Infinity,
-                          ease: "linear"
-                        }}
-                      />
-                    </div>
-                    
-                    <motion.div
-                      animate={{ 
-                        y: [0, -10, 0],
-                        opacity: [0.7, 1, 0.7]
-                      }}
-                      transition={{ 
-                        duration: 3, 
-                        repeat: Infinity, 
-                        ease: "easeInOut" 
-                      }}
-                      className="text-4xl mb-4 block relative z-10"
-                    >
-                      🌠
-                    </motion.div>
-                    <h3 className="text-purple-200 font-medium mb-2 relative z-10">Il vuoto cosmico</h3>
-                    <p className="text-purple-300/80 relative z-10">Prova a modificare i filtri o a creare il primo sussurro stellare.</p>
-                    
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={scrollToNewWhisper}
-                      className="mt-4 px-5 py-2 bg-purple-800/30 hover:bg-purple-700/40 text-purple-200 rounded-lg border border-purple-500/30 text-sm transition-colors relative z-10"
-                    >
-                      <Feather size={14} className="inline mr-2" />
-                      Crea il primo sussurro
-                    </motion.button>
-                  </motion.div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-export default Index;
