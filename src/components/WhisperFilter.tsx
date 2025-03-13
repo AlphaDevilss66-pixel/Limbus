@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { X, Filter, BookLock, History, Sparkles, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,11 +50,11 @@ interface WhisperFilterProps {
     emotion?: Emotion;
     theme?: Theme;
     mode?: WhisperMode;
-    visualMode: VisualMode;
+    visualMode?: VisualMode;
   };
 }
 
-export const WhisperFilter = ({ onFilterChange, filters = {} }: WhisperFilterProps) => {
+export const WhisperFilter = ({ onFilterChange, filters = { visualMode: "standard" } }: WhisperFilterProps) => {
   const [emotion, setEmotion] = useState<Emotion>(filters.emotion || "");
   const [theme, setTheme] = useState<Theme>(filters.theme || "");
   const [mode, setMode] = useState<WhisperMode | "">(filters.mode || "");
