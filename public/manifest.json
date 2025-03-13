@@ -1,0 +1,24 @@
+
+{
+  "name": "Echoes of Anonymity",
+  "short_name": "Echoes",
+  "description": "Condividi i tuoi pensieri più profondi in modo anonimo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#6a0dad",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
