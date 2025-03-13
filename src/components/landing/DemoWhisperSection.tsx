@@ -68,7 +68,7 @@ export const DemoWhisperSection = () => {
               value={demoWhisper}
               onChange={(e) => setDemoWhisper(e.target.value)}
               placeholder="Scrivi il tuo sussurro qui..."
-              className="h-32 mb-4 text-white placeholder:text-purple-400/70 focus:border-purple-400/50 relative"
+              className="h-32 mb-4 text-purple-900 dark:text-white placeholder:text-purple-400/70 focus:border-purple-400/50 relative bg-white/70 dark:bg-purple-900/20"
             />
             <div className="flex justify-between items-center">
               <div className="flex space-x-3">
