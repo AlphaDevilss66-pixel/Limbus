@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Star, MessageCircle, Sparkles, Cloud, Zap } from "lucide-react";
+import { Heart, Star, MessageCircle, Sparkles, SendHorizontal } from "lucide-react";
 
 export const DemoWhisperSection = () => {
   const [demoWhisper, setDemoWhisper] = useState("");
@@ -29,19 +29,19 @@ export const DemoWhisperSection = () => {
     >
       {/* Floating particles */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(15)].map((_, i) => (
+        {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute rounded-full bg-white/10"
+            className="absolute rounded-full bg-white/5"
             style={{
-              width: Math.random() * 8 + 3,
-              height: Math.random() * 8 + 3,
+              width: Math.random() * 6 + 2,
+              height: Math.random() * 6 + 2,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
             }}
             animate={{
               y: [0, -50],
-              opacity: [0, 0.5, 0],
+              opacity: [0, 0.2, 0],
             }}
             transition={{
               duration: Math.random() * 5 + 3,
@@ -61,7 +61,7 @@ export const DemoWhisperSection = () => {
           className="text-center mb-12"
         >
           <motion.h2 
-            className="text-4xl font-bold mb-6 bg-gradient-to-r from-white to-indigo-200 bg-clip-text text-transparent"
+            className="text-4xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-white/95 to-white/75"
             animate={{ 
               backgroundPosition: ['0% center', '100% center', '0% center'],
             }}
@@ -69,16 +69,16 @@ export const DemoWhisperSection = () => {
           >
             Prova l'esperienza
           </motion.h2>
-          <p className="text-indigo-100 max-w-xl mx-auto">
-            Scrivi un pensiero, un'emozione, un ricordo - qualsiasi cosa tu voglia sussurrare all'universo
+          <p className="text-white/80 max-w-xl mx-auto">
+            Scrivi un pensiero, un'emozione, un ricordo - qualsiasi cosa tu voglia condividere
           </p>
         </motion.div>
 
         <motion.div 
-          className="relative bg-purple-900/30 backdrop-blur-xl p-6 rounded-2xl border border-purple-500/30 shadow-glow overflow-hidden"
-          whileHover={{ boxShadow: "0 0 30px rgba(139, 92, 246, 0.3), 0 0 60px rgba(139, 92, 246, 0.15)" }}
+          className="relative backdrop-blur-xl bg-white/5 p-6 rounded-2xl border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)] overflow-hidden"
+          whileHover={{ boxShadow: "0 4px 30px rgba(255,255,255,0.05)" }}
           animate={isGlowing ? {
-            boxShadow: ["0 0 20px rgba(139, 92, 246, 0.2)", "0 0 40px rgba(139, 92, 246, 0.4)", "0 0 20px rgba(139, 92, 246, 0.2)"]
+            boxShadow: ["0 4px 20px rgba(255,255,255,0.01)", "0 4px 25px rgba(255,255,255,0.08)", "0 4px 20px rgba(255,255,255,0.01)"]
           } : {}}
           transition={{
             boxShadow: { duration: 1, ease: "easeInOut" }
@@ -86,19 +86,19 @@ export const DemoWhisperSection = () => {
         >
           {/* Animated particle effects inside the card */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(10)].map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <motion.div
                 key={i}
-                className="absolute rounded-full bg-white/10"
+                className="absolute rounded-full bg-white/5"
                 style={{
-                  width: Math.random() * 5 + 2,
-                  height: Math.random() * 5 + 2,
+                  width: Math.random() * 4 + 1,
+                  height: Math.random() * 4 + 1,
                   top: `${Math.random() * 100}%`,
                   left: `${Math.random() * 100}%`,
                 }}
                 animate={{
                   y: [0, -20],
-                  opacity: [0, 0.5, 0],
+                  opacity: [0, 0.2, 0],
                 }}
                 transition={{
                   duration: Math.random() * 3 + 2,
@@ -116,36 +116,36 @@ export const DemoWhisperSection = () => {
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="mr-2"
               >
-                <Sparkles className="h-5 w-5 text-purple-300" />
+                <Sparkles className="h-5 w-5 text-white/70" />
               </motion.div>
-              <h3 className="text-purple-200 font-medium">Il tuo sussurro</h3>
+              <h3 className="text-white/80 font-medium">Il tuo pensiero</h3>
             </div>
             
             <Textarea
               value={demoWhisper}
               onChange={handleInputChange}
-              placeholder="Scrivi il tuo sussurro qui..."
-              className="h-32 mb-4 text-purple-900 dark:text-white placeholder:text-purple-400/70 focus:border-purple-400/50 relative bg-white/70 dark:bg-purple-900/20"
+              placeholder="Scrivi il tuo pensiero qui..."
+              className="h-32 mb-4 bg-white/5 border-white/10 focus:border-white/20 placeholder:text-white/40 text-white/90"
             />
             
             <div className="flex justify-between items-center">
               <div className="flex space-x-3">
                 <motion.button 
-                  className="text-purple-300 hover:text-purple-200 transition"
+                  className="text-white/60 hover:text-white/90 transition"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <Heart className="h-5 w-5" />
                 </motion.button>
                 <motion.button 
-                  className="text-purple-300 hover:text-purple-200 transition"
+                  className="text-white/60 hover:text-white/90 transition"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
                   <Star className="h-5 w-5" />
                 </motion.button>
                 <motion.button 
-                  className="text-purple-300 hover:text-purple-200 transition"
+                  className="text-white/60 hover:text-white/90 transition"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                 >
@@ -154,27 +154,21 @@ export const DemoWhisperSection = () => {
               </div>
               
               <motion.button
-                className="bg-gradient-to-r from-indigo-600 to-purple-600 px-5 py-2 rounded-lg text-white shadow-glow-intense group relative overflow-hidden"
+                className="backdrop-blur-md bg-white/10 border border-white/10 px-5 py-2 rounded-lg text-white hover:bg-white/15 hover:border-white/20 group relative overflow-hidden transition-all duration-300"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setDemoWhisper("")}
               >
                 {/* Button shimmer effect */}
                 <motion.div 
-                  className="absolute inset-0 w-[200%] translate-x-[-100%] bg-gradient-to-r from-transparent via-white/20 to-transparent" 
+                  className="absolute inset-0 w-[200%] translate-x-[-100%] bg-gradient-to-r from-transparent via-white/10 to-transparent" 
                   animate={{ translateX: ['100%', '-100%'] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                 />
                 
                 <span className="relative z-10 flex items-center">
-                  <motion.span 
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-                    className="mr-2"
-                  >
-                    <Cloud size={14} className="inline" />
-                  </motion.span>
-                  Sussurra
+                  <SendHorizontal size={14} className="inline mr-2" />
+                  Condividi
                 </span>
               </motion.button>
             </div>
@@ -190,9 +184,9 @@ export const DemoWhisperSection = () => {
           className="mt-8 flex justify-center"
         >
           <motion.div 
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-600/20 text-indigo-200 text-sm backdrop-blur-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full backdrop-blur-md bg-white/5 border border-white/10 text-white/70 text-sm"
             animate={{ 
-              boxShadow: ["0 0 0px rgba(99, 102, 241, 0)", "0 0 10px rgba(99, 102, 241, 0.3)", "0 0 0px rgba(99, 102, 241, 0)"]
+              boxShadow: ["0 0 0px rgba(255,255,255,0)", "0 0 10px rgba(255,255,255,0.1)", "0 0 0px rgba(255,255,255,0)"]
             }}
             transition={{ 
               duration: 3, 
@@ -200,7 +194,7 @@ export const DemoWhisperSection = () => {
               ease: "easeInOut" 
             }}
           >
-            <Zap size={14} className="text-indigo-300" />
+            <Sparkles size={14} className="text-white/60" />
             <span>Prova a scrivere qualcosa di ispirazionale</span>
           </motion.div>
         </motion.div>
